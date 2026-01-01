@@ -111,7 +111,7 @@
             const userId = document.getElementById('userId').value.trim();
             const password = document.getElementById('password').value.trim();
             showMessage('Verifying credentials...', 'success');
-            const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzN7QTmYcufRErJnO-9sUSvyQmMfKSPwyIuvI7bNI1qdzqbe7Fv2ZfcDoPshCZ5jMqY/exec';
+            const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbweYDnaRGOiHSAkBIWYRbN5aiUdfhTBz2IaqAr5KnSvcoAi13SCNJhaHBag9ZiIcC3-/exec';
             fetch(SCRIPT_URL + '?action=login&userId=' + encodeURIComponent(userId) + '&password=' + encodeURIComponent(password))
             .then(response => response.json())
             .then(data => {
