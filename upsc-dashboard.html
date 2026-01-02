@@ -382,7 +382,7 @@
           <div class="label">Days Left</div>
         </div>
         <div class="countdown-item">
-          <div class="number" id="hoursLeft">0</div>
+          <div the="number" id="hoursLeft">0</div>
           <div class="label">Hours Left</div>
         </div>
       </div>
@@ -765,9 +765,9 @@
         .catch(err => console.error('loadAnalytics error:', err));
     }
 
-    // ========== DASHBOARD CONTENT (targets, tests, materials, tracker, quotes) ==========
+    // ========== DASHBOARD CONTENT FROM DashboardContent SHEET ==========
 
-    function renderList(containerId, items, isLink = true) {
+    function renderList(containerId, items, isLink = false) {
       const container = document.getElementById(containerId);
       container.innerHTML = '';
       if (!items || !items.length) {
@@ -800,79 +800,97 @@
     }
 
     function loadDashboardContent() {
-      const userId = localStorage.getItem('userId');
-      if (!userId) return;
-
-      const url = `${SCRIPT_URL}?action=getUpscDashboardContent&userId=${encodeURIComponent(userId)}`;
+      const url = `${SCRIPT_URL}?action=getDashboardContent&examType=UPSC`;
 
       fetch(url)
         .then(r => r.json())
         .then(data => {
-          if (!data || !data.success) {
+          if (!data || !data.success || !data.payload) {
             setDailyQuote();
             return;
           }
+          const p = data.payload;
 
           // Announcements
-          renderList('announcements', data.announcements || [], false);
+          if (p.announcements && Array.isArray(p.announcements.items) && p.announcements.items.length) {
+            const list = p.announcements.items.map(text => ({ text }));
+            renderList('announcements', list, false);
 
-          // Badge logic (assuming each announcement has id or timestamp)
-          if (data.announcements && data.announcements.length) {
-            const latestId = data.announcements[0].id || data.announcements[0].timestamp || '';
+            // badge ke liye simple id timestamp ki jagah first index use kar sakte ho
+            const latestId = String(Date.now());
             const container = document.getElementById('announcements');
-
-            if (container && latestId) {
-              container.setAttribute('data-latest-id', latestId);
-
-              const lastSeen = localStorage.getItem('upsc_last_seen_announcement_id');
-              let newCount = 0;
-
-              if (!lastSeen) {
-                newCount = data.announcements.length;
-              } else {
-                for (const a of data.announcements) {
-                  const aid = a.id || a.timestamp || '';
-                  if (aid && aid > lastSeen) newCount++;
-                }
-              }
-
-              const badge = document.getElementById('announcementBadge');
-              if (badge && newCount > 0) {
-                badge.style.display = 'inline-block';
-                badge.textContent = newCount > 9 ? '9+' : String(newCount);
-              }
-            }
+            container.setAttribute('data-latest-id', latestId);
+          } else {
+            document.getElementById('announcements').innerHTML =
+              '<div class="empty-state">No announcements yet. Admin will update here.</div>';
           }
 
-          // Daily targets & recent topics
-          renderList('dailyTargets', data.dailyTargets || [], false);
-          renderList('recentTopics', data.recentTopics || [], false);
-
-          // Tests
-          renderList('mockTestsList', data.mockTests || []);
-          renderList('testSeriesList', data.testSeries || []);
-          renderList('pypList', data.pyqPapers || []);
-
-          // Study materials
-          renderList('booksList', data.books || [], false);
-          renderList('currentAffairsList', data.currentAffairs || []);
-          renderList('notesList', data.notesPdfs || []);
-
-          // Syllabus tracker
-          if (data.syllabus) {
-            const p = data.syllabus.prelimsPercent || 0;
-            const m = data.syllabus.mainsPercent || 0;
-            document.getElementById('prelimsPercent').textContent = p + '% Complete';
-            document.getElementById('mainsPercent').textContent   = m + '% Complete';
-            document.getElementById('prelimsBar').style.width = p + '%';
-            document.getElementById('mainsBar').style.width   = m + '%';
+          // Daily targets
+          if (p.dailyTargets && Array.isArray(p.dailyTargets.items)) {
+            const list = p.dailyTargets.items.map(text => ({ text }));
+            renderList('dailyTargets', list, false);
           }
 
-          // Path Pradarshak quotes
-          renderList('motivationalQuotes', data.quotes || [], false);
+          // Recent topics
+          if (p.recentTopics && Array.isArray(p.recentTopics.items)) {
+            const list = p.recentTopics.items.map(text => ({ text }));
+            renderList('recentTopics', list, false);
+          }
 
-          // Main quote
-          setDailyQuote(data.dailyQuote || '');
+          // Mock tests
+          if (p.mockTests && Array.isArray(p.mockTests.items)) {
+            const list = p.mockTests.items.map(text => ({ text }));
+            renderList('mockTestsList', list, false);
+          }
+
+          // Test series
+          if (p.testSeries && Array.isArray(p.testSeries.items)) {
+            const list = p.testSeries.items.map(text => ({ text }));
+            renderList('testSeriesList', list, false);
+          }
+
+          // PYQs
+          if (p.pyqPapers && Array.isArray(p.pyqPapers.items)) {
+            const list = p.pyqPapers.items.map(text => ({ text }));
+            renderList('pypList', list, false);
+          }
+
+          // Books
+          if (p.books && Array.isArray(p.books.items)) {
+            const list = p.books.items.map(text => ({ text }));
+            renderList('booksList', list, false);
+          }
+
+          // Current Affairs
+          if (p.currentAffairs && Array.isArray(p.currentAffairs.items)) {
+            const list = p.currentAffairs.items.map(text => ({ text }));
+            renderList('currentAffairsList', list, false);
+          }
+
+          // Notes & PDFs
+          if (p.notesPdfs && Array.isArray(p.notesPdfs.items)) {
+            const list = p.notesPdfs.items.map(text => ({ text }));
+            renderList('notesList', list, false);
+          }
+
+          // Syllabus
+          if (p.syllabus) {
+            const pre = p.syllabus.prelimsPercent || 0;
+            const main = p.syllabus.mainsPercent || 0;
+            document.getElementById('prelimsPercent').textContent = pre + '% Complete';
+            document.getElementById('mainsPercent').textContent   = main + '% Complete';
+            document.getElementById('prelimsBar').style.width = pre + '%';
+            document.getElementById('mainsBar').style.width   = main + '%';
+          }
+
+          // Quotes (Path Pradarshak)
+          if (p.quotes && Array.isArray(p.quotes.items) && p.quotes.items.length) {
+            const list = p.quotes.items.map(text => ({ text }));
+            renderList('motivationalQuotes', list, false);
+            setDailyQuote(p.quotes.items[0] || '');
+          } else {
+            setDailyQuote();
+          }
         })
         .catch(err => {
           console.error('loadDashboardContent error:', err);
