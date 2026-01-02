@@ -230,6 +230,17 @@
       font-size: 13px;
     }
 
+    .list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .list-item {
+      font-size: 13px;
+      color: #111827;
+    }
+
     .syllabus-item {
       display: flex;
       justify-content: space-between;
@@ -266,7 +277,7 @@
   </style>
 
   <script>
-  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyFiEVyWCStmdOxaSz2AAboplrOXAJn0XuW614KRzLihSL60qL8zy3GEgBVvm0DQPcmQg/exec';
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyFiEVyWCStmdOxaSz2AAboplrOXAJn0XuW614KRzLihSL60qL8zy3GEgBVvm0DQPcmQg/exec';
 
     // Access guard: only logged-in JEE users
     (function guardAccess() {
@@ -330,7 +341,7 @@
         <h2>Update Your Daily Progress</h2>
         <span>Track your JEE preparation honestly</span>
       </div>
-      <form onsubmit="updateProgress(event)">
+      <form id="progressForm" onsubmit="updateProgress(event)">
         <div class="update-grid">
           <div class="update-box">
             <label for="studyHours">Study Hours Today</label>
@@ -404,7 +415,7 @@
       </div>
     </section>
 
-    <!-- TEST PORTAL: only Test Series + PYQs -->
+    <!-- TEST PORTAL -->
     <section class="section-card">
       <div class="section-header">
         <h2>Test Portal</h2>
@@ -499,9 +510,8 @@
       'JEE is tough, but so are you.'
     ];
 
-    // Daily quote that changes once per day using localStorage
     function loadDailyQuote() {
-      const todayKey = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+      const todayKey = new Date().toISOString().slice(0, 10);
       const stored = localStorage.getItem('jeeQuote');
       let quote;
 
@@ -511,9 +521,7 @@
           if (parsed.date === todayKey) {
             quote = parsed.text;
           }
-        } catch (e) {
-          // ignore parse error
-        }
+        } catch (e) {}
       }
 
       if (!quote) {
@@ -524,12 +532,10 @@
       document.getElementById('dailyQuote').textContent = quote;
     }
 
-    // Two-attempt countdown: Session 1 & Session 2
+    // Two-attempt countdown
     function updateCountdown() {
-      // JEE Main 2026: Session 1 (21 Jan), Session 2 (2 Apr) [web:300][web:298]
       const session1Date = new Date('2026-01-21T09:00:00');
       const session2Date = new Date('2026-04-02T09:00:00');
-
       const now = new Date();
 
       const diff1 = session1Date - now;
@@ -556,7 +562,7 @@
       }
     }
 
-    // STUDY PROGRESS (same backend pattern as UPSC)
+    // Study progress
     function updateProgress(e) {
       e.preventDefault();
 
@@ -598,7 +604,7 @@
             document.getElementById('totalTests').textContent  = totals.totalMocks || 0;
           }
           alert('Progress updated successfully!');
-          e.target.reset();
+          document.getElementById('progressForm').reset();
         })
         .catch(err => {
           console.error('Update progress error:', err);
@@ -627,6 +633,83 @@
         .catch(err => console.error('Load totals error:', err));
     }
 
+    // ---- Common list renderer ----
+    function renderList(containerId, items) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      container.innerHTML = '';
+      if (!items || !items.length) {
+        container.innerHTML = '<div class="empty-state">No data yet.</div>';
+        return;
+      }
+      const div = document.createElement('div');
+      div.className = 'list';
+      items.forEach(text => {
+        const p = document.createElement('div');
+        p.className = 'list-item';
+        p.textContent = text;
+        div.appendChild(p);
+      });
+      container.appendChild(div);
+    }
+
+    // ---- Dashboard content from DashboardContent sheet (JEE) ----
+    function loadJeeDashboardContent() {
+      const url = `${SCRIPT_URL}?action=getDashboardContent&examType=JEE`;
+
+      fetch(url)
+        .then(r => r.json())
+        .then(data => {
+          if (!data || !data.success || !data.payload) return;
+          const p = data.payload;
+
+          if (p.announcements) {
+            renderList('announcements', p.announcements.items || []);
+          }
+          if (p.dailyTargets) {
+            renderList('dailyTargets', p.dailyTargets.items || []);
+          }
+          if (p.recentTopics) {
+            renderList('recentTopics', p.recentTopics.items || []);
+          }
+          if (p.testSeries) {
+            renderList('testSeriesList', p.testSeries.items || []);
+          }
+          if (p.pyqPapers) {
+            renderList('pypList', p.pyqPapers.items || []);
+          }
+          if (p.books) {
+            renderList('booksList', p.books.items || []);
+          }
+          if (p.formulaSheets) {
+            renderList('formulaList', p.formulaSheets.items || []);
+          }
+          if (p.notesPdfs) {
+            renderList('notesList', p.notesPdfs.items || []);
+          }
+
+          if (p.syllabus) {
+            const s = p.syllabus;
+            const phy  = s.phyPercent  || 0;
+            const chem = s.chemPercent || 0;
+            const math = s.mathPercent || 0;
+
+            document.getElementById('phyPercent').textContent  = phy + '% Complete';
+            document.getElementById('chemPercent').textContent = chem + '% Complete';
+            document.getElementById('mathPercent').textContent = math + '% Complete';
+
+            document.getElementById('phyBar').style.width  = phy  + '%';
+            document.getElementById('chemBar').style.width = chem + '%';
+            document.getElementById('mathBar').style.width = math + '%';
+          }
+
+          if (p.quotes && Array.isArray(p.quotes.items) && p.quotes.items.length) {
+            renderList('motivationalQuotes', p.quotes.items || []);
+          }
+        })
+        .catch(err => console.error('loadJeeDashboardContent error:', err));
+    }
+
     window.onload = function() {
       document.getElementById('userName').textContent =
         localStorage.getItem('name') || 'Candidate';
@@ -636,6 +719,7 @@
 
       loadDailyQuote();
       loadTotals();
+      loadJeeDashboardContent();
     };
   </script>
 </body>
