@@ -236,6 +236,17 @@
       font-size: 13px;
     }
 
+    .list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .list-item {
+      font-size: 13px;
+      color: #111827;
+    }
+
     .syllabus-item {
       display: flex;
       justify-content: space-between;
@@ -273,7 +284,6 @@
 
   <script>
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyFiEVyWCStmdOxaSz2AAboplrOXAJn0XuW614KRzLihSL60qL8zy3GEgBVvm0DQPcmQg/exec';
-
 
     // Access guard: only logged-in RPSC users
     (function guardAccess() {
@@ -336,7 +346,7 @@
         <h2>Update Your Daily Progress</h2>
         <span>Track your RPSC preparation honestly</span>
       </div>
-      <form onsubmit="updateProgress(event)">
+      <form id="progressForm" onsubmit="updateProgress(event)">
         <div class="update-grid">
           <div class="update-box">
             <label for="studyHours">Study Hours Today</label>
@@ -496,7 +506,7 @@
   </div>
 
   <script>
-    // RPSC-focused quotes (RAS + Teaching)
+    // RPSC-focused quotes
     const rpscQuotes = [
       'Aaj likhi gayi har answer practice, kal Mains copy par clarity banegi.',
       'Classroom me khade hone ka sapna, aaj ke disciplined self-study se poora hoga.',
@@ -505,9 +515,8 @@
       'Ek extra mock test aaj, merit list me ek extra step upar kal.'
     ];
 
-    // Daily quote that changes once per day using localStorage
     function loadDailyQuote() {
-      const todayKey = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+      const todayKey = new Date().toISOString().slice(0, 10);
       const stored = localStorage.getItem('rpscQuote');
       let quote;
 
@@ -517,9 +526,7 @@
           if (parsed.date === todayKey) {
             quote = parsed.text;
           }
-        } catch (e) {
-          // ignore parse error
-        }
+        } catch (e) {}
       }
 
       if (!quote) {
@@ -530,15 +537,10 @@
       document.getElementById('dailyQuote').textContent = quote;
     }
 
-    // Countdown: RAS Pre, 1st Grade, 2nd Grade (tentative/official windows)
+    // Countdown
     function updateCountdown() {
-      // RAS Pre 2026: 21 June 2026 (speculated) [web:354]
       const rasDate = new Date('2026-06-21T10:00:00');
-
-      // RPSC 1st Grade: 31 May – 16 June 2026 -> start date used [web:364][web:361]
       const g1Date  = new Date('2026-05-31T10:00:00');
-
-      // RPSC 2nd Grade: 12–18 July 2026 -> start date used [web:356][web:362]
       const g2Date  = new Date('2026-07-12T10:00:00');
 
       const now = new Date();
@@ -603,7 +605,7 @@
             document.getElementById('totalTests').textContent  = totals.totalMocks || 0;
           }
           alert('Progress updated successfully!');
-          e.target.reset();
+          document.getElementById('progressForm').reset();
         })
         .catch(err => {
           console.error('Update progress error:', err);
@@ -632,6 +634,83 @@
         .catch(err => console.error('Load totals error:', err));
     }
 
+    // Common list renderer
+    function renderList(containerId, items) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      container.innerHTML = '';
+      if (!items || !items.length) {
+        container.innerHTML = '<div class="empty-state">No data yet.</div>';
+        return;
+      }
+      const div = document.createElement('div');
+      div.className = 'list';
+      items.forEach(text => {
+        const p = document.createElement('div');
+        p.className = 'list-item';
+        p.textContent = text;
+        div.appendChild(p);
+      });
+      container.appendChild(div);
+    }
+
+    // Dashboard content from DashboardContent sheet (RPSC)
+    function loadRpscDashboardContent() {
+      const url = `${SCRIPT_URL}?action=getDashboardContent&examType=RPSC`;
+
+      fetch(url)
+        .then(r => r.json())
+        .then(data => {
+          if (!data || !data.success || !data.payload) return;
+          const p = data.payload;
+
+          if (p.announcements) {
+            renderList('announcements', p.announcements.items || []);
+          }
+          if (p.dailyTargets) {
+            renderList('dailyTargets', p.dailyTargets.items || []);
+          }
+          if (p.recentTopics) {
+            renderList('recentTopics', p.recentTopics.items || []);
+          }
+          if (p.mockTests) {
+            renderList('testSeriesList', p.mockTests.items || []);
+          }
+          if (p.pyqPapers) {
+            renderList('pypList', p.pyqPapers.items || []);
+          }
+          if (p.books) {
+            renderList('booksList', p.books.items || []);
+          }
+          if (p.formulaSheets) {
+            renderList('formulaList', p.formulaSheets.items || []);
+          }
+          if (p.notesPdfs) {
+            renderList('notesList', p.notesPdfs.items || []);
+          }
+
+          if (p.syllabus) {
+            const s = p.syllabus;
+            const gs  = s.gsPercent  || 0;
+            const raj = s.rajPercent || 0;
+            const opt = s.optPercent || 0;
+
+            document.getElementById('gsPercent').textContent  = gs  + '% Complete';
+            document.getElementById('rajPercent').textContent = raj + '% Complete';
+            document.getElementById('optPercent').textContent = opt + '% Complete';
+
+            document.getElementById('gsBar').style.width  = gs  + '%';
+            document.getElementById('rajBar').style.width = raj + '%';
+            document.getElementById('optBar').style.width = opt + '%';
+          }
+
+          if (p.quotes && Array.isArray(p.quotes.items) && p.quotes.items.length) {
+            renderList('motivationalQuotes', p.quotes.items || []);
+          }
+        })
+        .catch(err => console.error('loadRpscDashboardContent error:', err));
+    }
+
     window.onload = function() {
       document.getElementById('userName').textContent =
         localStorage.getItem('name') || 'Candidate';
@@ -641,6 +720,7 @@
 
       loadDailyQuote();
       loadTotals();
+      loadRpscDashboardContent();
     };
   </script>
 </body>
