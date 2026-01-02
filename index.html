@@ -1,182 +1,397 @@
-/* Registration Modal Styles */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0,0,0,0.6);
-    overflow-y: auto;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GyaanSetu - Login Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-.modal-content {
-    background: white;
-    margin: 3% auto;
-    padding: 0;
-    width: 90%;
-    max-width: 600px;
-    border-radius: 20px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-    animation: slideDown 0.4s ease;
-}
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
 
-@keyframes slideDown {
-    from { transform: translateY(-50px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-}
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 500px;
+            width: 100%;
+        }
 
-.modal-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    padding: 25px 30px;
-    border-radius: 20px 20px 0 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
 
-.modal-header h2 {
-    font-size: 24px;
-    font-weight: 700;
-}
+        .tagline {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+            font-style: italic;
+        }
 
-.close {
-    color: white;
-    font-size: 35px;
-    font-weight: 300;
-    cursor: pointer;
-    transition: all 0.3s;
-}
+        .form-group {
+            margin-bottom: 20px;
+        }
 
-.close:hover {
-    transform: rotate(90deg);
-}
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
 
-.modal-body {
-    padding: 30px;
-}
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
 
-.form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-    margin-bottom: 20px;
-}
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
+        }
 
-@media (max-width: 768px) {
-    .form-row { grid-template-columns: 1fr; }
-}
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
 
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
 
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102,126,234,0.3);
+        }
 
-========================================
-STEP 2: ADD THIS HTML (before </body>)
-========================================
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
 
-Add this BEFORE the closing </body> tag:
+        .btn-secondary:hover {
+            background: #667eea;
+            color: white;
+        }
 
-<!-- Registration Modal -->
-<div id="registrationModal" class="modal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h2>✨ New Registration</h2>
-            <span class="close" onclick="closeRegistrationModal()">&times;</span>
-        </div>
-        <div class="modal-body">
-            <form id="registrationForm" onsubmit="handleRegistration(event)">
-                <div class="form-group">
-                    <label for="regName">👤 Full Name *</label>
-                    <input type="text" id="regName" placeholder="Enter your full name" required>
-                </div>
-                
-                <div class="form-row">
+        .divider {
+            text-align: center;
+            margin: 30px 0;
+            color: #999;
+            position: relative;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 40%;
+            height: 1px;
+            background: #e0e0e0;
+        }
+
+        .divider::before {
+            left: 0;
+        }
+
+        .divider::after {
+            right: 0;
+        }
+
+        .message {
+            padding: 12px 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.6);
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background: white;
+            margin: 3% auto;
+            padding: 0;
+            width: 90%;
+            max-width: 600px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideDown 0.4s ease;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px 30px;
+            border-radius: 20px 20px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .close {
+            color: white;
+            font-size: 35px;
+            font-weight: 300;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .close:hover {
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .form-row { grid-template-columns: 1fr; }
+            .container { padding: 30px 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>GyaanSetu</h1>
+        <p class="tagline">Empowering minds, building futures</p>
+
+        <div id="messageBox" class="message"></div>
+
+        <form id="loginForm" onsubmit="handleLogin(event)">
+            <div class="form-group">
+                <label for="userId">User ID</label>
+                <input type="text" id="userId" placeholder="Enter your contact number" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Enter your password" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Login</button>
+        </form>
+
+        <div class="divider">OR</div>
+
+        <button class="btn btn-secondary" onclick="openRegistrationForm()">Register Here</button>
+    </div>
+
+    <div id="registrationModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>New Registration</h2>
+                <span class="close" onclick="closeRegistrationModal()">×</span>
+            </div>
+            <div class="modal-body">
+                <form id="registrationForm" onsubmit="handleRegistration(event)">
                     <div class="form-group">
-                        <label for="regEmail">✉️ Email *</label>
-                        <input type="email" id="regEmail" placeholder="your.email@example.com" required>
+                        <label for="regName">Full Name *</label>
+                        <input type="text" id="regName" placeholder="Enter your full name" required>
                     </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="regEmail">Email *</label>
+                            <input type="email" id="regEmail" placeholder="your.email@example.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="regContact">Contact Number *</label>
+                            <input type="tel" id="regContact" pattern="[0-9]{10}" placeholder="10-digit number" required>
+                        </div>
+                    </div>
+                    
                     <div class="form-group">
-                        <label for="regContact">📞 Contact Number *</label>
-                        <input type="tel" id="regContact" pattern="[0-9]{10}" placeholder="10-digit number" required>
+                        <label for="regExam">Preparing For *</label>
+                        <select id="regExam" required>
+                            <option value="">-- Select Exam --</option>
+                            <option value="UPSC CSE">UPSC CSE</option>
+                            <option value="JEE">JEE</option>
+                            <option value="NEET">NEET</option>
+                            <option value="RPSC">RPSC</option>
+                        </select>
                     </div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="regExam">🎯 Preparing For *</label>
-                    <select id="regExam" required>
-                        <option value="">-- Select Exam --</option>
-                        <option value="UPSC CSE">UPSC CSE</option>
-                        <option value="JEE">JEE</option>
-                        <option value="NEET">NEET</option>
-                        <option value="RPSC">RPSC</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label for="regAddress">🏠 Address *</label>
-                    <textarea id="regAddress" rows="3" placeholder="Enter your complete address" required></textarea>
-                </div>
-                
-                <button type="submit" class="btn btn-primary">Submit Registration</button>
-            </form>
+                    
+                    <div class="form-group">
+                        <label for="regAddress">Address *</label>
+                        <textarea id="regAddress" rows="3" placeholder="Enter your complete address" required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Submit Registration</button>
+                </form>
+            </div>
         </div>
     </div>
-</div>
 
+    <script>
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyFiEVyWCStmdOxaSz2AAboplrOXAJn0XuW614KRzLihSL60qL8zy3GEgBVvm0DQPcmQg/exec';
 
+        function showMessage(text, type) {
+            const msgBox = document.getElementById('messageBox');
+            msgBox.textContent = text;
+            msgBox.className = `message ${type}`;
+            msgBox.style.display = 'block';
+            setTimeout(() => msgBox.style.display = 'none', 5000);
+        }
 
-========================================
-STEP 3: REPLACE/UPDATE JAVASCRIPT
-========================================
+        function openRegistrationForm() {
+            document.getElementById('registrationModal').style.display = 'block';
+        }
 
-REPLACE the existing openRegistrationForm() function with:
+        function closeRegistrationModal() {
+            document.getElementById('registrationModal').style.display = 'none';
+        }
 
-function openRegistrationForm() {
-    document.getElementById('registrationModal').style.display = 'block';
-}
-
-function closeRegistrationModal() {
-    document.getElementById('registrationModal').style.display = 'none';
-}
-
-// Close modal when clicking outside
-window.onclick = function(event) {
-    const modal = document.getElementById('registrationModal');
-    if (event.target == modal) {
-        modal.style.display = 'none';
-    }
-}
-
-// Handle Registration
-function handleRegistration(event) {
-    event.preventDefault();
-    
-    const name = document.getElementById('regName').value.trim();
-    const email = document.getElementById('regEmail').value.trim();
-    const contact = document.getElementById('regContact').value.trim();
-    const exam = document.getElementById('regExam').value;
-    const address = document.getElementById('regAddress').value.trim();
-    
-    showMessage('Submitting registration...', 'success');
-    
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyFiEVyWCStmdOxaSz2AAboplrOXAJn0XuW614KRzLihSL60qL8zy3GEgBVvm0DQPcmQg/exec';
-    
-    const url = `${SCRIPT_URL}?action=register&name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}&contact=${encodeURIComponent(contact)}&exam=${encodeURIComponent(exam)}&address=${encodeURIComponent(address)}`;
-    
-    fetch(url)
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                showMessage('Registration successful! You will receive an email confirmation shortly.', 'success');
-                document.getElementById('registrationForm').reset();
-                closeRegistrationModal();
-            } else {
-                showMessage(data.message || 'Registration failed. Please try again.', 'error');
+        window.onclick = function(event) {
+            const modal = document.getElementById('registrationModal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
             }
-        })
-        .catch(error => {
-            showMessage('Error submitting registration. Please try again.', 'error');
-            console.error('Error:', error);
-        });
-}
+        }
+
+        function handleRegistration(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('regName').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const contact = document.getElementById('regContact').value.trim();
+            const exam = document.getElementById('regExam').value;
+            const address = document.getElementById('regAddress').value.trim();
+            
+            showMessage('Submitting registration...', 'success');
+            
+            const url = `${SCRIPT_URL}?action=register&name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}&contact=${encodeURIComponent(contact)}&exam=${encodeURIComponent(exam)}&address=${encodeURIComponent(address)}`;
+            
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showMessage('Registration successful! You will receive an email confirmation shortly.', 'success');
+                        document.getElementById('registrationForm').reset();
+                        closeRegistrationModal();
+                    } else {
+                        showMessage(data.message || 'Registration failed. Please try again.', 'error');
+                    }
+                })
+                .catch(error => {
+                    showMessage('Error submitting registration. Please try again.', 'error');
+                    console.error('Error:', error);
+                });
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+            
+            const userId = document.getElementById('userId').value.trim();
+            const password = document.getElementById('password').value.trim();
+            
+            showMessage('Verifying credentials...', 'success');
+            
+            const url = `${SCRIPT_URL}?action=login&userId=${encodeURIComponent(userId)}&password=${encodeURIComponent(password)}`;
+            
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showMessage('Login successful! Redirecting...', 'success');
+                        setTimeout(() => {
+                            switch(data.exam) {
+                                case 'UPSC CSE':
+                                    window.location.href = '/upsc-cse.html';
+                                    break;
+                                case 'JEE':
+                                    window.location.href = '/jee.html';
+                                    break;
+                                case 'NEET':
+                                    window.location.href = '/neet.html';
+                                    break;
+                                case 'RPSC':
+                                    window.location.href = '/rpsc.html';
+                                    break;
+                            }
+                        }, 1500);
+                    } else {
+                        showMessage(data.message || 'Invalid credentials.', 'error');
+                    }
+                })
+                .catch(error => {
+                    showMessage('Error during login. Please try again.', 'error');
+                    console.error('Error:', error);
+                });
+        }
+    </script>
+</body>
+</html>
