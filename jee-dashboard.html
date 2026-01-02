@@ -295,20 +295,28 @@
   </div>
 
   <div class="container">
-    <!-- COUNTDOWN -->
+    <!-- COUNTDOWN (2 attempts) -->
     <section class="exam-countdown">
-      <h2>JEE 2026 Attempt</h2>
+      <h2>JEE Main 2026</h2>
       <div class="exam-subtitle">
         Every problem solved today brings you closer to your dream rank.
       </div>
       <div class="countdown-grid">
         <div class="countdown-item">
-          <div class="number" id="daysLeft">0</div>
-          <div class="label">Days Left</div>
+          <div class="number" id="daysLeft1">0</div>
+          <div class="label">Days Left (Session 1)</div>
         </div>
         <div class="countdown-item">
-          <div class="number" id="hoursLeft">0</div>
-          <div class="label">Hours Left</div>
+          <div class="number" id="hoursLeft1">0</div>
+          <div class="label">Hours Left (Session 1)</div>
+        </div>
+        <div class="countdown-item">
+          <div class="number" id="daysLeft2">0</div>
+          <div class="label">Days Left (Session 2)</div>
+        </div>
+        <div class="countdown-item">
+          <div class="number" id="hoursLeft2">0</div>
+          <div class="label">Hours Left (Session 2)</div>
         </div>
       </div>
       <div class="quote" id="dailyQuote">
@@ -483,7 +491,7 @@
 
   <script>
     // Daily JEE-focused quotes
-    const quotes = [
+    const jeeQuotes = [
       'Every hour you study today is one less mark of regret on exam day.',
       'Strong basics beat last-minute panic every single time.',
       'Solve one more question; future you will thank you.',
@@ -491,38 +499,52 @@
       'JEE is tough, but so are you.'
     ];
 
-    // Daily quote that changes once per day using localStorage [web:154][web:150]
+    // Daily quote that changes once per day using localStorage
     function loadDailyQuote() {
       const todayKey = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
       const stored = localStorage.getItem('jeeQuote');
       let quote;
 
       if (stored) {
-        const parsed = JSON.parse(stored);
-        if (parsed.date === todayKey) {
-          quote = parsed.text;
+        try {
+          const parsed = JSON.parse(stored);
+          if (parsed.date === todayKey) {
+            quote = parsed.text;
+          }
+        } catch (e) {
+          // ignore parse error
         }
       }
 
       if (!quote) {
-        quote = quotes[Math.floor(Math.random() * quotes.length)];
+        quote = jeeQuotes[Math.floor(Math.random() * jeeQuotes.length)];
         localStorage.setItem('jeeQuote', JSON.stringify({ date: todayKey, text: quote }));
       }
 
       document.getElementById('dailyQuote').textContent = quote;
     }
 
+    // Two-attempt countdown: Session 1 & Session 2
     function updateCountdown() {
-      // Example: JEE Main 2026 tentative date (update when exact date out) [web:164]
-      const examDate = new Date('2026-01-24T09:00:00');
+      // JEE Main 2026: Session 1 (21 Jan), Session 2 (2 Apr) [web:300][web:298]
+      const session1Date = new Date('2026-01-21T09:00:00');
+      const session2Date = new Date('2026-04-02T09:00:00');
+
       const now = new Date();
-      const diff = examDate - now;
 
-      const days = Math.max(0, Math.floor(diff / (1000 * 60 * 60 * 24)));
-      const hours = Math.max(0, Math.floor(diff / (1000 * 60 * 60)));
+      const diff1 = session1Date - now;
+      const diff2 = session2Date - now;
 
-      document.getElementById('daysLeft').textContent = days;
-      document.getElementById('hoursLeft').textContent = hours;
+      const days1 = Math.max(0, Math.floor(diff1 / (1000 * 60 * 60 * 24)));
+      const hours1 = Math.max(0, Math.floor(diff1 / (1000 * 60 * 60)));
+
+      const days2 = Math.max(0, Math.floor(diff2 / (1000 * 60 * 60 * 24)));
+      const hours2 = Math.max(0, Math.floor(diff2 / (1000 * 60 * 60)));
+
+      document.getElementById('daysLeft1').textContent = days1;
+      document.getElementById('hoursLeft1').textContent = hours1;
+      document.getElementById('daysLeft2').textContent = days2;
+      document.getElementById('hoursLeft2').textContent = hours2;
     }
 
     function logout() {
@@ -612,7 +634,7 @@
       updateCountdown();
       setInterval(updateCountdown, 60 * 60 * 1000);
 
-      loadDailyQuote(); // daily motivational quote
+      loadDailyQuote();
       loadTotals();
     };
   </script>
