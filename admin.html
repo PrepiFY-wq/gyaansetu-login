@@ -336,356 +336,360 @@
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script>
-    const SCRIPT_URL =
-      'https://script.google.com/macros/s/AKfycby7bW3qS-Sy1zo0jwM8kdfX00vp4alwgA9tKSGn_IEp8F78w4M0S6wPe59keBf-Sdr8vQ/exec';
+ <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  const SCRIPT_URL =
+    'https://script.google.com/macros/s/AKfycby7bW3qS-Sy1zo0jwM8kdfX00vp4alwgA9tKSGn_IEp8F78w4M0S6wPe59keBf-Sdr8vQ/exec';
 
-    function showMessage(text, type) {
-      const box = document.getElementById('messageBox');
-      box.textContent = text;
-      box.className = 'alert message ' + (type === 'error' ? 'error' : 'success');
-      box.style.display = 'block';
-      setTimeout(() => (box.style.display = 'none'), 4000);
+  function showMessage(text, type) {
+    const box = document.getElementById('messageBox');
+    box.textContent = text;
+    box.className = 'alert message ' + (type === 'error' ? 'error' : 'success');
+    box.style.display = 'block';
+    setTimeout(() => (box.style.display = 'none'), 4000);
+  }
+
+  // ========== REGISTRATIONS ==========
+
+  function loadRegistrations() {
+    const url = `${SCRIPT_URL}?action=getUsers`;
+    console.log('LOAD URL:', url);
+
+    fetch(url)
+      .then((r) => r.json())
+      .then((data) => {
+        console.log('LOAD RESPONSE:', data);
+        if (!data.success) {
+          showMessage(data.message || 'Error in loading data', 'error');
+          return;
+        }
+
+        const users = data.users || [];
+        renderTable(users);
+
+        const total = users.length;
+        const pending = users.filter((u) => u.verificationStatus !== 'Verified').length;
+        const verified = users.filter((u) => u.verificationStatus === 'Verified').length;
+
+        document.getElementById('totalCount').textContent = total;
+        document.getElementById('pendingCount').textContent = pending;
+        document.getElementById('verifiedCount').textContent = verified;
+      })
+      .catch((err) => {
+        console.error('loadRegistrations error:', err);
+        showMessage('Error in loading data', 'error');
+      });
+  }
+
+  function renderTable(users) {
+    const tbody = document.getElementById('usersTbody');
+    if (!tbody) return;
+
+    tbody.innerHTML = users
+      .map(
+        (u, idx) => `
+      <tr>
+        <td>${idx + 1}</td>
+        <td>${u.name}</td>
+        <td>${u.email}</td>
+        <td>${u.contact}</td>
+        <td>${u.exam}</td>
+        <td>
+          <span class="badge badge-pill ${
+            u.paymentStatus === 'Verified' ? 'bg-success' : 'bg-warning text-dark'
+          }">${u.paymentStatus}</span>
+        </td>
+        <td>
+          <span class="badge badge-pill ${
+            u.verificationStatus === 'Verified' ? 'bg-success' : 'bg-warning text-dark'
+          }">${u.verificationStatus}</span>
+        </td>
+        <td>${u.userId}</td>
+        <td>
+          <button class="btn btn-sm btn-outline-success me-1" onclick="markPaymentVerified('${
+            u.contact
+          }')">Payment OK</button>
+          <button class="btn btn-sm btn-outline-primary" onclick="markVerified('${
+            u.contact
+          }')">Verify</button>
+        </td>
+      </tr>`
+      )
+      .join('');
+  }
+
+  function markVerified(contact) {
+    if (!confirm('Mark candidate as Verified?')) return;
+    const url = `${SCRIPT_URL}?action=verify&contact=${encodeURIComponent(contact)}`;
+    console.log('VERIFY URL:', url);
+
+    fetch(url)
+      .then((r) => r.json())
+      .then((data) => {
+        console.log('VERIFY RESPONSE:', data);
+        if (!data.success) {
+          showMessage(data.message || 'Error updating verification', 'error');
+          return;
+        }
+        showMessage('Verification updated', 'success');
+        loadRegistrations();
+      })
+      .catch((err) => {
+        console.error('verify error:', err);
+        showMessage('Error updating verification', 'error');
+      });
+  }
+
+  function markPaymentVerified(contact) {
+    if (!confirm('Mark payment as Verified?')) return;
+    const url = `${SCRIPT_URL}?action=updatePayment&contact=${encodeURIComponent(contact)}`;
+    console.log('PAYMENT URL:', url);
+
+    fetch(url)
+      .then((r) => r.json())
+      .then((data) => {
+        console.log('PAYMENT RESPONSE:', data);
+        if (!data.success) {
+          showMessage(data.message || 'Error updating payment', 'error');
+          return;
+        }
+        showMessage('Payment updated', 'success');
+        loadRegistrations();
+      })
+      .catch((err) => {
+        console.error('payment error:', err);
+        showMessage('Error updating payment', 'error');
+      });
+  }
+
+  // ========== CONTENT MANAGEMENT (COMMON) ==========
+
+  function saveContent(exam) {
+    let typeId, titleId, descId, linkId;
+
+    if (exam === 'UPSC') {
+      typeId = 'upscType';
+      titleId = 'upscTitle';
+      descId = 'upscDesc';
+      linkId = 'upscLink';
+    } else if (exam === 'JEE') {
+      typeId = 'jeeType';
+      titleId = 'jeeTitle';
+      descId = 'jeeDesc';
+      linkId = 'jeeLink';
+    } else if (exam === 'NEET') {
+      typeId = 'neetType';
+      titleId = 'neetTitle';
+      descId = 'neetDesc';
+      linkId = 'neetLink';
+    } else if (exam === 'RPSC') {
+      typeId = 'rpscType';
+      titleId = 'rpscTitle';
+      descId = 'rpscDesc';
+      linkId = 'rpscLink';
     }
 
-    // ========== REGISTRATIONS ==========
+    const type = document.getElementById(typeId).value;
+    const title = document.getElementById(titleId).value.trim();
+    const description = document.getElementById(descId).value.trim();
+    const link = document.getElementById(linkId).value.trim();
 
-    function loadRegistrations() {
-      const url = `${SCRIPT_URL}?action=getUsers`;
-
-      fetch(url)
-        .then((r) => r.json())
-        .then((data) => {
-          if (!data.success) {
-            showMessage(data.message || 'Error in loading data', 'error');
-            return;
-          }
-
-          const users = data.users || [];
-          renderTable(users);
-
-          const total = users.length;
-          const pending = users.filter((u) => u.verificationStatus !== 'Verified').length;
-          const verified = users.filter((u) => u.verificationStatus === 'Verified').length;
-
-          document.getElementById('totalCount').textContent = total;
-          document.getElementById('pendingCount').textContent = pending;
-          document.getElementById('verifiedCount').textContent = verified;
-        })
-        .catch((err) => {
-          console.error('loadRegistrations error:', err);
-          showMessage('Error in loading data', 'error');
-        });
+    if (!type) {
+      alert('Please select type');
+      return;
     }
 
-    function renderTable(users) {
-      const tbody = document.getElementById('usersTbody');
-      if (!tbody) return;
+    const url =
+      `${SCRIPT_URL}?action=saveContent` +
+      `&exam=${encodeURIComponent(exam)}` +
+      `&type=${encodeURIComponent(type)}` +
+      `&title=${encodeURIComponent(title)}` +
+      `&description=${encodeURIComponent(description)}` +
+      `&link=${encodeURIComponent(link)}`;
 
-      tbody.innerHTML = users
-        .map(
-          (u, idx) => `
-        <tr>
-          <td>${idx + 1}</td>
-          <td>${u.name}</td>
-          <td>${u.email}</td>
-          <td>${u.contact}</td>
-          <td>${u.exam}</td>
-          <td>
-            <span class="badge badge-pill ${
-              u.paymentStatus === 'Verified' ? 'bg-success' : 'bg-warning text-dark'
-            }">${u.paymentStatus}</span>
-          </td>
-          <td>
-            <span class="badge badge-pill ${
-              u.verificationStatus === 'Verified' ? 'bg-success' : 'bg-warning text-dark'
-            }">${u.verificationStatus}</span>
-          </td>
-          <td>${u.userId}</td>
-          <td>
-            <button class="btn btn-sm btn-outline-success me-1" onclick="markPaymentVerified('${
-              u.contact
-            }')">Payment OK</button>
-            <button class="btn btn-sm btn-outline-primary" onclick="markVerified('${
-              u.contact
-            }')">Verify</button>
-          </td>
-        </tr>`
-        )
-        .join('');
+    fetch(url)
+      .then((r) => r.json())
+      .then((data) => {
+        if (!data.success) {
+          alert(data.message || 'Error saving content');
+          return;
+        }
+        alert('Saved successfully.');
+
+        document.getElementById(titleId).value = '';
+        document.getElementById(descId).value = '';
+        document.getElementById(linkId).value = '';
+
+        initialLoadContent();
+      })
+      .catch((err) => {
+        console.error('Save content error:', err);
+        alert('Error saving content');
+      });
+  }
+
+  function loadContentList(exam, type, containerId) {
+    const url =
+      `${SCRIPT_URL}?action=getContent` +
+      `&exam=${encodeURIComponent(exam)}` +
+      `&type=${encodeURIComponent(type)}`;
+
+    fetch(url)
+      .then((r) => r.json())
+      .then((data) => {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+
+        if (!data.success || !data.items || data.items.length === 0) {
+          container.innerHTML =
+            '<div class="text-muted" style="font-size:12px;">No items yet.</div>';
+          return;
+        }
+
+        container.innerHTML = data.items
+          .map(
+            (item) => `
+          <div class="border rounded p-2 mb-1" style="font-size:12px;">
+            ${item.title ? `<div class="fw-semibold">${item.title}</div>` : ''}
+            ${item.description ? `<div class="text-muted">${item.description}</div>` : ''}
+            ${item.link ? `<a href="${item.link}" target="_blank">Open</a>` : ''}
+          </div>`
+          )
+          .join('');
+      })
+      .catch((err) => {
+        console.error('Load content error:', err);
+      });
+  }
+
+  // ========== UPSC DAILY TARGETS ==========
+
+  function saveUpscTarget() {
+    const dateInput = document.getElementById('upscTargetDate').value;
+    const title = document.getElementById('upscTargetTitle').value.trim();
+    const desc = document.getElementById('upscTargetDesc').value.trim();
+
+    if (!dateInput || !title) {
+      alert('Please select date and enter target title');
+      return;
     }
 
-    function markVerified(contact) {
-      if (!confirm('Mark candidate as Verified?')) return;
-      const url = `${SCRIPT_URL}?action=verify&contact=${encodeURIComponent(contact)}`;
+    const dateStr = dateInput;
 
-      fetch(url)
-        .then((r) => r.json())
-        .then((data) => {
-          if (!data.success) {
-            showMessage(data.message || 'Error updating verification', 'error');
-            return;
-          }
-          showMessage('Verification updated', 'success');
-          loadRegistrations();
-        })
-        .catch((err) => {
-          console.error('verify error:', err);
-          showMessage('Error updating verification', 'error');
-        });
-    }
+    const url =
+      `${SCRIPT_URL}?action=saveContent` +
+      `&exam=${encodeURIComponent('UPSC')}` +
+      `&type=${encodeURIComponent('target')}` +
+      `&title=${encodeURIComponent(dateStr + ' - ' + title)}` +
+      `&description=${encodeURIComponent(desc)}` +
+      `&link=${encodeURIComponent('')}`;
 
-    function markPaymentVerified(contact) {
-      if (!confirm('Mark payment as Verified?')) return;
-      const url = `${SCRIPT_URL}?action=updatePayment&contact=${encodeURIComponent(contact)}`;
+    fetch(url)
+      .then((r) => r.json())
+      .then((data) => {
+        if (!data.success) {
+          alert(data.message || 'Error saving target');
+          return;
+        }
+        alert('Daily target saved.');
 
-      fetch(url)
-        .then((r) => r.json())
-        .then((data) => {
-          if (!data.success) {
-            showMessage(data.message || 'Error updating payment', 'error');
-            return;
-          }
-          showMessage('Payment updated', 'success');
-          loadRegistrations();
-        })
-        .catch((err) => {
-          console.error('payment error:', err);
-          showMessage('Error updating payment', 'error');
-        });
-    }
+        document.getElementById('upscTargetDate').value = '';
+        document.getElementById('upscTargetTitle').value = '';
+        document.getElementById('upscTargetDesc').value = '';
 
-    // ========== CONTENT MANAGEMENT (COMMON) ==========
+        loadUpscTargets();
+      })
+      .catch((err) => {
+        console.error('Save target error:', err);
+        alert('Error saving target');
+      });
+  }
 
-    function saveContent(exam) {
-      let typeId, titleId, descId, linkId;
+  function loadUpscTargets() {
+    const url =
+      `${SCRIPT_URL}?action=getContent` +
+      `&exam=${encodeURIComponent('UPSC')}` +
+      `&type=${encodeURIComponent('target')}`;
 
-      if (exam === 'UPSC') {
-        typeId = 'upscType';
-        titleId = 'upscTitle';
-        descId = 'upscDesc';
-        linkId = 'upscLink';
-      } else if (exam === 'JEE') {
-        typeId = 'jeeType';
-        titleId = 'jeeTitle';
-        descId = 'jeeDesc';
-        linkId = 'jeeLink';
-      } else if (exam === 'NEET') {
-        typeId = 'neetType';
-        titleId = 'neetTitle';
-        descId = 'neetDesc';
-        linkId = 'neetLink';
-      } else if (exam === 'RPSC') {
-        typeId = 'rpscType';
-        titleId = 'rpscTitle';
-        descId = 'rpscDesc';
-        linkId = 'rpscLink';
-      }
+    fetch(url)
+      .then((r) => r.json())
+      .then((data) => {
+        const container = document.getElementById('upscTargetList');
+        if (!container) return;
 
-      const type = document.getElementById(typeId).value;
-      const title = document.getElementById(titleId).value.trim();
-      const description = document.getElementById(descId).value.trim();
-      const link = document.getElementById(linkId).value.trim();
+        if (!data.success || !data.items || data.items.length === 0) {
+          container.innerHTML =
+            '<div class="text-muted" style="font-size:12px;">No targets added yet.</div>';
+          return;
+        }
 
-      if (!type) {
-        alert('Please select type');
-        return;
-      }
+        container.innerHTML = data.items
+          .map(
+            (item) => `
+      <div class="border rounded p-2 mb-1" style="font-size:12px;">
+        ${item.title ? `<div class="fw-semibold">${item.title}</div>` : ''}
+        ${item.description ? `<div class="text-muted">${item.description}</div>` : ''}
+      </div>`
+          )
+          .join('');
+      })
+      .catch((err) => {
+        console.error('Load UPSC targets error:', err);
+      });
+  }
 
-      const url =
-        `${SCRIPT_URL}?action=saveContent` +
-        `&exam=${encodeURIComponent(exam)}` +
-        `&type=${encodeURIComponent(type)}` +
-        `&title=${encodeURIComponent(title)}` +
-        `&description=${encodeURIComponent(description)}` +
-        `&link=${encodeURIComponent(link)}`;
+  // ========== INITIAL LOAD ==========
 
-      fetch(url)
-        .then((r) => r.json())
-        .then((data) => {
-          if (!data.success) {
-            alert(data.message || 'Error saving content');
-            return;
-          }
-          alert('Saved successfully.');
+  function initialLoadContent() {
+    // UPSC
+    loadContentList('UPSC', 'announcement', 'upscAnnList');
+    loadContentList('UPSC', 'pyq', 'upscTestsList');
+    loadContentList('UPSC', 'mock_test', 'upscTestsList');
+    loadContentList('UPSC', 'test_series', 'upscTestsList');
+    loadContentList('UPSC', 'book', 'upscMatList');
+    loadContentList('UPSC', 'notes', 'upscMatList');
+    loadContentList('UPSC', 'current_affairs', 'upscMatList');
+    loadContentList('UPSC', 'path', 'upscPathList');
+    loadUpscTargets();
 
-          document.getElementById(titleId).value = '';
-          document.getElementById(descId).value = '';
-          document.getElementById(linkId).value = '';
+    // JEE
+    loadContentList('JEE', 'announcement', 'jeeAnnList');
+    loadContentList('JEE', 'pyq', 'jeeTestsList');
+    loadContentList('JEE', 'mock_test', 'jeeTestsList');
+    loadContentList('JEE', 'test_series', 'jeeTestsList');
+    loadContentList('JEE', 'book', 'jeeMatList');
+    loadContentList('JEE', 'notes', 'jeeMatList');
+    loadContentList('JEE', 'formula', 'jeeMatList');
+    loadContentList('JEE', 'path', 'jeePathList');
 
-          initialLoadContent();
-        })
-        .catch((err) => {
-          console.error('Save content error:', err);
-          alert('Error saving content');
-        });
-    }
+    // NEET
+    loadContentList('NEET', 'announcement', 'neetAnnList');
+    loadContentList('NEET', 'pyq', 'neetTestsList');
+    loadContentList('NEET', 'mock_test', 'neetTestsList');
+    loadContentList('NEET', 'test_series', 'neetTestsList');
+    loadContentList('NEET', 'book', 'neetMatList');
+    loadContentList('NEET', 'notes', 'neetMatList');
+    loadContentList('NEET', 'path', 'neetPathList');
 
-    function loadContentList(exam, type, containerId) {
-      const url =
-        `${SCRIPT_URL}?action=getContent` +
-        `&exam=${encodeURIComponent(exam)}` +
-        `&type=${encodeURIComponent(type)}`;
+    // RPSC
+    loadContentList('RPSC', 'announcement', 'rpscAnnList');
+    loadContentList('RPSC', 'pyq', 'rpscTestsList');
+    loadContentList('RPSC', 'mock_test', 'rpscTestsList');
+    loadContentList('RPSC', 'test_series', 'rpscTestsList');
+    loadContentList('RPSC', 'book', 'rpscMatList');
+    loadContentList('RPSC', 'notes', 'rpscMatList');
+    loadContentList('RPSC', 'path', 'rpscPathList');
+  }
 
-      fetch(url)
-        .then((r) => r.json())
-        .then((data) => {
-          const container = document.getElementById(containerId);
-          if (!container) return;
+  // Admin email label
+  const adminMail = localStorage.getItem('adminEmail');
+  if (adminMail) {
+    const lbl = document.getElementById('adminEmailLabel');
+    if (lbl) lbl.textContent = `Logged in as: ${adminMail}`;
+  }
 
-          if (!data.success || !data.items || data.items.length === 0) {
-            container.innerHTML =
-              '<div class="text-muted" style="font-size:12px;">No items yet.</div>';
-            return;
-          }
-
-          container.innerHTML = data.items
-            .map(
-              (item) => `
-            <div class="border rounded p-2 mb-1" style="font-size:12px;">
-              ${item.title ? `<div class="fw-semibold">${item.title}</div>` : ''}
-              ${item.description ? `<div class="text-muted">${item.description}</div>` : ''}
-              ${item.link ? `<a href="${item.link}" target="_blank">Open</a>` : ''}
-            </div>`
-            )
-            .join('');
-        })
-        .catch((err) => {
-          console.error('Load content error:', err);
-        });
-    }
-
-    // ========== UPSC DAILY TARGETS ==========
-
-    function saveUpscTarget() {
-      const dateInput = document.getElementById('upscTargetDate').value;
-      const title = document.getElementById('upscTargetTitle').value.trim();
-      const desc = document.getElementById('upscTargetDesc').value.trim();
-
-      if (!dateInput || !title) {
-        alert('Please select date and enter target title');
-        return;
-      }
-
-      const dateStr = dateInput;
-
-      const url =
-        `${SCRIPT_URL}?action=saveContent` +
-        `&exam=${encodeURIComponent('UPSC')}` +
-        `&type=${encodeURIComponent('target')}` +
-        `&title=${encodeURIComponent(dateStr + ' - ' + title)}` +
-        `&description=${encodeURIComponent(desc)}` +
-        `&link=${encodeURIComponent('')}`;
-
-      fetch(url)
-        .then((r) => r.json())
-        .then((data) => {
-          if (!data.success) {
-            alert(data.message || 'Error saving target');
-            return;
-          }
-          alert('Daily target saved.');
-
-          document.getElementById('upscTargetDate').value = '';
-          document.getElementById('upscTargetTitle').value = '';
-          document.getElementById('upscTargetDesc').value = '';
-
-          loadUpscTargets();
-        })
-        .catch((err) => {
-          console.error('Save target error:', err);
-          alert('Error saving target');
-        });
-    }
-
-    function loadUpscTargets() {
-      const url =
-        `${SCRIPT_URL}?action=getContent` +
-        `&exam=${encodeURIComponent('UPSC')}` +
-        `&type=${encodeURIComponent('target')}`;
-
-      fetch(url)
-        .then((r) => r.json())
-        .then((data) => {
-          const container = document.getElementById('upscTargetList');
-          if (!container) return;
-
-          if (!data.success || !data.items || data.items.length === 0) {
-            container.innerHTML =
-              '<div class="text-muted" style="font-size:12px;">No targets added yet.</div>';
-            return;
-          }
-
-          container.innerHTML = data.items
-            .map(
-              (item) => `
-        <div class="border rounded p-2 mb-1" style="font-size:12px;">
-          ${item.title ? `<div class="fw-semibold">${item.title}</div>` : ''}
-          ${item.description ? `<div class="text-muted">${item.description}</div>` : ''}
-        </div>`
-            )
-            .join('');
-        })
-        .catch((err) => {
-          console.error('Load UPSC targets error:', err);
-        });
-    }
-
-    // ========== INITIAL LOAD ==========
-
-    function initialLoadContent() {
-      // UPSC
-      loadContentList('UPSC', 'announcement', 'upscAnnList');
-      loadContentList('UPSC', 'pyq', 'upscTestsList');
-      loadContentList('UPSC', 'mock_test', 'upscTestsList');
-      loadContentList('UPSC', 'test_series', 'upscTestsList');
-      loadContentList('UPSC', 'book', 'upscMatList');
-      loadContentList('UPSC', 'notes', 'upscMatList');
-      loadContentList('UPSC', 'current_affairs', 'upscMatList');
-      loadContentList('UPSC', 'path', 'upscPathList');
-      loadUpscTargets();
-
-      // JEE
-      loadContentList('JEE', 'announcement', 'jeeAnnList');
-      loadContentList('JEE', 'pyq', 'jeeTestsList');
-      loadContentList('JEE', 'mock_test', 'jeeTestsList');
-      loadContentList('JEE', 'test_series', 'jeeTestsList');
-      loadContentList('JEE', 'book', 'jeeMatList');
-      loadContentList('JEE', 'notes', 'jeeMatList');
-      loadContentList('JEE', 'formula', 'jeeMatList');
-      loadContentList('JEE', 'path', 'jeePathList');
-
-      // NEET
-      loadContentList('NEET', 'announcement', 'neetAnnList');
-      loadContentList('NEET', 'pyq', 'neetTestsList');
-      loadContentList('NEET', 'mock_test', 'neetTestsList');
-      loadContentList('NEET', 'test_series', 'neetTestsList');
-      loadContentList('NEET', 'book', 'neetMatList');
-      loadContentList('NEET', 'notes', 'neetMatList');
-      loadContentList('NEET', 'path', 'neetPathList');
-
-      // RPSC
-      loadContentList('RPSC', 'announcement', 'rpscAnnList');
-      loadContentList('RPSC', 'pyq', 'rpscTestsList');
-      loadContentList('RPSC', 'mock_test', 'rpscTestsList');
-      loadContentList('RPSC', 'test_series', 'rpscTestsList');
-      loadContentList('RPSC', 'book', 'rpscMatList');
-      loadContentList('RPSC', 'notes', 'rpscMatList');
-      loadContentList('RPSC', 'path', 'rpscPathList');
-    }
-
-    // Admin email label
-    const adminMail = localStorage.getItem('adminEmail');
-    if (adminMail) {
-      const lbl = document.getElementById('adminEmailLabel');
-      if (lbl) lbl.textContent = `Logged in as: ${adminMail}`;
-    }
-
-    window.onload = function () {
-      loadRegistrations();
-      initialLoadContent();
-    };
-  </script>
-</body>
-</html>
+  window.onload = function () {
+    loadRegistrations();
+    initialLoadContent();
+  };
+</script>
