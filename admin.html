@@ -831,14 +831,14 @@
 
     async function loadRegistrations() {
       try {
-        const res = await fetch(SCRIPT_URL + "?action=getRegistrations");
+        const res = await fetch(SCRIPT_URL + "?action=getAll");
         const data = await res.json();
-        if (!Array.isArray(data)) {
-          console.error("Invalid registrations data", data);
+        if (!data.success || !Array.isArray(data.users)) {
+          console.error("Invalid registrations payload", data);
           return;
         }
 
-        registrationsData = data;
+        registrationsData = data.users;
         renderRegistrations("all");
         updateStats();
         updateRecentSections();
@@ -853,62 +853,66 @@
       tbody.innerHTML = "";
 
       const filtered = registrationsData.filter((row) => {
-        const status = (row.status || "").toLowerCase();
-        if (filter === "pending") return status === "pending";
-        if (filter === "approved") return status === "verified" || status === "paid" || status === "approved";
-        if (filter === "rejected") return status === "rejected";
+        const statusPay = (row.paymentStatus || "").toLowerCase();
+        const statusVer = (row.verificationStatus || "").toLowerCase();
+
+        const overallStatus =
+          statusPay === "verified" && statusVer === "verified"
+            ? "approved"
+            : statusPay === "rejected" || statusVer === "rejected"
+            ? "rejected"
+            : "pending";
+
+        if (filter === "pending") return overallStatus === "pending";
+        if (filter === "approved") return overallStatus === "approved";
+        if (filter === "rejected") return overallStatus === "rejected";
         return true;
       });
 
       filtered.forEach((row, index) => {
         const tr = document.createElement("tr");
 
-        const status = (row.status || "Pending").toLowerCase();
+        const statusPay = (row.paymentStatus || "").toLowerCase();
+        const statusVer = (row.verificationStatus || "").toLowerCase();
+
         let statusClass = "status-pending";
         let statusLabel = "Pending";
-        if (status === "paid") {
-          statusClass = "status-paid";
-          statusLabel = "Paid";
-        } else if (status === "verified" || status === "approved") {
+
+        if (statusPay === "verified" && statusVer === "verified") {
           statusClass = "status-verified";
           statusLabel = "Approved";
-        } else if (status === "rejected") {
+        } else if (statusPay === "rejected" || statusVer === "rejected") {
           statusClass = "status-rejected";
           statusLabel = "Rejected";
         }
-
-        const examLabel = row.exam || row.course || "-";
 
         tr.innerHTML = `
           <td>${index + 1}</td>
           <td>
             <div class="fw-semibold">${row.name || "-"}</div>
             <div class="small text-muted">${row.email || "-"}</div>
-            <div class="small text-muted">${row.phone || "-"}</div>
+            <div class="small text-muted">${row.contact || "-"}</div>
           </td>
           <td>
-            <div class="small">Exam/Course: <span class="fw-semibold">${examLabel}</span></div>
-            <div class="small">Mode: ${row.mode || "-"}</div>
-            <div class="small text-muted">Reg: ${row.timestamp || "-"}</div>
+            <div class="small">Exam: <span class="fw-semibold">${row.exam || "-"}</span></div>
+            <div class="small text-muted">User ID: ${row.userId || "-"}</div>
           </td>
           <td>
-            <div class="small fw-semibold">₹${row.amount || "0"}</div>
-            <div class="small text-muted">${row.paymentMethod || "-"}</div>
+            <div class="small">${row.paymentStatus || "-"}</div>
           </td>
           <td>
-            <div class="small">${row.transactionId || "-"}</div>
-            <div class="small text-muted">${row.paymentDate || ""}</div>
+            <div class="small">—</div>
           </td>
           <td>
             <span class="status-pill ${statusClass}">${statusLabel}</span>
           </td>
           <td>
             <button class="btn btn-success btn-sm action-btn-sm mb-1"
-              onclick="approveRegistration('${row.id}')">
-              Approve & Send Login
+              onclick="markVerified('${row.contact}')">
+              Mark Verified
             </button>
             <button class="btn btn-outline-danger btn-sm action-btn-sm"
-              onclick="rejectRegistration('${row.id}')">
+              onclick="markRejected('${row.contact}')">
               Reject
             </button>
           </td>
@@ -919,12 +923,17 @@
 
     function updateStats() {
       const total = registrationsData.length;
-      const pending = registrationsData.filter(
-        (r) => (r.status || "").toLowerCase() === "pending"
-      ).length;
+      const pending = registrationsData.filter((r) => {
+        const ps = (r.paymentStatus || "").toLowerCase();
+        const vs = (r.verificationStatus || "").toLowerCase();
+        return !(ps === "verified" && vs === "verified") &&
+               ps !== "rejected" && vs !== "rejected";
+      }).length;
+
       const approved = registrationsData.filter((r) => {
-        const s = (r.status || "").toLowerCase();
-        return s === "verified" || s === "paid" || s === "approved";
+        const ps = (r.paymentStatus || "").toLowerCase();
+        const vs = (r.verificationStatus || "").toLowerCase();
+        return ps === "verified" && vs === "verified";
       }).length;
 
       document.getElementById("totalRegistrations").textContent = total;
@@ -933,189 +942,293 @@
     }
 
     function updateRecentSections() {
-      const recentRegUl = document.getElementById("recentRegistrations");
-      const recentPayUl = document.getElementById("recentPayments");
-      recentRegUl.innerHTML = "";
-      recentPayUl.innerHTML = "";
+      const recentRegs = document.getElementById("recentRegistrations");
+      const recentPays = document.getElementById("recentPayments");
+      recentRegs.innerHTML = "";
+      recentPays.innerHTML = "";
 
-      const sortedByTime = [...registrationsData].sort((a, b) => {
-        return new Date(b.timestamp || 0) - new Date(a.timestamp || 0);
-      });
-
-      sortedByTime.slice(0, 5).forEach((row) => {
+      const lastFive = [...registrationsData].slice(-5).reverse();
+      lastFive.forEach((u) => {
         const li = document.createElement("li");
-        li.className = "list-group-item";
-        li.innerHTML = `
-          <div class="fw-semibold">${row.name || "-"}</div>
-          <small>${row.exam || row.course || "-"} • ${row.mode || "-"} • ${row.timestamp || "-"}</small>
-        `;
-        recentRegUl.appendChild(li);
-      });
-
-      const paymentUpdated = registrationsData
-        .filter((r) => {
-          const s = (r.status || "").toLowerCase();
-          return s === "verified" || s === "paid" || s === "approved" || s === "rejected";
-        })
-        .sort((a, b) => {
-          return new Date(b.paymentDate || 0) - new Date(a.paymentDate || 0);
-        });
-
-      paymentUpdated.slice(0, 5).forEach((row) => {
-        const li = document.createElement("li");
-        const status = (row.status || "").toLowerCase();
-        let badgeClass = "bg-success";
-        let label = "Approved";
-        if (status === "rejected") {
-          badgeClass = "bg-danger";
-          label = "Rejected";
-        }
-
-        li.className = "list-group-item d-flex justify-content-between align-items-start";
+        li.className = "list-group-item d-flex justify-content-between align-items-center";
         li.innerHTML = `
           <div>
-            <div class="fw-semibold">${row.name || "-"}</div>
-            <small>₹${row.amount || "0"} • ${row.paymentMethod || "-"}</small><br />
-            <small>Txn: ${row.transactionId || "-"}</small>
+            <div class="fw-semibold">${u.name || "-"}</div>
+            <small>${u.exam || "-"} • ${u.contact || "-"}</small>
           </div>
-          <span class="badge ${badgeClass} badge-pill align-self-center">
-            ${label}
-          </span>
+          <span class="badge bg-light text-muted">${u.paymentStatus || "Pending"}</span>
         `;
-        recentPayUl.appendChild(li);
+        recentRegs.appendChild(li);
+      });
+
+      const lastFiveStatus = [...registrationsData].slice(-5).reverse();
+      lastFiveStatus.forEach((u) => {
+        const li = document.createElement("li");
+        li.className = "list-group-item d-flex justify-content-between align-items-center";
+        li.innerHTML = `
+          <div>
+            <div class="fw-semibold">${u.name || "-"}</div>
+            <small>${u.exam || "-"} • ${u.contact || "-"}</small>
+          </div>
+          <span class="badge bg-light text-muted">${u.verificationStatus || "-"}</span>
+        `;
+        recentPays.appendChild(li);
       });
     }
 
-    async function approveRegistration(id) {
-      if (!id) return;
-      if (!confirm("Approve payment and send login credentials email?")) return;
-
+    async function markVerified(contact) {
+      if (!contact) return;
       try {
-        const res = await fetch(SCRIPT_URL, {
-          method: "POST",
-          body: new URLSearchParams({
-            action: "approveRegistration",
-            id: id,
-          }),
-        });
-        const result = await res.json();
-        if (result && result.success) {
-          alert("Approved and login details sent.");
+        const res = await fetch(
+          SCRIPT_URL + "?action=verify&contact=" + encodeURIComponent(contact)
+        );
+        const data = await res.json();
+        if (data && data.success) {
           await loadRegistrations();
         } else {
-          alert(result.message || "Failed to approve & send email.");
+          alert(data.message || "Failed to verify");
         }
       } catch (err) {
-        console.error("Error in approveRegistration:", err);
-        alert("Error while approving registration.");
+        console.error("Error verifying candidate:", err);
       }
     }
 
-    async function rejectRegistration(id) {
-      if (!id) return;
-      if (!confirm("Reject this registration?")) return;
-
+    async function markRejected(contact) {
+      if (!contact) return;
       try {
-        const res = await fetch(SCRIPT_URL, {
-          method: "POST",
-          body: new URLSearchParams({
-            action: "rejectRegistration",
-            id: id,
-          }),
-        });
-        const result = await res.json();
-        if (result && result.success) {
-          alert("Registration rejected.");
+        const res = await fetch(
+          SCRIPT_URL +
+            "?action=updateUser&row=&paymentStatus=Rejected&verificationStatus=Rejected&contact=" +
+            encodeURIComponent(contact)
+        );
+        const data = await res.json();
+        if (data && data.success) {
           await loadRegistrations();
         } else {
-          alert(result.message || "Failed to reject.");
+          alert(data.message || "Failed to reject");
         }
       } catch (err) {
-        console.error("Error in rejectRegistration:", err);
-        alert("Error while rejecting registration.");
+        console.error("Error rejecting candidate:", err);
       }
     }
 
-    // ---------- CONTENT HELPERS ----------
+    // ---------- DASHBOARD CONTENT CONFIG ----------
 
-    function setupContentTabs() {
-      const nav = document.getElementById("contentTabNav");
-      const buttons = nav.querySelectorAll(".nav-link");
-      const sections = document.querySelectorAll(".content-section");
-
-      buttons.forEach((btn) => {
-        btn.addEventListener("click", () => {
-          buttons.forEach((b) => b.classList.remove("active"));
-          btn.classList.add("active");
-          const targetId = btn.getAttribute("data-target");
-          sections.forEach((sec) => {
-            if ("#" + sec.id === targetId) sec.classList.remove("d-none");
-            else sec.classList.add("d-none");
-          });
-        });
-      });
-    }
-
-    function linesToArray(value) {
-      return value
-        .split("\n")
-        .map((l) => l.trim())
-        .filter((l) => l);
-    }
-
-    // Map: examType + sectionKey -> { titleId, itemsId, msgId, extraFields? }
     const SECTION_CONFIG = {
       UPSC: {
-        announcements: { titleId: "upsc_announcements_title", itemsId: "upsc_announcements_items", msgId: "upsc_announcements_msg" },
-        dailyTargets:  { titleId: "upsc_dailyTargets_title",  itemsId: "upsc_dailyTargets_items",  msgId: "upsc_dailyTargets_msg" },
-        recentTopics:  { titleId: "upsc_recentTopics_title",  itemsId: "upsc_recentTopics_items",  msgId: "upsc_recentTopics_msg" },
-        mockTests:     { titleId: "upsc_mockTests_title",     itemsId: "upsc_mockTests_items",     msgId: "upsc_mockTests_msg" },
-        testSeries:    { titleId: "upsc_testSeries_title",    itemsId: "upsc_testSeries_items",    msgId: "upsc_testSeries_msg" },
-        pyqPapers:     { titleId: "upsc_pyqPapers_title",     itemsId: "upsc_pyqPapers_items",     msgId: "upsc_pyqPapers_msg" },
-        books:         { titleId: "upsc_books_title",         itemsId: "upsc_books_items",         msgId: "upsc_books_msg" },
-        currentAffairs:{ titleId: "upsc_currentAffairs_title",itemsId: "upsc_currentAffairs_items",msgId: "upsc_currentAffairs_msg" },
-        notesPdfs:     { titleId: "upsc_notesPdfs_title",     itemsId: "upsc_notesPdfs_items",     msgId: "upsc_notesPdfs_msg" },
-        syllabus:      { msgId: "upsc_syllabus_msg",
-          extra: ["upsc_syllabus_prelimsPercent", "upsc_syllabus_mainsPercent"] },
-        quotes:        { titleId: "upsc_quotes_title",        itemsId: "upsc_quotes_items",        msgId: "upsc_quotes_msg" },
+        announcements: {
+          titleId: "upsc_announcements_title",
+          itemsId: "upsc_announcements_items",
+          msgId: "upsc_announcements_msg"
+        },
+        dailyTargets: {
+          titleId: "upsc_dailyTargets_title",
+          itemsId: "upsc_dailyTargets_items",
+          msgId: "upsc_dailyTargets_msg"
+        },
+        recentTopics: {
+          titleId: "upsc_recentTopics_title",
+          itemsId: "upsc_recentTopics_items",
+          msgId: "upsc_recentTopics_msg"
+        },
+        mockTests: {
+          titleId: "upsc_mockTests_title",
+          itemsId: "upsc_mockTests_items",
+          msgId: "upsc_mockTests_msg"
+        },
+        testSeries: {
+          titleId: "upsc_testSeries_title",
+          itemsId: "upsc_testSeries_items",
+          msgId: "upsc_testSeries_msg"
+        },
+        pyqPapers: {
+          titleId: "upsc_pyqPapers_title",
+          itemsId: "upsc_pyqPapers_items",
+          msgId: "upsc_pyqPapers_msg"
+        },
+        books: {
+          titleId: "upsc_books_title",
+          itemsId: "upsc_books_items",
+          msgId: "upsc_books_msg"
+        },
+        currentAffairs: {
+          titleId: "upsc_currentAffairs_title",
+          itemsId: "upsc_currentAffairs_items",
+          msgId: "upsc_currentAffairs_msg"
+        },
+        notesPdfs: {
+          titleId: "upsc_notesPdfs_title",
+          itemsId: "upsc_notesPdfs_items",
+          msgId: "upsc_notesPdfs_msg"
+        },
+        syllabus: {
+          msgId: "upsc_syllabus_msg",
+          extra: ["upsc_syllabus_prelimsPercent", "upsc_syllabus_mainsPercent"]
+        },
+        quotes: {
+          titleId: "upsc_quotes_title",
+          itemsId: "upsc_quotes_items",
+          msgId: "upsc_quotes_msg"
+        }
       },
       JEE: {
-        announcements: { titleId: "jee_announcements_title", itemsId: "jee_announcements_items", msgId: "jee_announcements_msg" },
-        dailyTargets:  { titleId: "jee_dailyTargets_title",  itemsId: "jee_dailyTargets_items",  msgId: "jee_dailyTargets_msg" },
-        recentTopics:  { titleId: "jee_recentTopics_title",  itemsId: "jee_recentTopics_items",  msgId: "jee_recentTopics_msg" },
-        testSeries:    { titleId: "jee_testSeries_title",    itemsId: "jee_testSeries_items",    msgId: "jee_testSeries_msg" },
-        pyqPapers:     { titleId: "jee_pyqPapers_title",     itemsId: "jee_pyqPapers_items",     msgId: "jee_pyqPapers_msg" },
-        books:         { titleId: "jee_books_title",         itemsId: "jee_books_items",         msgId: "jee_books_msg" },
-        formulaSheets: { titleId: "jee_formulaSheets_title", itemsId: "jee_formulaSheets_items", msgId: "jee_formulaSheets_msg" },
-        notesPdfs:     { titleId: "jee_notesPdfs_title",     itemsId: "jee_notesPdfs_items",     msgId: "jee_notesPdfs_msg" },
-        syllabus:      { msgId: "jee_syllabus_msg",
-          extra: ["jee_syllabus_phyPercent", "jee_syllabus_chemPercent", "jee_syllabus_mathPercent"] },
+        announcements: {
+          titleId: "jee_announcements_title",
+          itemsId: "jee_announcements_items",
+          msgId: "jee_announcements_msg"
+        },
+        dailyTargets: {
+          titleId: "jee_dailyTargets_title",
+          itemsId: "jee_dailyTargets_items",
+          msgId: "jee_dailyTargets_msg"
+        },
+        recentTopics: {
+          titleId: "jee_recentTopics_title",
+          itemsId: "jee_recentTopics_items",
+          msgId: "jee_recentTopics_msg"
+        },
+        testSeries: {
+          titleId: "jee_testSeries_title",
+          itemsId: "jee_testSeries_items",
+          msgId: "jee_testSeries_msg"
+        },
+        pyqPapers: {
+          titleId: "jee_pyqPapers_title",
+          itemsId: "jee_pyqPapers_items",
+          msgId: "jee_pyqPapers_msg"
+        },
+        books: {
+          titleId: "jee_books_title",
+          itemsId: "jee_books_items",
+          msgId: "jee_books_msg"
+        },
+        formulaSheets: {
+          titleId: "jee_formulaSheets_title",
+          itemsId: "jee_formulaSheets_items",
+          msgId: "jee_formulaSheets_msg"
+        },
+        notesPdfs: {
+          titleId: "jee_notesPdfs_title",
+          itemsId: "jee_notesPdfs_items",
+          msgId: "jee_notesPdfs_msg"
+        },
+        syllabus: {
+          msgId: "jee_syllabus_msg",
+          extra: [
+            "jee_syllabus_phyPercent",
+            "jee_syllabus_chemPercent",
+            "jee_syllabus_mathPercent"
+          ]
+        }
       },
       NEET: {
-        announcements: { titleId: "neet_announcements_title", itemsId: "neet_announcements_items", msgId: "neet_announcements_msg" },
-        dailyTargets:  { titleId: "neet_dailyTargets_title",  itemsId: "neet_dailyTargets_items",  msgId: "neet_dailyTargets_msg" },
-        recentTopics:  { titleId: "neet_recentTopics_title",  itemsId: "neet_recentTopics_items",  msgId: "neet_recentTopics_msg" },
-        mockTests:     { titleId: "neet_mockTests_title",     itemsId: "neet_mockTests_items",     msgId: "neet_mockTests_msg" },
-        pyqPapers:     { titleId: "neet_pyqPapers_title",     itemsId: "neet_pyqPapers_items",     msgId: "neet_pyqPapers_msg" },
-        books:         { titleId: "neet_books_title",         itemsId: "neet_books_items",         msgId: "neet_books_msg" },
-        formulaSheets: { titleId: "neet_formulaSheets_title", itemsId: "neet_formulaSheets_items", msgId: "neet_formulaSheets_msg" },
-        notesPdfs:     { titleId: "neet_notesPdfs_title",     itemsId: "neet_notesPdfs_items",     msgId: "neet_notesPdfs_msg" },
-        syllabus:      { msgId: "neet_syllabus_msg",
-          extra: ["neet_syllabus_phyPercent", "neet_syllabus_chemPercent", "neet_syllabus_bioPercent"] },
+        announcements: {
+          titleId: "neet_announcements_title",
+          itemsId: "neet_announcements_items",
+          msgId: "neet_announcements_msg"
+        },
+        dailyTargets: {
+          titleId: "neet_dailyTargets_title",
+          itemsId: "neet_dailyTargets_items",
+          msgId: "neet_dailyTargets_msg"
+        },
+        recentTopics: {
+          titleId: "neet_recentTopics_title",
+          itemsId: "neet_recentTopics_items",
+          msgId: "neet_recentTopics_msg"
+        },
+        mockTests: {
+          titleId: "neet_mockTests_title",
+          itemsId: "neet_mockTests_items",
+          msgId: "neet_mockTests_msg"
+        },
+        pyqPapers: {
+          titleId: "neet_pyqPapers_title",
+          itemsId: "neet_pyqPapers_items",
+          msgId: "neet_pyqPapers_msg"
+        },
+        books: {
+          titleId: "neet_books_title",
+          itemsId: "neet_books_items",
+          msgId: "neet_books_msg"
+        },
+        formulaSheets: {
+          titleId: "neet_formulaSheets_title",
+          itemsId: "neet_formulaSheets_items",
+          msgId: "neet_formulaSheets_msg"
+        },
+        notesPdfs: {
+          titleId: "neet_notesPdfs_title",
+          itemsId: "neet_notesPdfs_items",
+          msgId: "neet_notesPdfs_msg"
+        },
+        syllabus: {
+          msgId: "neet_syllabus_msg",
+          extra: [
+            "neet_syllabus_phyPercent",
+            "neet_syllabus_chemPercent",
+            "neet_syllabus_bioPercent"
+          ]
+        }
       },
       RPSC: {
-        announcements: { titleId: "rpsc_announcements_title", itemsId: "rpsc_announcements_items", msgId: "rpsc_announcements_msg" },
-        dailyTargets:  { titleId: "rpsc_dailyTargets_title",  itemsId: "rpsc_dailyTargets_items",  msgId: "rpsc_dailyTargets_msg" },
-        recentTopics:  { titleId: "rpsc_recentTopics_title",  itemsId: "rpsc_recentTopics_items",  msgId: "rpsc_recentTopics_msg" },
-        mockTests:     { titleId: "rpsc_mockTests_title",     itemsId: "rpsc_mockTests_items",     msgId: "rpsc_mockTests_msg" },
-        pyqPapers:     { titleId: "rpsc_pyqPapers_title",     itemsId: "rpsc_pyqPapers_items",     msgId: "rpsc_pyqPapers_msg" },
-        books:         { titleId: "rpsc_books_title",         itemsId: "rpsc_books_items",         msgId: "rpsc_books_msg" },
-        formulaSheets: { titleId: "rpsc_formulaSheets_title", itemsId: "rpsc_formulaSheets_items", msgId: "rpsc_formulaSheets_msg" },
-        notesPdfs:     { titleId: "rpsc_notesPdfs_title",     itemsId: "rpsc_notesPdfs_items",     msgId: "rpsc_notesPdfs_msg" },
-        syllabus:      { msgId: "rpsc_syllabus_msg",
-          extra: ["rpsc_syllabus_gsPercent", "rpsc_syllabus_rajPercent", "rpsc_syllabus_optPercent"] },
+        announcements: {
+          titleId: "rpsc_announcements_title",
+          itemsId: "rpsc_announcements_items",
+          msgId: "rpsc_announcements_msg"
+        },
+        dailyTargets: {
+          titleId: "rpsc_dailyTargets_title",
+          itemsId: "rpsc_dailyTargets_items",
+          msgId: "rpsc_dailyTargets_msg"
+        },
+        recentTopics: {
+          titleId: "rpsc_recentTopics_title",
+          itemsId: "rpsc_recentTopics_items",
+          msgId: "rpsc_recentTopics_msg"
+        },
+        mockTests: {
+          titleId: "rpsc_mockTests_title",
+          itemsId: "rpsc_mockTests_items",
+          msgId: "rpsc_mockTests_msg"
+        },
+        pyqPapers: {
+          titleId: "rpsc_pyqPapers_title",
+          itemsId: "rpsc_pyqPapers_items",
+          msgId: "rpsc_pyqPapers_msg"
+        },
+        books: {
+          titleId: "rpsc_books_title",
+          itemsId: "rpsc_books_items",
+          msgId: "rpsc_books_msg"
+        },
+        formulaSheets: {
+          titleId: "rpsc_formulaSheets_title",
+          itemsId: "rpsc_formulaSheets_items",
+          msgId: "rpsc_formulaSheets_msg"
+        },
+        notesPdfs: {
+          titleId: "rpsc_notesPdfs_title",
+          itemsId: "rpsc_notesPdfs_items",
+          msgId: "rpsc_notesPdfs_msg"
+        },
+        syllabus: {
+          msgId: "rpsc_syllabus_msg",
+          extra: [
+            "rpsc_syllabus_gsPercent",
+            "rpsc_syllabus_rajPercent",
+            "rpsc_syllabus_optPercent"
+          ]
+        }
       }
     };
+
+    function linesToArray(str) {
+      return (str || "")
+        .split("\n")
+        .map((s) => s.trim())
+        .filter((s) => s.length > 0);
+    }
 
     async function saveSection(examType, sectionKey) {
       const config = SECTION_CONFIG[examType]?.[sectionKey];
@@ -1124,7 +1237,8 @@
       const payload = { examType, sectionKey };
 
       if (config.titleId) {
-        payload.title = document.getElementById(config.titleId)?.value || "";
+        payload.title =
+          document.getElementById(config.titleId)?.value || "";
       }
       if (config.itemsId) {
         payload.items = linesToArray(
@@ -1132,44 +1246,83 @@
         );
       }
 
-      // syllabus type extra numeric fields
-      if (config.extra && sectionKey === "syllabus") {
-        if (examType === "UPSC") {
-          payload.prelimsPercent = document.getElementById(config.extra[0])?.value || "0";
-          payload.mainsPercent   = document.getElementById(config.extra[1])?.value || "0";
-        }
-        if (examType === "JEE") {
-          payload.phyPercent  = document.getElementById(config.extra[0])?.value || "0";
-          payload.chemPercent = document.getElementById(config.extra[1])?.value || "0";
-          payload.mathPercent = document.getElementById(config.extra[2])?.value || "0";
-        }
-        if (examType === "NEET") {
-          payload.phyPercent  = document.getElementById(config.extra[0])?.value || "0";
-          payload.chemPercent = document.getElementById(config.extra[1])?.value || "0";
-          payload.bioPercent  = document.getElementById(config.extra[2])?.value || "0";
-        }
-        if (examType === "RPSC") {
-          payload.gsPercent  = document.getElementById(config.extra[0])?.value || "0";
-          payload.rajPercent = document.getElementById(config.extra[1])?.value || "0";
-          payload.optPercent = document.getElementById(config.extra[2])?.value || "0";
-        }
+      if (examType === "UPSC" && sectionKey === "syllabus") {
+        payload.prelimsPercent =
+          Number(
+            document.getElementById("upsc_syllabus_prelimsPercent")?.value ||
+              0
+          );
+        payload.mainsPercent =
+          Number(
+            document.getElementById("upsc_syllabus_mainsPercent")?.value || 0
+          );
+      }
+
+      if (examType === "JEE" && sectionKey === "syllabus") {
+        payload.phyPercent =
+          Number(
+            document.getElementById("jee_syllabus_phyPercent")?.value || 0
+          );
+        payload.chemPercent =
+          Number(
+            document.getElementById("jee_syllabus_chemPercent")?.value || 0
+          );
+        payload.mathPercent =
+          Number(
+            document.getElementById("jee_syllabus_mathPercent")?.value || 0
+          );
+      }
+
+      if (examType === "NEET" && sectionKey === "syllabus") {
+        payload.phyPercent =
+          Number(
+            document.getElementById("neet_syllabus_phyPercent")?.value || 0
+          );
+        payload.chemPercent =
+          Number(
+            document.getElementById("neet_syllabus_chemPercent")?.value || 0
+          );
+        payload.bioPercent =
+          Number(
+            document.getElementById("neet_syllabus_bioPercent")?.value || 0
+          );
+      }
+
+      if (examType === "RPSC" && sectionKey === "syllabus") {
+        payload.gsPercent =
+          Number(
+            document.getElementById("rpsc_syllabus_gsPercent")?.value || 0
+          );
+        payload.rajPercent =
+          Number(
+            document.getElementById("rpsc_syllabus_rajPercent")?.value || 0
+          );
+        payload.optPercent =
+          Number(
+            document.getElementById("rpsc_syllabus_optPercent")?.value || 0
+          );
       }
 
       try {
-       const form = new URLSearchParams();
-form.append("action", "saveDashboardSection");
-form.append("payload", JSON.stringify(payload));
+        const form = new URLSearchParams();
+        form.append("action", "saveDashboardSection");
+        form.append("payload", JSON.stringify(payload));
 
-const res = await fetch(SCRIPT_URL, {
-  method: "POST",
-  body: form
-});
+        const res = await fetch(SCRIPT_URL, {
+          method: "POST",
+          body: form
+        });
+
         const result = await res.json();
         const msgEl = document.getElementById(config.msgId);
         if (result && result.success) {
           showMessageElement(msgEl, "Saved", false);
         } else {
-          showMessageElement(msgEl, result.message || "Failed to save", true);
+          showMessageElement(
+            msgEl,
+            result.message || "Failed to save",
+            true
+          );
         }
       } catch (err) {
         console.error("Error saving section", examType, sectionKey, err);
@@ -1181,7 +1334,9 @@ const res = await fetch(SCRIPT_URL, {
     async function loadDashboardContent(examType) {
       try {
         const res = await fetch(
-          SCRIPT_URL + "?action=getDashboardContent&examType=" + encodeURIComponent(examType)
+          SCRIPT_URL +
+            "?action=getDashboardContent&examType=" +
+            encodeURIComponent(examType)
         );
         const data = await res.json();
         if (!data || !data.success || !data.payload) return;
@@ -1206,23 +1361,34 @@ const res = await fetch(SCRIPT_URL, {
           if (sectionKey === "syllabus" && cfg.extra) {
             const syl = p.syllabus || {};
             if (examType === "UPSC") {
-              document.getElementById(cfg.extra[0]).value = syl.prelimsPercent || "";
-              document.getElementById(cfg.extra[1]).value = syl.mainsPercent || "";
+              document.getElementById(cfg.extra[0]).value =
+                syl.prelimsPercent || "";
+              document.getElementById(cfg.extra[1]).value =
+                syl.mainsPercent || "";
             }
             if (examType === "JEE") {
-              document.getElementById(cfg.extra[0]).value = syl.phyPercent || "";
-              document.getElementById(cfg.extra[1]).value = syl.chemPercent || "";
-              document.getElementById(cfg.extra[2]).value = syl.mathPercent || "";
+              document.getElementById(cfg.extra[0]).value =
+                syl.phyPercent || "";
+              document.getElementById(cfg.extra[1]).value =
+                syl.chemPercent || "";
+              document.getElementById(cfg.extra[2]).value =
+                syl.mathPercent || "";
             }
             if (examType === "NEET") {
-              document.getElementById(cfg.extra[0]).value = syl.phyPercent || "";
-              document.getElementById(cfg.extra[1]).value = syl.chemPercent || "";
-              document.getElementById(cfg.extra[2]).value = syl.bioPercent || "";
+              document.getElementById(cfg.extra[0]).value =
+                syl.phyPercent || "";
+              document.getElementById(cfg.extra[1]).value =
+                syl.chemPercent || "";
+              document.getElementById(cfg.extra[2]).value =
+                syl.bioPercent || "";
             }
             if (examType === "RPSC") {
-              document.getElementById(cfg.extra[0]).value = syl.gsPercent || "";
-              document.getElementById(cfg.extra[1]).value = syl.rajPercent || "";
-              document.getElementById(cfg.extra[2]).value = syl.optPercent || "";
+              document.getElementById(cfg.extra[0]).value =
+                syl.gsPercent || "";
+              document.getElementById(cfg.extra[1]).value =
+                syl.rajPercent || "";
+              document.getElementById(cfg.extra[2]).value =
+                syl.optPercent || "";
             }
           }
         });
@@ -1231,25 +1397,53 @@ const res = await fetch(SCRIPT_URL, {
       }
     }
 
-    // ---------- INIT ----------
+    function setupContentTabs() {
+      const nav = document.getElementById("contentTabNav");
+      nav.querySelectorAll(".nav-link").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          nav.querySelectorAll(".nav-link").forEach((b) =>
+            b.classList.remove("active")
+          );
+          btn.classList.add("active");
+
+          document
+            .querySelectorAll(".content-section")
+            .forEach((sec) => sec.classList.add("d-none"));
+          const target = btn.getAttribute("data-target");
+          if (target) {
+            document
+              .querySelector(target)
+              .classList.remove("d-none");
+          }
+        });
+      });
+    }
 
     document.getElementById("tab-all").addEventListener("click", () => {
-      document.querySelectorAll(".tab-btn").forEach((b) => b.classList.remove("active"));
+      document
+        .querySelectorAll(".tab-btn")
+        .forEach((b) => b.classList.remove("active"));
       document.getElementById("tab-all").classList.add("active");
       renderRegistrations("all");
     });
     document.getElementById("tab-pending").addEventListener("click", () => {
-      document.querySelectorAll(".tab-btn").forEach((b) => b.classList.remove("active"));
+      document
+        .querySelectorAll(".tab-btn")
+        .forEach((b) => b.classList.remove("active"));
       document.getElementById("tab-pending").classList.add("active");
       renderRegistrations("pending");
     });
     document.getElementById("tab-approved").addEventListener("click", () => {
-      document.querySelectorAll(".tab-btn").forEach((b) => b.classList.remove("active"));
+      document
+        .querySelectorAll(".tab-btn")
+        .forEach((b) => b.classList.remove("active"));
       document.getElementById("tab-approved").classList.add("active");
       renderRegistrations("approved");
     });
     document.getElementById("tab-rejected").addEventListener("click", () => {
-      document.querySelectorAll(".tab-btn").forEach((b) => b.classList.remove("active"));
+      document
+        .querySelectorAll(".tab-btn")
+        .forEach((b) => b.classList.remove("active"));
       document.getElementById("tab-rejected").classList.add("active");
       renderRegistrations("rejected");
     });
