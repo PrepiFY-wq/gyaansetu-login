@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Fees Management Admin Panel</title>
+  <title>Fees & Content Management Admin Panel</title>
 
   <!-- Bootstrap CSS -->
   <link
@@ -52,6 +52,10 @@
       background-color: #cce5ff;
       color: #004085;
     }
+    .status-rejected {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
     .tab-btn {
       border-radius: 999px !important;
       font-size: 0.9rem;
@@ -87,14 +91,22 @@
     .list-group-item small {
       color: #6c757d;
     }
+    .nav-pills .nav-link {
+      border-radius: 999px;
+      font-size: 0.9rem;
+    }
+    .sub-label {
+      font-size: 0.8rem;
+      color: #6c757d;
+    }
   </style>
 </head>
 <body>
   <!-- Top Navbar -->
   <nav class="navbar navbar-dark mb-4">
     <div class="container-fluid">
-      <span class="navbar-brand mb-0 h1">Fees Management Admin</span>
-      <span class="text-light small">Admin Dashboard</span>
+      <span class="navbar-brand mb-0 h1">GyaanSetu Admin</span>
+      <span class="text-light small">Fees & Dashboard Management</span>
     </div>
   </nav>
 
@@ -113,7 +125,7 @@
       <div class="col-md-3">
         <div class="card text-center">
           <div class="card-body">
-            <h6 class="text-muted mb-1">Pending Payments</h6>
+            <h6 class="text-muted mb-1">Pending Approvals</h6>
             <h3 id="pendingPayments" class="mb-0 text-warning">0</h3>
           </div>
         </div>
@@ -122,7 +134,7 @@
       <div class="col-md-3">
         <div class="card text-center">
           <div class="card-body">
-            <h6 class="text-muted mb-1">Verified</h6>
+            <h6 class="text-muted mb-1">Approved</h6>
             <h3 id="verifiedPayments" class="mb-0 text-success">0</h3>
           </div>
         </div>
@@ -147,7 +159,8 @@
         <div>
           <button class="btn btn-light btn-sm tab-btn me-1 active" id="tab-all">All</button>
           <button class="btn btn-light btn-sm tab-btn me-1" id="tab-pending">Pending</button>
-          <button class="btn btn-light btn-sm tab-btn" id="tab-verified">Verified</button>
+          <button class="btn btn-light btn-sm tab-btn me-1" id="tab-approved">Approved</button>
+          <button class="btn btn-light btn-sm tab-btn" id="tab-rejected">Rejected</button>
         </div>
       </div>
       <div class="card-body">
@@ -161,7 +174,7 @@
                 <th>Payment</th>
                 <th>Txn / Ref</th>
                 <th>Status</th>
-                <th>Actions</th>
+                <th>Admin Actions</th>
               </tr>
             </thead>
             <tbody id="registrationsBody">
@@ -172,53 +185,339 @@
       </div>
     </div>
 
-    <!-- Content & UPSC Targets -->
-    <div class="row g-4">
-      <!-- Content Management -->
-      <div class="col-md-6">
-        <div class="card">
-          <div class="card-header">Content Management</div>
-          <div class="card-body">
-            <div class="mb-3">
-              <label class="form-label">Notification Banner</label>
-              <textarea
-                id="notificationInput"
-                class="form-control"
-                rows="2"
-                placeholder="Enter notification text to show on student dashboard"
-              ></textarea>
+    <!-- Content Management Tabs -->
+    <div class="card mb-4">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <span>Dashboard Content Management</span>
+        <ul class="nav nav-pills" id="contentTabNav">
+          <li class="nav-item">
+            <button class="nav-link active" data-target="#upscSection">UPSC CSE</button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link" data-target="#jeeSection">JEE</button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link" data-target="#neetSection">NEET</button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link" data-target="#rpscSection">RPSC</button>
+          </li>
+        </ul>
+      </div>
+      <div class="card-body">
+        <!-- UPSC Section -->
+        <div id="upscSection" class="content-section">
+          <h6 class="mb-3">UPSC CSE Dashboard</h6>
+
+          <div class="mb-3">
+            <label class="form-label">Announcements (one per line)</label>
+            <textarea id="upscAnnouncements" class="form-control" rows="3"
+              placeholder="Short update 1&#10;Short update 2"></textarea>
+          </div>
+
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Daily Targets (for today)</label>
+              <textarea id="upscDailyTargets" class="form-control" rows="4"
+                placeholder="Target 1&#10;Target 2"></textarea>
+              <div class="sub-label mt-1">UPSC dashboard me Daily Targets list me show hoga.</div>
             </div>
-            <div class="mb-3">
-              <label class="form-label">Content Links (one per line)</label>
-              <textarea
-                id="contentInput"
-                class="form-control"
-                rows="4"
-                placeholder="https://...\nhttps://..."
-              ></textarea>
+            <div class="col-md-6">
+              <label class="form-label">Recent Topics</label>
+              <textarea id="upscRecentTopics" class="form-control" rows="4"
+                placeholder="Polity: Fundamental Rights&#10;Economy: Inflation"></textarea>
             </div>
-            <button class="btn btn-primary btn-sm" id="saveContentBtn">Save Content</button>
-            <span id="contentMessage" class="ms-2 small text-success"></span>
+          </div>
+
+          <hr />
+
+          <div class="row g-3">
+            <div class="col-md-4">
+              <label class="form-label">Mock Tests (title | link per line)</label>
+              <textarea id="upscMockTests" class="form-control" rows="4"
+                placeholder="Full Test 1 | https://..."></textarea>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Test Series (title | link per line)</label>
+              <textarea id="upscTestSeries" class="form-control" rows="4"
+                placeholder="GS Test Series | https://..."></textarea>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Previous Year Papers (title | link per line)</label>
+              <textarea id="upscPyq" class="form-control" rows="4"
+                placeholder="Prelims 2024 Paper 1 | https://..."></textarea>
+            </div>
+          </div>
+
+          <hr />
+
+          <div class="row g-3">
+            <div class="col-md-4">
+              <label class="form-label">Books (one per line)</label>
+              <textarea id="upscBooks" class="form-control" rows="4"
+                placeholder="Laxmikanth Polity&#10;Spectrum Modern History"></textarea>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Current Affairs (title | link per line)</label>
+              <textarea id="upscCurrentAffairs" class="form-control" rows="4"
+                placeholder="Monthly CA | https://..."></textarea>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Notes & PDFs (title | link per line)</label>
+              <textarea id="upscNotes" class="form-control" rows="4"
+                placeholder="GS Notes | https://..."></textarea>
+            </div>
+          </div>
+
+          <hr />
+
+          <div class="row g-3">
+            <div class="col-md-4">
+              <label class="form-label">Syllabus % Prelims</label>
+              <input type="number" id="upscPrelimsPercent" class="form-control" min="0" max="100" placeholder="e.g. 40" />
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Syllabus % Mains</label>
+              <input type="number" id="upscMainsPercent" class="form-control" min="0" max="100" placeholder="e.g. 25" />
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Path Pradarshak Quotes (one per line)</label>
+              <textarea id="upscQuotes" class="form-control" rows="3"
+                placeholder="Short real story based motivational line"></textarea>
+            </div>
+          </div>
+
+          <div class="mt-3">
+            <button class="btn btn-primary btn-sm" onclick="saveDashboardContent('UPSC')">
+              Save UPSC Content
+            </button>
+            <span id="upscMessage" class="ms-2 small text-success"></span>
           </div>
         </div>
-      </div>
 
-      <!-- UPSC Targets Management -->
-      <div class="col-md-6">
-        <div class="card">
-          <div class="card-header">UPSC Targets</div>
-          <div class="card-body">
-            <div class="mb-3">
-              <label class="form-label">Targets (one per line)</label>
-              <textarea
-                id="targetsInput"
-                class="form-control"
-                rows="5"
-                placeholder="Target 1\nTarget 2\nTarget 3"
-              ></textarea>
+        <!-- JEE Section -->
+        <div id="jeeSection" class="content-section d-none">
+          <h6 class="mb-3">JEE Dashboard</h6>
+
+          <div class="mb-3">
+            <label class="form-label">Announcements (one per line)</label>
+            <textarea id="jeeAnnouncements" class="form-control" rows="3"></textarea>
+          </div>
+
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Daily Targets (for today)</label>
+              <textarea id="jeeDailyTargets" class="form-control" rows="4"
+                placeholder="Physics: Kinematics 1D&#10;Chemistry: Mole concept"></textarea>
             </div>
-            <button class="btn btn-success btn-sm" id="saveTargetsBtn">Save Targets</button>
-            <span id="targetsMessage" class="ms-2 small text-success"></span>
+            <div class="col-md-6">
+              <label class="form-label">Recent Topics</label>
+              <textarea id="jeeRecentTopics" class="form-control" rows="4"></textarea>
+            </div>
+          </div>
+
+          <hr />
+
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Test Series (title | link per line)</label>
+              <textarea id="jeeTestSeries" class="form-control" rows="4"></textarea>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">PYQs (title | link per line)</label>
+              <textarea id="jeePyq" class="form-control" rows="4"></textarea>
+            </div>
+          </div>
+
+          <hr />
+
+          <div class="row g-3">
+            <div class="col-md-4">
+              <label class="form-label">Books (one per line)</label>
+              <textarea id="jeeBooks" class="form-control" rows="4"></textarea>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Formula Sheets (title | link per line)</label>
+              <textarea id="jeeFormula" class="form-control" rows="4"></textarea>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Notes & PDFs (title | link per line)</label>
+              <textarea id="jeeNotes" class="form-control" rows="4"></textarea>
+            </div>
+          </div>
+
+          <hr />
+
+          <div class="row g-3">
+            <div class="col-md-4">
+              <label class="form-label">Physics Syllabus %</label>
+              <input type="number" id="jeePhyPercent" class="form-control" min="0" max="100" />
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Chemistry Syllabus %</label>
+              <input type="number" id="jeeChemPercent" class="form-control" min="0" max="100" />
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Maths Syllabus %</label>
+              <input type="number" id="jeeMathPercent" class="form-control" min="0" max="100" />
+            </div>
+          </div>
+
+          <div class="mt-3">
+            <button class="btn btn-primary btn-sm" onclick="saveDashboardContent('JEE')">
+              Save JEE Content
+            </button>
+            <span id="jeeMessage" class="ms-2 small text-success"></span>
+          </div>
+        </div>
+
+        <!-- NEET Section -->
+        <div id="neetSection" class="content-section d-none">
+          <h6 class="mb-3">NEET Dashboard</h6>
+
+          <div class="mb-3">
+            <label class="form-label">Announcements (one per line)</label>
+            <textarea id="neetAnnouncements" class="form-control" rows="3"></textarea>
+          </div>
+
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Daily Targets (for today)</label>
+              <textarea id="neetDailyTargets" class="form-control" rows="4"></textarea>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Recent Topics</label>
+              <textarea id="neetRecentTopics" class="form-control" rows="4"></textarea>
+            </div>
+          </div>
+
+          <hr />
+
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Mock Tests (title | link per line)</label>
+              <textarea id="neetMockTests" class="form-control" rows="4"></textarea>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">PYQs (title | link per line)</label>
+              <textarea id="neetPyq" class="form-control" rows="4"></textarea>
+            </div>
+          </div>
+
+          <hr />
+
+          <div class="row g-3">
+            <div class="col-md-4">
+              <label class="form-label">Books (one per line)</label>
+              <textarea id="neetBooks" class="form-control" rows="4"></textarea>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Important Diagrams / Charts (title | link per line)</label>
+              <textarea id="neetFormula" class="form-control" rows="4"></textarea>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Notes & PDFs (title | link per line)</label>
+              <textarea id="neetNotes" class="form-control" rows="4"></textarea>
+            </div>
+          </div>
+
+          <hr />
+
+          <div class="row g-3">
+            <div class="col-md-4">
+              <label class="form-label">Physics Syllabus %</label>
+              <input type="number" id="neetPhyPercent" class="form-control" min="0" max="100" />
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Chemistry Syllabus %</label>
+              <input type="number" id="neetChemPercent" class="form-control" min="0" max="100" />
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Biology Syllabus %</label>
+              <input type="number" id="neetBioPercent" class="form-control" min="0" max="100" />
+            </div>
+          </div>
+
+          <div class="mt-3">
+            <button class="btn btn-primary btn-sm" onclick="saveDashboardContent('NEET')">
+              Save NEET Content
+            </button>
+            <span id="neetMessage" class="ms-2 small text-success"></span>
+          </div>
+        </div>
+
+        <!-- RPSC Section -->
+        <div id="rpscSection" class="content-section d-none">
+          <h6 class="mb-3">RPSC Dashboard</h6>
+
+          <div class="mb-3">
+            <label class="form-label">Announcements (one per line)</label>
+            <textarea id="rpscAnnouncements" class="form-control" rows="3"></textarea>
+          </div>
+
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Daily Targets (for today)</label>
+              <textarea id="rpscDailyTargets" class="form-control" rows="4"></textarea>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Recent Topics</label>
+              <textarea id="rpscRecentTopics" class="form-control" rows="4"></textarea>
+            </div>
+          </div>
+
+          <hr />
+
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Mock Tests (title | link per line)</label>
+              <textarea id="rpscMockTests" class="form-control" rows="4"></textarea>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">PYQs (title | link per line)</label>
+              <textarea id="rpscPyq" class="form-control" rows="4"></textarea>
+            </div>
+          </div>
+
+          <hr />
+
+          <div class="row g-3">
+            <div class="col-md-4">
+              <label class="form-label">Books (one per line)</label>
+              <textarea id="rpscBooks" class="form-control" rows="4"></textarea>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Charts / Maps (title | link per line)</label>
+              <textarea id="rpscFormula" class="form-control" rows="4"></textarea>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Notes & PDFs (title | link per line)</label>
+              <textarea id="rpscNotes" class="form-control" rows="4"></textarea>
+            </div>
+          </div>
+
+          <hr />
+
+          <div class="row g-3">
+            <div class="col-md-4">
+              <label class="form-label">GS Syllabus %</label>
+              <input type="number" id="rpscGsPercent" class="form-control" min="0" max="100" />
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Rajasthan GK %</label>
+              <input type="number" id="rpscRajPercent" class="form-control" min="0" max="100" />
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Optional / Subject %</label>
+              <input type="number" id="rpscOptPercent" class="form-control" min="0" max="100" />
+            </div>
+          </div>
+
+          <div class="mt-3">
+            <button class="btn btn-primary btn-sm" onclick="saveDashboardContent('RPSC')">
+              Save RPSC Content
+            </button>
+            <span id="rpscMessage" class="ms-2 small text-success"></span>
           </div>
         </div>
       </div>
@@ -254,7 +553,6 @@
 
   <!-- Admin Logic -->
   <script>
-    // TODO: yahan apna Apps Script Web App URL lagao agar alag hai
     const SCRIPT_URL =
       "https://script.google.com/macros/s/AKfycby7bW3qS-Sy1zo0jwM8kdfX00vp4alwgA9tKSGn_IEp8F78w4M0S6wPe59keBf-Sdr8vQ/exec";
 
@@ -304,7 +602,8 @@
       const filtered = registrationsData.filter((row) => {
         const status = (row.status || "").toLowerCase();
         if (filter === "pending") return status === "pending";
-        if (filter === "verified") return status === "verified" || status === "paid";
+        if (filter === "approved") return status === "verified" || status === "paid";
+        if (filter === "rejected") return status === "rejected";
         return true;
       });
 
@@ -317,10 +616,15 @@
         if (status === "paid") {
           statusClass = "status-paid";
           statusLabel = "Paid";
-        } else if (status === "verified") {
+        } else if (status === "verified" || status === "approved") {
           statusClass = "status-verified";
-          statusLabel = "Verified";
+          statusLabel = "Approved";
+        } else if (status === "rejected") {
+          statusClass = "status-rejected";
+          statusLabel = "Rejected";
         }
+
+        const examLabel = row.exam || row.course || "-";
 
         tr.innerHTML = `
           <td>${index + 1}</td>
@@ -330,9 +634,7 @@
             <div class="small text-muted">${row.phone || "-"}</div>
           </td>
           <td>
-            <div class="small">Course: <span class="fw-semibold">${
-              row.course || "-"
-            }</span></div>
+            <div class="small">Exam/Course: <span class="fw-semibold">${examLabel}</span></div>
             <div class="small">Mode: ${row.mode || "-"}</div>
             <div class="small text-muted">Reg: ${row.timestamp || "-"}</div>
           </td>
@@ -349,12 +651,12 @@
           </td>
           <td>
             <button class="btn btn-success btn-sm action-btn-sm mb-1"
-              onclick="confirmPayment('${row.id}')">
-              Payment OK
+              onclick="approveRegistration('${row.id}')">
+              Approve & Send Login
             </button>
-            <button class="btn btn-primary btn-sm action-btn-sm"
-              onclick="verifyAndSend('${row.id}')">
-              Verify & Send
+            <button class="btn btn-outline-danger btn-sm action-btn-sm"
+              onclick="rejectRegistration('${row.id}')">
+              Reject
             </button>
           </td>
         `;
@@ -367,14 +669,14 @@
       const pending = registrationsData.filter(
         (r) => (r.status || "").toLowerCase() === "pending"
       ).length;
-      const verified = registrationsData.filter((r) => {
+      const approved = registrationsData.filter((r) => {
         const s = (r.status || "").toLowerCase();
-        return s === "verified" || s === "paid";
+        return s === "verified" || s === "paid" || s === "approved";
       }).length;
 
       document.getElementById("totalRegistrations").textContent = total;
       document.getElementById("pendingPayments").textContent = pending;
-      document.getElementById("verifiedPayments").textContent = verified;
+      document.getElementById("verifiedPayments").textContent = approved;
     }
 
     function updateRecentSections() {
@@ -392,7 +694,7 @@
         li.className = "list-group-item";
         li.innerHTML = `
           <div class="fw-semibold">${row.name || "-"}</div>
-          <small>${row.course || "-"} • ${row.mode || "-"} • ${
+          <small>${row.exam || row.course || "-"} • ${row.mode || "-"} • ${
           row.timestamp || "-"
         }</small>
         `;
@@ -400,7 +702,10 @@
       });
 
       const paymentUpdated = registrationsData
-        .filter((r) => (r.status || "").toLowerCase() !== "pending")
+        .filter((r) => {
+          const s = (r.status || "").toLowerCase();
+          return s === "verified" || s === "paid" || s === "approved" || s === "rejected";
+        })
         .sort((a, b) => {
           return new Date(b.paymentDate || 0) - new Date(a.paymentDate || 0);
         });
@@ -408,8 +713,12 @@
       paymentUpdated.slice(0, 5).forEach((row) => {
         const li = document.createElement("li");
         const status = (row.status || "").toLowerCase();
-        const badgeClass =
-          status === "verified" ? "bg-primary" : "bg-success";
+        let badgeClass = "bg-success";
+        let label = "Approved";
+        if (status === "rejected") {
+          badgeClass = "bg-danger";
+          label = "Rejected";
+        }
 
         li.className = "list-group-item d-flex justify-content-between align-items-start";
         li.innerHTML = `
@@ -419,158 +728,339 @@
             <small>Txn: ${row.transactionId || "-"}</small>
           </div>
           <span class="badge ${badgeClass} badge-pill align-self-center">
-            ${status === "verified" ? "Verified" : "Paid"}
+            ${label}
           </span>
         `;
         recentPayUl.appendChild(li);
       });
     }
 
-    async function confirmPayment(id) {
+    async function approveRegistration(id) {
       if (!id) return;
-      if (!confirm("Mark payment as OK for this student?")) return;
+      if (!confirm("Approve payment and send login credentials email?")) return;
 
       try {
         const res = await fetch(SCRIPT_URL, {
           method: "POST",
           body: new URLSearchParams({
-            action: "confirmPayment",
+            action: "approveRegistration", // backend me verify + email + status update
             id: id,
           }),
         });
         const result = await res.json();
         if (result && result.success) {
-          alert("Payment marked as OK.");
+          alert("Approved and login details sent.");
           await loadRegistrations();
         } else {
-          alert("Failed to update payment. Please try again.");
+          alert(result.message || "Failed to approve & send email.");
         }
       } catch (err) {
-        console.error("Error in confirmPayment:", err);
-        alert("Error updating payment.");
+        console.error("Error in approveRegistration:", err);
+        alert("Error while approving registration.");
       }
     }
 
-    async function verifyAndSend(id) {
+    async function rejectRegistration(id) {
       if (!id) return;
-      if (!confirm("Verify payment and send login credentials email?")) return;
+      if (!confirm("Reject this registration?")) return;
 
       try {
         const res = await fetch(SCRIPT_URL, {
           method: "POST",
           body: new URLSearchParams({
-            action: "verifyAndSend",
+            action: "rejectRegistration", // backend me status = Rejected + optional email
             id: id,
           }),
         });
         const result = await res.json();
         if (result && result.success) {
-          alert("Payment verified and email sent successfully.");
+          alert("Registration rejected.");
           await loadRegistrations();
         } else {
-          alert(result.message || "Failed to verify & send email.");
+          alert(result.message || "Failed to reject.");
         }
       } catch (err) {
-        console.error("Error in verifyAndSend:", err);
-        alert("Error while verifying payment.");
+        console.error("Error in rejectRegistration:", err);
+        alert("Error while rejecting registration.");
       }
     }
 
-    async function loadContent() {
-      try {
-        const res = await fetch(SCRIPT_URL + "?action=getContent");
-        const data = await res.json();
-        if (data) {
-          if (data.notification !== undefined) {
-            document.getElementById("notificationInput").value =
-              data.notification || "";
-          }
-          if (Array.isArray(data.contentLinks)) {
-            document.getElementById("contentInput").value =
-              data.contentLinks.join("\n");
-          }
-        }
-      } catch (err) {
-        console.error("Error loading content:", err);
-      }
+    // ---------- DASHBOARD CONTENT LOAD & SAVE ----------
+
+    function setupContentTabs() {
+      const nav = document.getElementById("contentTabNav");
+      const buttons = nav.querySelectorAll(".nav-link");
+      const sections = document.querySelectorAll(".content-section");
+
+      buttons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          buttons.forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+          const targetId = btn.getAttribute("data-target");
+          sections.forEach((sec) => {
+            if ("#" + sec.id === targetId) sec.classList.remove("d-none");
+            else sec.classList.add("d-none");
+          });
+        });
+      });
     }
 
-    async function saveContent() {
-      const notification = document.getElementById("notificationInput").value.trim();
-      const contentLines = document
-        .getElementById("contentInput")
-        .value.split("\n")
+    // Helper to split lines
+    function linesToArray(value) {
+      return value
+        .split("\n")
         .map((l) => l.trim())
         .filter((l) => l);
+    }
+
+    async function loadDashboardContent(examType) {
+      try {
+        const res = await fetch(
+          SCRIPT_URL + "?action=getDashboardContent&examType=" + encodeURIComponent(examType)
+        );
+        const data = await res.json();
+        if (!data || !data.success || !data.payload) return;
+        const p = data.payload;
+
+        if (examType === "UPSC") {
+          document.getElementById("upscAnnouncements").value =
+            (p.announcements || []).join("\n");
+          document.getElementById("upscDailyTargets").value =
+            (p.dailyTargets || []).join("\n");
+          document.getElementById("upscRecentTopics").value =
+            (p.recentTopics || []).join("\n");
+
+          document.getElementById("upscMockTests").value =
+            (p.mockTests || []).map(x => `${x.title || ""} | ${x.url || ""}`.trim()).join("\n");
+          document.getElementById("upscTestSeries").value =
+            (p.testSeries || []).map(x => `${x.title || ""} | ${x.url || ""}`.trim()).join("\n");
+          document.getElementById("upscPyq").value =
+            (p.pyqPapers || []).map(x => `${x.title || ""} | ${x.url || ""}`.trim()).join("\n");
+
+          document.getElementById("upscBooks").value =
+            (p.books || []).map(x => x.title || x.text || "").join("\n");
+          document.getElementById("upscCurrentAffairs").value =
+            (p.currentAffairs || []).map(x => `${x.title || ""} | ${x.url || ""}`.trim()).join("\n");
+          document.getElementById("upscNotes").value =
+            (p.notesPdfs || []).map(x => `${x.title || ""} | ${x.url || ""}`.trim()).join("\n");
+
+          if (p.syllabus) {
+            document.getElementById("upscPrelimsPercent").value =
+              p.syllabus.prelimsPercent || "";
+            document.getElementById("upscMainsPercent").value =
+              p.syllabus.mainsPercent || "";
+          }
+          document.getElementById("upscQuotes").value =
+            (p.quotes || []).map(x => x.text || "").join("\n");
+        }
+
+        if (examType === "JEE") {
+          document.getElementById("jeeAnnouncements").value =
+            (p.announcements || []).join("\n");
+          document.getElementById("jeeDailyTargets").value =
+            (p.dailyTargets || []).join("\n");
+          document.getElementById("jeeRecentTopics").value =
+            (p.recentTopics || []).join("\n");
+
+          document.getElementById("jeeTestSeries").value =
+            (p.testSeries || []).map(x => `${x.title || ""} | ${x.url || ""}`.trim()).join("\n");
+          document.getElementById("jeePyq").value =
+            (p.pyqPapers || []).map(x => `${x.title || ""} | ${x.url || ""}`.trim()).join("\n");
+
+          document.getElementById("jeeBooks").value =
+            (p.books || []).map(x => x.title || x.text || "").join("\n");
+          document.getElementById("jeeFormula").value =
+            (p.formulaSheets || []).map(x => `${x.title || ""} | ${x.url || ""}`.trim()).join("\n");
+          document.getElementById("jeeNotes").value =
+            (p.notesPdfs || []).map(x => `${x.title || ""} | ${x.url || ""}`.trim()).join("\n");
+
+          if (p.syllabus) {
+            document.getElementById("jeePhyPercent").value =
+              p.syllabus.phyPercent || "";
+            document.getElementById("jeeChemPercent").value =
+              p.syllabus.chemPercent || "";
+            document.getElementById("jeeMathPercent").value =
+              p.syllabus.mathPercent || "";
+          }
+        }
+
+        if (examType === "NEET") {
+          document.getElementById("neetAnnouncements").value =
+            (p.announcements || []).join("\n");
+          document.getElementById("neetDailyTargets").value =
+            (p.dailyTargets || []).join("\n");
+          document.getElementById("neetRecentTopics").value =
+            (p.recentTopics || []).join("\n");
+
+          document.getElementById("neetMockTests").value =
+            (p.mockTests || []).map(x => `${x.title || ""} | ${x.url || ""}`.trim()).join("\n");
+          document.getElementById("neetPyq").value =
+            (p.pyqPapers || []).map(x => `${x.title || ""} | ${x.url || ""}`.trim()).join("\n");
+
+          document.getElementById("neetBooks").value =
+            (p.books || []).map(x => x.title || x.text || "").join("\n");
+          document.getElementById("neetFormula").value =
+            (p.formulaSheets || []).map(x => `${x.title || ""} | ${x.url || ""}`.trim()).join("\n");
+          document.getElementById("neetNotes").value =
+            (p.notesPdfs || []).map(x => `${x.title || ""} | ${x.url || ""}`.trim()).join("\n");
+
+          if (p.syllabus) {
+            document.getElementById("neetPhyPercent").value =
+              p.syllabus.phyPercent || "";
+            document.getElementById("neetChemPercent").value =
+              p.syllabus.chemPercent || "";
+            document.getElementById("neetBioPercent").value =
+              p.syllabus.bioPercent || "";
+          }
+        }
+
+        if (examType === "RPSC") {
+          document.getElementById("rpscAnnouncements").value =
+            (p.announcements || []).join("\n");
+          document.getElementById("rpscDailyTargets").value =
+            (p.dailyTargets || []).join("\n");
+          document.getElementById("rpscRecentTopics").value =
+            (p.recentTopics || []).join("\n");
+
+          document.getElementById("rpscMockTests").value =
+            (p.mockTests || []).map(x => `${x.title || ""} | ${x.url || ""}`.trim()).join("\n");
+          document.getElementById("rpscPyq").value =
+            (p.pyqPapers || []).map(x => `${x.title || ""} | ${x.url || ""}`.trim()).join("\n");
+
+          document.getElementById("rpscBooks").value =
+            (p.books || []).map(x => x.title || x.text || "").join("\n");
+          document.getElementById("rpscFormula").value =
+            (p.formulaSheets || []).map(x => `${x.title || ""} | ${x.url || ""}`.trim()).join("\n");
+          document.getElementById("rpscNotes").value =
+            (p.notesPdfs || []).map(x => `${x.title || ""} | ${x.url || ""}`.trim()).join("\n");
+
+          if (p.syllabus) {
+            document.getElementById("rpscGsPercent").value =
+              p.syllabus.gsPercent || "";
+            document.getElementById("rpscRajPercent").value =
+              p.syllabus.rajPercent || "";
+            document.getElementById("rpscOptPercent").value =
+              p.syllabus.optPercent || "";
+          }
+        }
+      } catch (err) {
+        console.error("Error loading dashboard content for " + examType, err);
+      }
+    }
+
+    async function saveDashboardContent(examType) {
+      let payload = { examType };
+
+      if (examType === "UPSC") {
+        payload.announcements   = linesToArray(document.getElementById("upscAnnouncements").value);
+        payload.dailyTargets    = linesToArray(document.getElementById("upscDailyTargets").value);
+        payload.recentTopics    = linesToArray(document.getElementById("upscRecentTopics").value);
+        payload.mockTests       = linesToArray(document.getElementById("upscMockTests").value);
+        payload.testSeries      = linesToArray(document.getElementById("upscTestSeries").value);
+        payload.pyqPapers       = linesToArray(document.getElementById("upscPyq").value);
+        payload.books           = linesToArray(document.getElementById("upscBooks").value);
+        payload.currentAffairs  = linesToArray(document.getElementById("upscCurrentAffairs").value);
+        payload.notesPdfs       = linesToArray(document.getElementById("upscNotes").value);
+        payload.prelimsPercent  = document.getElementById("upscPrelimsPercent").value || "0";
+        payload.mainsPercent    = document.getElementById("upscMainsPercent").value || "0";
+        payload.quotes          = linesToArray(document.getElementById("upscQuotes").value);
+      }
+
+      if (examType === "JEE") {
+        payload.announcements = linesToArray(document.getElementById("jeeAnnouncements").value);
+        payload.dailyTargets  = linesToArray(document.getElementById("jeeDailyTargets").value);
+        payload.recentTopics  = linesToArray(document.getElementById("jeeRecentTopics").value);
+        payload.testSeries    = linesToArray(document.getElementById("jeeTestSeries").value);
+        payload.pyqPapers     = linesToArray(document.getElementById("jeePyq").value);
+        payload.books         = linesToArray(document.getElementById("jeeBooks").value);
+        payload.formulaSheets = linesToArray(document.getElementById("jeeFormula").value);
+        payload.notesPdfs     = linesToArray(document.getElementById("jeeNotes").value);
+        payload.phyPercent    = document.getElementById("jeePhyPercent").value || "0";
+        payload.chemPercent   = document.getElementById("jeeChemPercent").value || "0";
+        payload.mathPercent   = document.getElementById("jeeMathPercent").value || "0";
+      }
+
+      if (examType === "NEET") {
+        payload.announcements = linesToArray(document.getElementById("neetAnnouncements").value);
+        payload.dailyTargets  = linesToArray(document.getElementById("neetDailyTargets").value);
+        payload.recentTopics  = linesToArray(document.getElementById("neetRecentTopics").value);
+        payload.mockTests     = linesToArray(document.getElementById("neetMockTests").value);
+        payload.pyqPapers     = linesToArray(document.getElementById("neetPyq").value);
+        payload.books         = linesToArray(document.getElementById("neetBooks").value);
+        payload.formulaSheets = linesToArray(document.getElementById("neetFormula").value);
+        payload.notesPdfs     = linesToArray(document.getElementById("neetNotes").value);
+        payload.phyPercent    = document.getElementById("neetPhyPercent").value || "0";
+        payload.chemPercent   = document.getElementById("neetChemPercent").value || "0";
+        payload.bioPercent    = document.getElementById("neetBioPercent").value || "0";
+      }
+
+      if (examType === "RPSC") {
+        payload.announcements = linesToArray(document.getElementById("rpscAnnouncements").value);
+        payload.dailyTargets  = linesToArray(document.getElementById("rpscDailyTargets").value);
+        payload.recentTopics  = linesToArray(document.getElementById("rpscRecentTopics").value);
+        payload.mockTests     = linesToArray(document.getElementById("rpscMockTests").value);
+        payload.pyqPapers     = linesToArray(document.getElementById("rpscPyq").value);
+        payload.books         = linesToArray(document.getElementById("rpscBooks").value);
+        payload.formulaSheets = linesToArray(document.getElementById("rpscFormula").value);
+        payload.notesPdfs     = linesToArray(document.getElementById("rpscNotes").value);
+        payload.gsPercent     = document.getElementById("rpscGsPercent").value || "0";
+        payload.rajPercent    = document.getElementById("rpscRajPercent").value || "0";
+        payload.optPercent    = document.getElementById("rpscOptPercent").value || "0";
+      }
 
       try {
         const res = await fetch(SCRIPT_URL, {
           method: "POST",
           body: new URLSearchParams({
-            action: "saveContent",
-            notification: notification,
-            content: JSON.stringify(contentLines),
+            action: "saveDashboardContent",
+            examType: examType,
+            payload: JSON.stringify(payload),
           }),
         });
         const result = await res.json();
+        const msgId =
+          examType === "UPSC"
+            ? "upscMessage"
+            : examType === "JEE"
+            ? "jeeMessage"
+            : examType === "NEET"
+            ? "neetMessage"
+            : "rpscMessage";
+
         if (result && result.success) {
-          showMessage("contentMessage", "Content saved.");
+          showMessage(msgId, "Content saved.");
         } else {
-          showMessage("contentMessage", "Failed to save.", true);
+          showMessage(msgId, "Failed to save content.", true);
         }
       } catch (err) {
-        console.error("Error saving content:", err);
-        showMessage("contentMessage", "Error saving content.", true);
+        console.error("Error saving dashboard content:", err);
+        const msgId =
+          examType === "UPSC"
+            ? "upscMessage"
+            : examType === "JEE"
+            ? "jeeMessage"
+            : examType === "NEET"
+            ? "neetMessage"
+            : "rpscMessage";
+        showMessage(msgId, "Error saving content.", true);
       }
     }
 
-    async function loadTargets() {
-      try {
-        const res = await fetch(SCRIPT_URL + "?action=getTargets");
-        const data = await res.json();
-        if (Array.isArray(data.targets)) {
-          document.getElementById("targetsInput").value =
-            data.targets.join("\n");
-        }
-      } catch (err) {
-        console.error("Error loading targets:", err);
-      }
-    }
+    document.addEventListener("DOMContentLoaded", () => {
+      loadRegistrations();
+      setupContentTabs();
 
-    async function saveTargets() {
-      const targets = document
-        .getElementById("targetsInput")
-        .value.split("\n")
-        .map((l) => l.trim())
-        .filter((l) => l);
+      // Initial load of dashboard content
+      ["UPSC", "JEE", "NEET", "RPSC"].forEach(loadDashboardContent);
 
-      try {
-        const res = await fetch(SCRIPT_URL, {
-          method: "POST",
-          body: new URLSearchParams({
-            action: "saveTargets",
-            targets: JSON.stringify(targets),
-          }),
-        });
-        const result = await res.json();
-        if (result && result.success) {
-          showMessage("targetsMessage", "Targets saved.");
-        } else {
-          showMessage("targetsMessage", "Failed to save.", true);
-        }
-      } catch (err) {
-        console.error("Error saving targets:", err);
-        showMessage("targetsMessage", "Error saving targets.", true);
-      }
-    }
-
-    function setupTabs() {
+      // Registration tabs
       const allBtn = document.getElementById("tab-all");
       const pendingBtn = document.getElementById("tab-pending");
-      const verifiedBtn = document.getElementById("tab-verified");
+      const approvedBtn = document.getElementById("tab-approved");
+      const rejectedBtn = document.getElementById("tab-rejected");
 
       function activate(btn, filter) {
-        [allBtn, pendingBtn, verifiedBtn].forEach((b) =>
+        [allBtn, pendingBtn, approvedBtn, rejectedBtn].forEach((b) =>
           b.classList.remove("active")
         );
         btn.classList.add("active");
@@ -579,23 +1069,8 @@
 
       allBtn.addEventListener("click", () => activate(allBtn, "all"));
       pendingBtn.addEventListener("click", () => activate(pendingBtn, "pending"));
-      verifiedBtn.addEventListener("click", () =>
-        activate(verifiedBtn, "verified")
-      );
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-      loadRegistrations();
-      loadContent();
-      loadTargets();
-      setupTabs();
-
-      document
-        .getElementById("saveContentBtn")
-        .addEventListener("click", saveContent);
-      document
-        .getElementById("saveTargetsBtn")
-        .addEventListener("click", saveTargets);
+      approvedBtn.addEventListener("click", () => activate(approvedBtn, "approved"));
+      rejectedBtn.addEventListener("click", () => activate(rejectedBtn, "rejected"));
     });
   </script>
 </body>
