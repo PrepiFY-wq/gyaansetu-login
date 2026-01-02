@@ -1,801 +1,691 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GyaanSetu - Admin Panel</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f7fa; min-height: 100vh; }
-        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px 40px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .header h1 { font-size: 28px; }
-        .header p { font-size: 14px; opacity: 0.9; margin-top: 5px; }
-        .container { max-width: 1400px; margin: 30px auto; padding: 0 20px 40px; }
+  <meta charset="UTF-8" />
+  <title>GyaanSetu Admin Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f3f4f6;
+      padding: 20px;
+    }
 
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px; }
-        .stat-card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); transition: transform 0.3s; }
-        .stat-card:hover { transform: translateY(-5px); }
-        .stat-card h3 { color: #667eea; font-size: 14px; text-transform: uppercase; margin-bottom: 10px; }
-        .stat-card .number { font-size: 36px; font-weight: bold; color: #333; }
+    .card {
+      box-shadow: 0 8px 25px rgba(15, 23, 42, 0.12);
+      border-radius: 16px;
+      border: none;
+    }
 
-        .controls { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 20px; display: flex; gap: 15px; flex-wrap: wrap; align-items: center; }
-        .btn { padding: 8px 16px; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.3s; }
-        .btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(102,126,234,0.3); }
-        .btn-success { background: #10b981; color: white; }
-        .btn-danger { background: #ef4444; color: white; }
+    .card-header {
+      border-radius: 16px 16px 0 0;
+    }
 
-        .search-box { flex: 1; min-width: 250px; }
-        .search-box input { width: 100%; padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px; }
-        .search-box input:focus { outline: none; border-color: #667eea; }
+    .badge-pill {
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 11px;
+    }
 
-        .table-container { background: white; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); overflow: hidden; margin-bottom: 30px; }
-        table { width: 100%; border-collapse: collapse; }
-        thead { background: #f8f9fa; }
-        th { padding: 15px; text-align: left; font-weight: 600; color: #667eea; font-size: 14px; text-transform: uppercase; border-bottom: 2px solid #e0e0e0; }
-        td { padding: 15px; border-bottom: 1px solid #f0f0f0; font-size: 14px; }
-        tbody tr:hover { background: #f8f9fa; }
+    .message {
+      display: none;
+      margin-bottom: 10px;
+    }
 
-        .badge { display: inline-block; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
-        .badge-pending { background: #fef3c7; color: #92400e; }
-        .badge-verified { background: #d1fae5; color: #065f46; }
-        .badge-rejected { background: #fee2e2; color: #991b1b; }
-        .badge-paid { background: #d1fae5; color: #065f46; }
-        .badge-unpaid { background: #fee2e2; color: #991b1b; }
+    .message.success {
+      display: block;
+      background: #d1fae5;
+      color: #065f46;
+    }
 
-        .action-btns { display: flex; gap: 6px; flex-wrap: wrap; }
-        .action-btn { padding: 6px 10px; border: none; border-radius: 6px; font-size: 11px; cursor: pointer; transition: all 0.2s; }
+    .message.error {
+      display: block;
+      background: #fee2e2;
+      color: #991b1b;
+    }
 
-        .message { padding: 15px 20px; border-radius: 10px; margin-bottom: 20px; font-size: 14px; display: none; }
-        .message.success { background: #d1fae5; color: #065f46; border: 1px solid #6ee7b7; }
-        .message.error { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
-
-        .loading { text-align: center; padding: 40px; color: #667eea; }
-
-        /* ====== ADMIN CONTENT SECTIONS (UPSC/JEE/NEET/RPSC) ====== */
-        .admin-section-card {
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-        .admin-section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-        .admin-section-header h2 {
-            font-size: 18px;
-        }
-        .admin-section-header span {
-            font-size: 12px;
-            color: #6b7280;
-        }
-        .admin-section-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 15px;
-        }
-        .admin-subcard {
-            border: 1px solid #e5e7eb;
-            border-radius: 12px;
-            padding: 15px;
-        }
-        .admin-subcard-title {
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: #374151;
-        }
-        .admin-subcard small {
-            font-size: 11px;
-            color: #6b7280;
-        }
-        .admin-subcard .form-label {
-            font-size: 12px;
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-        .admin-subcard input,
-        .admin-subcard textarea,
-        .admin-subcard select {
-            width: 100%;
-            padding: 8px 10px;
-            border-radius: 8px;
-            border: 1px solid #d1d5db;
-            font-size: 13px;
-            margin-bottom: 8px;
-        }
-        .admin-subcard textarea {
-            resize: vertical;
-        }
-        .admin-subcard button {
-            font-size: 12px;
-            padding: 8px 14px;
-        }
-
-        @media (max-width: 768px) {
-            .header { padding: 15px 20px; }
-        }
-    </style>
-    <!-- icons for admin buttons (optional) -->
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
-    />
+    .table-responsive {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+  </style>
 </head>
 <body>
-    <div class="header">
-        <h1>Admin Panel</h1>
-        <p>Manage registrations, dashboards and study content (UPSC · JEE · NEET · RPSC)</p>
+  <div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h2 class="mb-0">
+        <span style="color:#1e3a8a;">Gyaan</span><span style="color:#dc2626;">Setu</span>
+        Admin
+      </h2>
+      <span id="adminEmailLabel" class="text-muted" style="font-size:13px;"></span>
     </div>
 
-    <div class="container">
-        <!-- STATUS MESSAGE -->
-        <div id="messageBox" class="message"></div>
+    <div id="messageBox" class="alert message"></div>
 
-        <!-- REGISTRATION STATS -->
-        <div class="stats-grid">
-            <div class="stat-card">
-                <h3>Total Registrations</h3>
-                <div class="number" id="totalCount">0</div>
+    <!-- Stats -->
+    <div class="row g-3 mb-3">
+      <div class="col-12 col-md-4">
+        <div class="card">
+          <div class="card-body d-flex justify-content-between align-items-center">
+            <div>
+              <div class="text-muted small">Total Registrations</div>
+              <div class="h4 mb-0" id="totalCount">0</div>
             </div>
-            <div class="stat-card">
-                <h3>Pending Verification</h3>
-                <div class="number" id="pendingCount">0</div>
-            </div>
-            <div class="stat-card">
-                <h3>Verified Candidates</h3>
-                <div class="number" id="verifiedCount">0</div>
-            </div>
+            <span class="badge bg-primary badge-pill">All</span>
+          </div>
         </div>
+      </div>
+      <div class="col-12 col-md-4">
+        <div class="card">
+          <div class="card-body d-flex justify-content-between align-items-center">
+            <div>
+              <div class="text-muted small">Pending Verification</div>
+              <div class="h4 mb-0" id="pendingCount">0</div>
+            </div>
+            <span class="badge bg-warning text-dark badge-pill">Pending</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-md-4">
+        <div class="card">
+          <div class="card-body d-flex justify-content-between align-items-center">
+            <div>
+              <div class="text-muted small">Verified Students</div>
+              <div class="h4 mb-0" id="verifiedCount">0</div>
+            </div>
+            <span class="badge bg-success badge-pill">Verified</span>
+          </div>
+        </div>
+      </div>
+    </div>
 
-        <!-- REGISTRATION CONTROLS -->
-        <div class="controls">
-            <div class="search-box">
+    <!-- Registrations table -->
+    <div class="card mb-4">
+      <div class="card-header bg-gradient bg-primary text-white d-flex justify-content-between align-items-center">
+        <span>Registrations</span>
+        <button class="btn btn-sm btn-light" onclick="loadRegistrations()">Refresh</button>
+      </div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-sm mb-0 align-middle">
+            <thead class="table-light position-sticky top-0">
+              <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Contact</th>
+                <th>Exam</th>
+                <th>Payment</th>
+                <th>Verification</th>
+                <th>User ID</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="usersTbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Content management -->
+    <div class="card mb-4">
+      <div class="card-header bg-dark text-white">
+        Exam Content Management
+      </div>
+      <div class="card-body">
+        <p class="text-muted small">
+          Yahan se UPSC / JEE / NEET / RPSC ke announcements, tests, material, study path aur UPSC daily targets manage kar sakte ho.
+        </p>
+
+        <ul class="nav nav-tabs" id="contentTabs" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#upscTab" type="button">UPSC</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#jeeTab" type="button">JEE</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#neetTab" type="button">NEET</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#rpscTab" type="button">RPSC</button>
+          </li>
+        </ul>
+
+        <div class="tab-content pt-3">
+          <!-- UPSC -->
+          <div class="tab-pane fade show active" id="upscTab">
+            <h6>UPSC Content</h6>
+
+            <!-- General UPSC content -->
+            <div class="row g-2 mb-2">
+              <div class="col-md-4">
+                <select id="upscType" class="form-select form-select-sm">
+                  <option value="announcement">Announcement</option>
+                  <option value="pyq">PYQ / Test</option>
+                  <option value="mock_test">Mock Test</option>
+                  <option value="test_series">Test Series</option>
+                  <option value="book">Book / Material</option>
+                  <option value="notes">Notes</option>
+                  <option value="current_affairs">Current Affairs</option>
+                  <option value="path">Study Path</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <input id="upscTitle" class="form-control form-control-sm" placeholder="Title" />
+              </div>
+              <div class="col-md-4">
+                <input id="upscLink" class="form-control form-control-sm" placeholder="Link (optional)" />
+              </div>
+            </div>
+            <div class="mb-2">
+              <textarea id="upscDesc" rows="2" class="form-control form-control-sm" placeholder="Description / details"></textarea>
+            </div>
+            <button class="btn btn-sm btn-primary mb-3" onclick="saveContent('UPSC')">
+              Save UPSC Content
+            </button>
+
+            <div id="upscAnnList" class="mb-2"></div>
+            <div id="upscTestsList" class="mb-2"></div>
+            <div id="upscMatList" class="mb-2"></div>
+            <div id="upscPathList" class="mb-3"></div>
+
+            <!-- UPSC Daily Targets -->
+            <hr />
+            <h6>UPSC Daily Targets</h6>
+            <div class="row g-2 mb-2">
+              <div class="col-md-3">
                 <input
-                    type="text"
-                    id="searchInput"
-                    placeholder="Search by name, email, contact, exam..."
-                    onkeyup="filterTable()"
-                >
+                  type="date"
+                  id="upscTargetDate"
+                  class="form-control form-control-sm"
+                  placeholder="Date"
+                />
+              </div>
+              <div class="col-md-9">
+                <input
+                  id="upscTargetTitle"
+                  class="form-control form-control-sm"
+                  placeholder="Target title (e.g. Polity Laxmikanth Ch-1 to 3)"
+                />
+              </div>
             </div>
-            <button class="btn btn-primary" onclick="loadRegistrations()">Refresh Data</button>
+            <div class="mb-2">
+              <textarea
+                id="upscTargetDesc"
+                rows="2"
+                class="form-control form-control-sm"
+                placeholder="Details / topics / questions to solve"
+              ></textarea>
+            </div>
+            <button class="btn btn-sm btn-success mb-3" onclick="saveUpscTarget()">
+              Save Daily Target
+            </button>
+
+            <div id="upscTargetList" class="mb-2"></div>
+          </div>
+
+          <!-- JEE -->
+          <div class="tab-pane fade" id="jeeTab">
+            <h6>JEE Content</h6>
+            <div class="row g-2 mb-2">
+              <div class="col-md-4">
+                <select id="jeeType" class="form-select form-select-sm">
+                  <option value="announcement">Announcement</option>
+                  <option value="pyq">PYQ / Test</option>
+                  <option value="mock_test">Mock Test</option>
+                  <option value="test_series">Test Series</option>
+                  <option value="book">Book / Material</option>
+                  <option value="notes">Notes</option>
+                  <option value="formula">Formula Sheet</option>
+                  <option value="path">Study Path</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <input id="jeeTitle" class="form-control form-control-sm" placeholder="Title" />
+              </div>
+              <div class="col-md-4">
+                <input id="jeeLink" class="form-control form-control-sm" placeholder="Link (optional)" />
+              </div>
+            </div>
+            <div class="mb-2">
+              <textarea id="jeeDesc" rows="2" class="form-control form-control-sm" placeholder="Description / details"></textarea>
+            </div>
+            <button class="btn btn-sm btn-primary mb-3" onclick="saveContent('JEE')">
+              Save JEE Content
+            </button>
+            <div id="jeeAnnList" class="mb-2"></div>
+            <div id="jeeTestsList" class="mb-2"></div>
+            <div id="jeeMatList" class="mb-2"></div>
+            <div id="jeePathList" class="mb-2"></div>
+          </div>
+
+          <!-- NEET -->
+          <div class="tab-pane fade" id="neetTab">
+            <h6>NEET Content</h6>
+            <div class="row g-2 mb-2">
+              <div class="col-md-4">
+                <select id="neetType" class="form-select form-select-sm">
+                  <option value="announcement">Announcement</option>
+                  <option value="pyq">PYQ / Test</option>
+                  <option value="mock_test">Mock Test</option>
+                  <option value="test_series">Test Series</option>
+                  <option value="book">Book / Material</option>
+                  <option value="notes">Notes</option>
+                  <option value="path">Study Path</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <input id="neetTitle" class="form-control form-control-sm" placeholder="Title" />
+              </div>
+              <div class="col-md-4">
+                <input id="neetLink" class="form-control form-control-sm" placeholder="Link (optional)" />
+              </div>
+            </div>
+            <div class="mb-2">
+              <textarea id="neetDesc" rows="2" class="form-control form-control-sm" placeholder="Description / details"></textarea>
+            </div>
+            <button class="btn btn-sm btn-primary mb-3" onclick="saveContent('NEET')">
+              Save NEET Content
+            </button>
+            <div id="neetAnnList" class="mb-2"></div>
+            <div id="neetTestsList" class="mb-2"></div>
+            <div id="neetMatList" class="mb-2"></div>
+            <div id="neetPathList" class="mb-2"></div>
+          </div>
+
+          <!-- RPSC -->
+          <div class="tab-pane fade" id="rpscTab">
+            <h6>RPSC Content</h6>
+            <div class="row g-2 mb-2">
+              <div class="col-md-4">
+                <select id="rpscType" class="form-select form-select-sm">
+                  <option value="announcement">Announcement</option>
+                  <option value="pyq">PYQ / Test</option>
+                  <option value="mock_test">Mock Test</option>
+                  <option value="test_series">Test Series</option>
+                  <option value="book">Book / Material</option>
+                  <option value="notes">Notes</option>
+                  <option value="path">Study Path</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <input id="rpscTitle" class="form-control form-control-sm" placeholder="Title" />
+              </div>
+              <div class="col-md-4">
+                <input id="rpscLink" class="form-control form-control-sm" placeholder="Link (optional)" />
+              </div>
+            </div>
+            <div class="mb-2">
+              <textarea id="rpscDesc" rows="2" class="form-control form-control-sm" placeholder="Description / details"></textarea>
+            </div>
+            <button class="btn btn-sm btn-primary mb-3" onclick="saveContent('RPSC')">
+              Save RPSC Content
+            </button>
+            <div id="rpscAnnList" class="mb-2"></div>
+            <div id="rpscTestsList" class="mb-2"></div>
+            <div id="rpscMatList" class="mb-2"></div>
+            <div id="rpscPathList" class="mb-2"></div>
+          </div>
         </div>
-
-        <!-- REGISTRATION TABLE -->
-        <div class="table-container">
-            <div id="loadingDiv" class="loading">Loading registrations...</div>
-            <table id="registrationTable" style="display: none;">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Contact</th>
-                        <th>Exam</th>
-                        <th>Address</th>
-                        <th>Verification</th>
-                        <th>Payment</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="tableBody"></tbody>
-            </table>
-        </div>
-
-        <!-- ================== UPSC ADMIN SECTION ================== -->
-        <section class="admin-section-card" id="upsc-admin">
-            <div class="admin-section-header">
-                <h2>UPSC Dashboard – Admin Controls</h2>
-                <span>Announcements · Tests · Study Material · पथ प्रदर्शक</span>
-            </div>
-            <div class="admin-section-grid">
-                <!-- UPSC Announcements -->
-                <div class="admin-subcard">
-                    <div class="admin-subcard-title">Announcements (UPSC)</div>
-                    <small>Home UPSC dashboard me dikhenge.</small>
-                    <label class="form-label">Title</label>
-                    <input type="text" id="upscAnnTitle" placeholder="Announcement title">
-                    <label class="form-label">Description</label>
-                    <textarea id="upscAnnDesc" rows="3" placeholder="Short description"></textarea>
-                    <button class="btn btn-primary" type="button"
-                            onclick="saveContent('UPSC','announcement','upscAnnTitle','upscAnnDesc',null,'upscAnnList')">
-                        <i class="bi bi-plus-lg"></i> Add Announcement
-                    </button>
-                    <div id="upscAnnList" style="margin-top:8px;"></div>
-                </div>
-
-                <!-- UPSC Tests -->
-                <div class="admin-subcard">
-                    <div class="admin-subcard-title">Tests (UPSC)</div>
-                    <small>PYQs / Mock PDFs ke links add karein.</small>
-                    <label class="form-label">Type</label>
-                    <select id="upscTestType">
-                        <option value="pyq">PYQ</option>
-                        <option value="mock_test">Mock Test PDF</option>
-                        <option value="test_series">Test Series</option>
-                    </select>
-                    <label class="form-label">Title</label>
-                    <input type="text" id="upscTestTitle" placeholder="e.g. GS Paper 1 Mock #1">
-                    <label class="form-label">PDF / Link</label>
-                    <input type="url" id="upscTestLink" placeholder="https://...">
-                    <button class="btn btn-primary" type="button"
-                            onclick="saveContent('UPSC',document.getElementById('upscTestType').value,'upscTestTitle',null,'upscTestLink','upscTestsList')">
-                        <i class="bi bi-upload"></i> Save Test
-                    </button>
-                    <div id="upscTestsList" style="margin-top:8px;"></div>
-                </div>
-
-                <!-- UPSC Study Material -->
-                <div class="admin-subcard">
-                    <div class="admin-subcard-title">Study Material (UPSC)</div>
-                    <small>Books / PDFs / Notes.</small>
-                    <label class="form-label">Category</label>
-                    <select id="upscMatType">
-                        <option value="book">Book</option>
-                        <option value="notes">PDF / Notes</option>
-                        <option value="current_affairs">Current Affairs</option>
-                    </select>
-                    <label class="form-label">Title</label>
-                    <input type="text" id="upscMatTitle" placeholder="e.g. Laxmikant – Polity">
-                    <label class="form-label">Link (optional)</label>
-                    <input type="url" id="upscMatLink" placeholder="https://...">
-                    <button class="btn btn-primary" type="button"
-                            onclick="saveContent('UPSC',document.getElementById('upscMatType').value,'upscMatTitle',null,'upscMatLink','upscMatList')">
-                        <i class="bi bi-save"></i> Add Material
-                    </button>
-                    <div id="upscMatList" style="margin-top:8px;"></div>
-                </div>
-
-                <!-- UPSC Path Pradarshak -->
-                <div class="admin-subcard">
-                    <div class="admin-subcard-title">पथ प्रदर्शक (UPSC)</div>
-                    <small>Daily motivation text.</small>
-                    <label class="form-label">Motivational Text</label>
-                    <textarea id="upscPathText" rows="4" placeholder="Daily motivation for UPSC aspirants"></textarea>
-                    <button class="btn btn-primary" type="button"
-                            onclick="saveContent('UPSC','path','upscPathText',null,null,'upscPathList',true)">
-                        <i class="bi bi-chat-quote"></i> Update Message
-                    </button>
-                    <div id="upscPathList" style="margin-top:8px;"></div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ================== JEE ADMIN SECTION ================== -->
-        <section class="admin-section-card" id="jee-admin">
-            <div class="admin-section-header">
-                <h2>JEE Dashboard – Admin Controls</h2>
-                <span>Announcements · Tests · Study Material · पथ प्रदर्शक</span>
-            </div>
-            <div class="admin-section-grid">
-                <!-- JEE Announcements -->
-                <div class="admin-subcard">
-                    <div class="admin-subcard-title">Announcements (JEE)</div>
-                    <small>JEE dashboard ke announcements block me dikhenge.</small>
-                    <label class="form-label">Title</label>
-                    <input type="text" id="jeeAnnTitle" placeholder="Announcement title">
-                    <label class="form-label">Description</label>
-                    <textarea id="jeeAnnDesc" rows="3" placeholder="Short description"></textarea>
-                    <button class="btn btn-primary" type="button"
-                            onclick="saveContent('JEE','announcement','jeeAnnTitle','jeeAnnDesc',null,'jeeAnnList')">
-                        <i class="bi bi-plus-lg"></i> Add Announcement
-                    </button>
-                    <div id="jeeAnnList" style="margin-top:8px;"></div>
-                </div>
-
-                <!-- JEE Tests -->
-                <div class="admin-subcard">
-                    <div class="admin-subcard-title">Tests (JEE)</div>
-                    <small>PYQs / Mock PDFs – Main & Advanced.</small>
-                    <label class="form-label">Type</label>
-                    <select id="jeeTestType">
-                        <option value="pyq">PYQ</option>
-                        <option value="mock_test">Mock Test PDF</option>
-                        <option value="test_series">Test Series</option>
-                    </select>
-                    <label class="form-label">Title</label>
-                    <input type="text" id="jeeTestTitle" placeholder="e.g. JEE Main Mock #5">
-                    <label class="form-label">PDF / Link</label>
-                    <input type="url" id="jeeTestLink" placeholder="https://...">
-                    <button class="btn btn-primary" type="button"
-                            onclick="saveContent('JEE',document.getElementById('jeeTestType').value,'jeeTestTitle',null,'jeeTestLink','jeeTestsList')">
-                        <i class="bi bi-upload"></i> Save Test
-                    </button>
-                    <div id="jeeTestsList" style="margin-top:8px;"></div>
-                </div>
-
-                <!-- JEE Study Material -->
-                <div class="admin-subcard">
-                    <div class="admin-subcard-title">Study Material (JEE)</div>
-                    <small>Books + PDFs for PCM.</small>
-                    <label class="form-label">Category</label>
-                    <select id="jeeMatType">
-                        <option value="book">Book</option>
-                        <option value="notes">PDF / Notes</option>
-                        <option value="formula">Formula Sheet</option>
-                    </select>
-                    <label class="form-label">Title</label>
-                    <input type="text" id="jeeMatTitle" placeholder="e.g. H.C. Verma Part I">
-                    <label class="form-label">Link (optional)</label>
-                    <input type="url" id="jeeMatLink" placeholder="https://...">
-                    <button class="btn btn-primary" type="button"
-                            onclick="saveContent('JEE',document.getElementById('jeeMatType').value,'jeeMatTitle',null,'jeeMatLink','jeeMatList')">
-                        <i class="bi bi-save"></i> Add Material
-                    </button>
-                    <div id="jeeMatList" style="margin-top:8px;"></div>
-                </div>
-
-                <!-- JEE Path Pradarshak -->
-                <div class="admin-subcard">
-                    <div class="admin-subcard-title">पथ प्रदर्शक (JEE)</div>
-                    <small>Daily motivation text for JEE.</small>
-                    <label class="form-label">Motivational Text</label>
-                    <textarea id="jeePathText" rows="4" placeholder="Daily motivation for JEE aspirants"></textarea>
-                    <button class="btn btn-primary" type="button"
-                            onclick="saveContent('JEE','path','jeePathText',null,null,'jeePathList',true)">
-                        <i class="bi bi-chat-quote"></i> Update Message
-                    </button>
-                    <div id="jeePathList" style="margin-top:8px;"></div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ================== NEET ADMIN SECTION ================== -->
-        <section class="admin-section-card" id="neet-admin">
-            <div class="admin-section-header">
-                <h2>NEET Dashboard – Admin Controls</h2>
-                <span>Announcements · Tests · Study Material · पथ प्रदर्शक</span>
-            </div>
-            <div class="admin-section-grid">
-                <!-- NEET Announcements -->
-                <div class="admin-subcard">
-                    <div class="admin-subcard-title">Announcements (NEET)</div>
-                    <small>NEET dashboard ke announcements block.</small>
-                    <label class="form-label">Title</label>
-                    <input type="text" id="neetAnnTitle" placeholder="Announcement title">
-                    <label class="form-label">Description</label>
-                    <textarea id="neetAnnDesc" rows="3" placeholder="Short description"></textarea>
-                    <button class="btn btn-success" type="button"
-                            onclick="saveContent('NEET','announcement','neetAnnTitle','neetAnnDesc',null,'neetAnnList')">
-                        <i class="bi bi-plus-lg"></i> Add Announcement
-                    </button>
-                    <div id="neetAnnList" style="margin-top:8px;"></div>
-                </div>
-
-                <!-- NEET Tests -->
-                <div class="admin-subcard">
-                    <div class="admin-subcard-title">Tests (NEET)</div>
-                    <small>PYQs / Mock PDFs – PCB.</small>
-                    <label class="form-label">Type</label>
-                    <select id="neetTestType">
-                        <option value="pyq">PYQ</option>
-                        <option value="mock_test">Mock Test PDF</option>
-                        <option value="test_series">Test Series</option>
-                    </select>
-                    <label class="form-label">Title</label>
-                    <input type="text" id="neetTestTitle" placeholder="e.g. NEET Full Mock #3">
-                    <label class="form-label">PDF / Link</label>
-                    <input type="url" id="neetTestLink" placeholder="https://...">
-                    <button class="btn btn-success" type="button"
-                            onclick="saveContent('NEET',document.getElementById('neetTestType').value,'neetTestTitle',null,'neetTestLink','neetTestsList')">
-                        <i class="bi bi-upload"></i> Save Test
-                    </button>
-                    <div id="neetTestsList" style="margin-top:8px;"></div>
-                </div>
-
-                <!-- NEET Study Material -->
-                <div class="admin-subcard">
-                    <div class="admin-subcard-title">Study Material (NEET)</div>
-                    <small>Books + PDFs for NEET.</small>
-                    <label class="form-label">Category</label>
-                    <select id="neetMatType">
-                        <option value="book">Book</option>
-                        <option value="notes">PDF / Notes</option>
-                    </select>
-                    <label class="form-label">Title</label>
-                    <input type="text" id="neetMatTitle" placeholder="e.g. NCERT Biology 11 & 12">
-                    <label class="form-label">Link (optional)</label>
-                    <input type="url" id="neetMatLink" placeholder="https://...">
-                    <button class="btn btn-success" type="button"
-                            onclick="saveContent('NEET',document.getElementById('neetMatType').value,'neetMatTitle',null,'neetMatLink','neetMatList')">
-                        <i class="bi bi-save"></i> Add Material
-                    </button>
-                    <div id="neetMatList" style="margin-top:8px;"></div>
-                </div>
-
-                <!-- NEET Path Pradarshak -->
-                <div class="admin-subcard">
-                    <div class="admin-subcard-title">पथ प्रदर्शक (NEET)</div>
-                    <small>Daily motivation text.</small>
-                    <label class="form-label">Motivational Text</label>
-                    <textarea id="neetPathText" rows="4" placeholder="Daily motivation for NEET aspirants"></textarea>
-                    <button class="btn btn-success" type="button"
-                            onclick="saveContent('NEET','path','neetPathText',null,null,'neetPathList',true)">
-                        <i class="bi bi-chat-quote"></i> Update Message
-                    </button>
-                    <div id="neetPathList" style="margin-top:8px;"></div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ================== RPSC ADMIN SECTION ================== -->
-        <section class="admin-section-card" id="rpsc-admin">
-            <div class="admin-section-header">
-                <h2>RPSC Dashboard – Admin Controls</h2>
-                <span>RAS · 1st Grade · 2nd Grade</span>
-            </div>
-            <div class="admin-section-grid">
-                <!-- RPSC Announcements -->
-                <div class="admin-subcard">
-                    <div class="admin-subcard-title">Announcements (RPSC)</div>
-                    <small>RPSC dashboard announcements.</small>
-                    <label class="form-label">Title</label>
-                    <input type="text" id="rpscAnnTitle" placeholder="Announcement title">
-                    <label class="form-label">Description</label>
-                    <textarea id="rpscAnnDesc" rows="3" placeholder="Short description"></textarea>
-                    <button class="btn btn-primary" type="button"
-                            onclick="saveContent('RPSC','announcement','rpscAnnTitle','rpscAnnDesc',null,'rpscAnnList')">
-                        <i class="bi bi-plus-lg"></i> Add Announcement
-                    </button>
-                    <div id="rpscAnnList" style="margin-top:8px;"></div>
-                </div>
-
-                <!-- RPSC Tests -->
-                <div class="admin-subcard">
-                    <div class="admin-subcard-title">Tests (RPSC – RAS / 1st / 2nd)</div>
-                    <small>PYQs / Mock PDFs for RPSC exams.</small>
-                    <label class="form-label">Type</label>
-                    <select id="rpscTestType">
-                        <option value="pyq">PYQ</option>
-                        <option value="mock_test">Mock Test PDF</option>
-                        <option value="test_series">Test Series</option>
-                    </select>
-                    <label class="form-label">Title</label>
-                    <input type="text" id="rpscTestTitle" placeholder="e.g. RAS Prelims Mock #1">
-                    <label class="form-label">PDF / Link</label>
-                    <input type="url" id="rpscTestLink" placeholder="https://...">
-                    <button class="btn btn-primary" type="button"
-                            onclick="saveContent('RPSC',document.getElementById('rpscTestType').value,'rpscTestTitle',null,'rpscTestLink','rpscTestsList')">
-                        <i class="bi bi-upload"></i> Save Test
-                    </button>
-                    <div id="rpscTestsList" style="margin-top:8px;"></div>
-                </div>
-
-                <!-- RPSC Study Material -->
-                <div class="admin-subcard">
-                    <div class="admin-subcard-title">Study Material (RPSC)</div>
-                    <small>Books + PDFs for RAS & Teaching.</small>
-                    <label class="form-label">Category</label>
-                    <select id="rpscMatType">
-                        <option value="book">Book</option>
-                        <option value="notes">PDF / Notes</option>
-                    </select>
-                    <label class="form-label">Title</label>
-                    <input type="text" id="rpscMatTitle" placeholder="e.g. Rajasthan Adhyan Book">
-                    <label class="form-label">Link (optional)</label>
-                    <input type="url" id="rpscMatLink" placeholder="https://...">
-                    <button class="btn btn-primary" type="button"
-                            onclick="saveContent('RPSC',document.getElementById('rpscMatType').value,'rpscMatTitle',null,'rpscMatLink','rpscMatList')">
-                        <i class="bi bi-save"></i> Add Material
-                    </button>
-                    <div id="rpscMatList" style="margin-top:8px;"></div>
-                </div>
-
-                <!-- RPSC Path Pradarshak -->
-                <div class="admin-subcard">
-                    <div class="admin-subcard-title">पथ प्रदर्शक (RPSC)</div>
-                    <small>Daily motivation text.</small>
-                    <label class="form-label">Motivational Text</label>
-                    <textarea id="rpscPathText" rows="4" placeholder="Daily motivation for RAS / 1st / 2nd Grade"></textarea>
-                    <button class="btn btn-primary" type="button"
-                            onclick="saveContent('RPSC','path','rpscPathText',null,null,'rpscPathList',true)">
-                        <i class="bi bi-chat-quote"></i> Update Message
-                    </button>
-                    <div id="rpscPathList" style="margin-top:8px;"></div>
-                </div>
-            </div>
-        </section>
+      </div>
     </div>
+  </div>
 
-    <script>
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyFiEVyWCStmdOxaSz2AAboplrOXAJn0XuW614KRzLihSL60qL8zy3GEgBVvm0DQPcmQg/exec';
-        let allRegistrations = [];
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const SCRIPT_URL =
+      'https://script.google.com/macros/s/AKfycby7bW3qS-Sy1zo0jwM8kdfX00vp4alwgA9tKSGn_IEp8F78w4M0S6wPe59keBf-Sdr8vQ/exec';
 
-        function showMessage(text, type) {
-            const msgBox = document.getElementById('messageBox');
-            msgBox.textContent = text;
-            msgBox.className = `message ${type}`;
-            msgBox.style.display = 'block';
-            setTimeout(() => msgBox.style.display = 'none', 5000);
-        }
+    function showMessage(text, type) {
+      const box = document.getElementById('messageBox');
+      box.textContent = text;
+      box.className = 'alert message ' + (type === 'error' ? 'error' : 'success');
+      box.style.display = 'block';
+      setTimeout(() => (box.style.display = 'none'), 4000);
+    }
 
-        // ========== REGISTRATION LIST ==========
+    // ========== REGISTRATIONS ==========
 
-        function loadRegistrations() {
-            document.getElementById('loadingDiv').style.display = 'block';
-            document.getElementById('registrationTable').style.display = 'none';
+    function loadRegistrations() {
+      const url = `${SCRIPT_URL}?action=getUsers`;
 
-            fetch(`${SCRIPT_URL}?action=getAll`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        // backend getAll returns {success, users:[...]}
-                        const list = data.users || data.registrations || [];
-                        allRegistrations = list;
-                        displayRegistrations(allRegistrations);
-                        updateStats();
-                        document.getElementById('loadingDiv').style.display = 'none';
-                        document.getElementById('registrationTable').style.display = 'table';
-                    } else {
-                        showMessage(data.message || 'Failed to load registrations', 'error');
-                    }
-                })
-                .catch(error => {
-                    showMessage('Error loading data', 'error');
-                    console.error('Error:', error);
-                });
-        }
+      fetch(url)
+        .then((r) => r.json())
+        .then((data) => {
+          if (!data.success) {
+            showMessage(data.message || 'Error in loading data', 'error');
+            return;
+          }
 
-        function displayRegistrations(registrations) {
-            const tbody = document.getElementById('tableBody');
-            tbody.innerHTML = '';
+          const users = data.users || [];
+          renderTable(users);
 
-            if (registrations.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 40px;">No registrations found</td></tr>';
-                return;
-            }
+          const total = users.length;
+          const pending = users.filter((u) => u.verificationStatus !== 'Verified').length;
+          const verified = users.filter((u) => u.verificationStatus === 'Verified').length;
 
-            registrations.forEach(reg => {
-                // Ensure field names exist (align with Apps Script getAll)
-                const name = reg.name || '';
-                const email = reg.email || '';
-                const contact = reg.contact || '';
-                const exam = reg.exam || '';
-                const address = reg.address || '';
-                const verification = reg.verificationStatus || reg.verification || reg.verificationStatusText || 'Pending';
-                const payment = reg.paymentStatus || reg.payment || 'Pending';
+          document.getElementById('totalCount').textContent = total;
+          document.getElementById('pendingCount').textContent = pending;
+          document.getElementById('verifiedCount').textContent = verified;
+        })
+        .catch((err) => {
+          console.error('loadRegistrations error:', err);
+          showMessage('Error in loading data', 'error');
+        });
+    }
 
-                const verClass = verification.toLowerCase() === 'verified'
-                  ? 'badge-verified'
-                  : verification.toLowerCase() === 'rejected'
-                  ? 'badge-rejected'
-                  : 'badge-pending';
+    function renderTable(users) {
+      const tbody = document.getElementById('usersTbody');
+      if (!tbody) return;
 
-                const payClass = payment.toLowerCase() === 'verified'
-                  ? 'badge-paid'
-                  : payment.toLowerCase() === 'paid'
-                  ? 'badge-paid'
-                  : 'badge-unpaid';
+      tbody.innerHTML = users
+        .map(
+          (u, idx) => `
+        <tr>
+          <td>${idx + 1}</td>
+          <td>${u.name}</td>
+          <td>${u.email}</td>
+          <td>${u.contact}</td>
+          <td>${u.exam}</td>
+          <td>
+            <span class="badge badge-pill ${
+              u.paymentStatus === 'Verified' ? 'bg-success' : 'bg-warning text-dark'
+            }">${u.paymentStatus}</span>
+          </td>
+          <td>
+            <span class="badge badge-pill ${
+              u.verificationStatus === 'Verified' ? 'bg-success' : 'bg-warning text-dark'
+            }">${u.verificationStatus}</span>
+          </td>
+          <td>${u.userId}</td>
+          <td>
+            <button class="btn btn-sm btn-outline-success me-1" onclick="markPaymentVerified('${
+              u.contact
+            }')">Payment OK</button>
+            <button class="btn btn-sm btn-outline-primary" onclick="markVerified('${
+              u.contact
+            }')">Verify</button>
+          </td>
+        </tr>`
+        )
+        .join('');
+    }
 
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${name}</td>
-                    <td>${email}</td>
-                    <td>${contact}</td>
-                    <td>${exam}</td>
-                    <td>${address}</td>
-                    <td>
-                        <span class="badge ${verClass}">
-                            ${verification}
-                        </span>
-                    </td>
-                    <td>
-                        <span class="badge ${payClass}">
-                            ${payment}
-                        </span>
-                    </td>
-                    <td>
-                        <div class="action-btns">
-                            <button class="action-btn btn-success" onclick="approveUser('${contact}')">
-                                Approve
-                            </button>
-                            <button class="action-btn btn-danger" onclick="rejectUser('${contact}')">
-                                Reject
-                            </button>
-                        </div>
-                    </td>
-                `;
-                tbody.appendChild(row);
-            });
-        }
+    function markVerified(contact) {
+      if (!confirm('Mark candidate as Verified?')) return;
+      const url = `${SCRIPT_URL}?action=verify&contact=${encodeURIComponent(contact)}`;
 
-        function updateStats() {
-            const total = allRegistrations.length;
-            const pending = allRegistrations.filter(r => (r.verificationStatus || r.verification || 'Pending') === 'Pending').length;
-            const verified = allRegistrations.filter(r => (r.verificationStatus || r.verification || '') === 'Verified').length;
+      fetch(url)
+        .then((r) => r.json())
+        .then((data) => {
+          if (!data.success) {
+            showMessage(data.message || 'Error updating verification', 'error');
+            return;
+          }
+          showMessage('Verification updated', 'success');
+          loadRegistrations();
+        })
+        .catch((err) => {
+          console.error('verify error:', err);
+          showMessage('Error updating verification', 'error');
+        });
+    }
 
-            document.getElementById('totalCount').textContent = total;
-            document.getElementById('pendingCount').textContent = pending;
-            document.getElementById('verifiedCount').textContent = verified;
-        }
+    function markPaymentVerified(contact) {
+      if (!confirm('Mark payment as Verified?')) return;
+      const url = `${SCRIPT_URL}?action=updatePayment&contact=${encodeURIComponent(contact)}`;
 
-        function filterTable() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = allRegistrations.filter(reg => {
-                const name = (reg.name || '').toLowerCase();
-                const email = (reg.email || '').toLowerCase();
-                const contact = reg.contact || '';
-                const exam = (reg.exam || '').toLowerCase();
-                return (
-                    name.includes(searchTerm) ||
-                    email.includes(searchTerm) ||
-                    contact.includes(searchTerm) ||
-                    exam.includes(searchTerm)
-                );
-            });
-            displayRegistrations(filtered);
-        }
+      fetch(url)
+        .then((r) => r.json())
+        .then((data) => {
+          if (!data.success) {
+            showMessage(data.message || 'Error updating payment', 'error');
+            return;
+          }
+          showMessage('Payment updated', 'success');
+          loadRegistrations();
+        })
+        .catch((err) => {
+          console.error('payment error:', err);
+          showMessage('Error updating payment', 'error');
+        });
+    }
 
-        // ========== APPROVE / REJECT LOGIC ==========
+    // ========== CONTENT MANAGEMENT (COMMON) ==========
 
-        function approveUser(contact) {
-            if (!confirm('Approve this registration? This will generate credentials (if needed) and send email.')) return;
-            showMessage('Processing approval...', 'success');
+    function saveContent(exam) {
+      let typeId, titleId, descId, linkId;
 
-            fetch(`${SCRIPT_URL}?action=approveRegistration&contact=${encodeURIComponent(contact)}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        showMessage('Registration approved. Credentials email sent (if not already).', 'success');
-                        loadRegistrations();
-                    } else {
-                        showMessage(data.message || 'Approval failed', 'error');
-                    }
-                })
-                .catch(error => {
-                    showMessage('Error during approval', 'error');
-                    console.error('Error:', error);
-                });
-        }
+      if (exam === 'UPSC') {
+        typeId = 'upscType';
+        titleId = 'upscTitle';
+        descId = 'upscDesc';
+        linkId = 'upscLink';
+      } else if (exam === 'JEE') {
+        typeId = 'jeeType';
+        titleId = 'jeeTitle';
+        descId = 'jeeDesc';
+        linkId = 'jeeLink';
+      } else if (exam === 'NEET') {
+        typeId = 'neetType';
+        titleId = 'neetTitle';
+        descId = 'neetDesc';
+        linkId = 'neetLink';
+      } else if (exam === 'RPSC') {
+        typeId = 'rpscType';
+        titleId = 'rpscTitle';
+        descId = 'rpscDesc';
+        linkId = 'rpscLink';
+      }
 
-        function rejectUser(contact) {
-            const reason = prompt('Enter rejection reason (will be sent in email):', 'Incomplete / invalid details');
-            if (reason === null) return;
+      const type = document.getElementById(typeId).value;
+      const title = document.getElementById(titleId).value.trim();
+      const description = document.getElementById(descId).value.trim();
+      const link = document.getElementById(linkId).value.trim();
 
-            showMessage('Processing rejection...', 'success');
+      if (!type) {
+        alert('Please select type');
+        return;
+      }
 
-            fetch(`${SCRIPT_URL}?action=rejectRegistration&contact=${encodeURIComponent(contact)}&reason=${encodeURIComponent(reason)}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        showMessage('Registration rejected. Rejection email sent.', 'success');
-                        loadRegistrations();
-                    } else {
-                        showMessage(data.message || 'Rejection failed', 'error');
-                    }
-                })
-                .catch(error => {
-                    showMessage('Error during rejection', 'error');
-                    console.error('Error:', error);
-                });
-        }
+      const url =
+        `${SCRIPT_URL}?action=saveContent` +
+        `&exam=${encodeURIComponent(exam)}` +
+        `&type=${encodeURIComponent(type)}` +
+        `&title=${encodeURIComponent(title)}` +
+        `&description=${encodeURIComponent(description)}` +
+        `&link=${encodeURIComponent(link)}`;
 
-        // ========== CONTENT SAVE / LOAD (UPSC/JEE/NEET/RPSC) ==========
+      fetch(url)
+        .then((r) => r.json())
+        .then((data) => {
+          if (!data.success) {
+            alert(data.message || 'Error saving content');
+            return;
+          }
+          alert('Saved successfully.');
 
-        function saveContent(exam, type, titleId, descId, linkId, listContainerId, useTextAreaAsTitle = false) {
-            const titleInput = document.getElementById(titleId);
-            if (!titleInput) {
-                alert('Title field not found.');
-                return;
-            }
-            const title = titleInput.value.trim();
-            const description = descId ? (document.getElementById(descId)?.value.trim() || '') : '';
-            const link = linkId ? (document.getElementById(linkId)?.value.trim() || '') : '';
+          document.getElementById(titleId).value = '';
+          document.getElementById(descId).value = '';
+          document.getElementById(linkId).value = '';
 
-            if (!title && !useTextAreaAsTitle) {
-                alert('Please enter a title.');
-                return;
-            }
+          initialLoadContent();
+        })
+        .catch((err) => {
+          console.error('Save content error:', err);
+          alert('Error saving content');
+        });
+    }
 
-            const finalTitle = useTextAreaAsTitle ? '' : title;
-            const finalDesc = useTextAreaAsTitle ? title : description; // for path, full text in description
+    function loadContentList(exam, type, containerId) {
+      const url =
+        `${SCRIPT_URL}?action=getContent` +
+        `&exam=${encodeURIComponent(exam)}` +
+        `&type=${encodeURIComponent(type)}`;
 
-            const url =
-              `${SCRIPT_URL}?action=saveContent` +
-              `&exam=${encodeURIComponent(exam)}` +
-              `&type=${encodeURIComponent(type)}` +
-              `&title=${encodeURIComponent(finalTitle)}` +
-              `&description=${encodeURIComponent(finalDesc)}` +
-              `&link=${encodeURIComponent(link)}`;
+      fetch(url)
+        .then((r) => r.json())
+        .then((data) => {
+          const container = document.getElementById(containerId);
+          if (!container) return;
 
-            fetch(url)
-              .then(r => r.json())
-              .then(data => {
-                if (!data.success) {
-                  alert(data.message || 'Error saving content');
-                  return;
-                }
-                alert('Saved successfully.');
-                if (titleId) document.getElementById(titleId).value = '';
-                if (descId) document.getElementById(descId).value = '';
-                if (linkId) document.getElementById(linkId).value = '';
+          if (!data.success || !data.items || data.items.length === 0) {
+            container.innerHTML =
+              '<div class="text-muted" style="font-size:12px;">No items yet.</div>';
+            return;
+          }
 
-                loadContentList(exam, type, listContainerId);
-              })
-              .catch(err => {
-                console.error('Save content error:', err);
-                alert('Error saving content');
-              });
-        }
+          container.innerHTML = data.items
+            .map(
+              (item) => `
+            <div class="border rounded p-2 mb-1" style="font-size:12px;">
+              ${item.title ? `<div class="fw-semibold">${item.title}</div>` : ''}
+              ${item.description ? `<div class="text-muted">${item.description}</div>` : ''}
+              ${item.link ? `<a href="${item.link}" target="_blank">Open</a>` : ''}
+            </div>`
+            )
+            .join('');
+        })
+        .catch((err) => {
+          console.error('Load content error:', err);
+        });
+    }
 
-        function loadContentList(exam, type, containerId) {
-            const url =
-              `${SCRIPT_URL}?action=getContent` +
-              `&exam=${encodeURIComponent(exam)}` +
-              `&type=${encodeURIComponent(type)}`;
+    // ========== UPSC DAILY TARGETS ==========
 
-            fetch(url)
-              .then(r => r.json())
-              .then(data => {
-                const container = document.getElementById(containerId);
-                if (!container) return;
-                if (!data.success || !data.items || data.items.length === 0) {
-                  container.innerHTML = '<div class="text-muted" style="font-size:12px;">No items yet.</div>';
-                  return;
-                }
+    function saveUpscTarget() {
+      const dateInput = document.getElementById('upscTargetDate').value;
+      const title = document.getElementById('upscTargetTitle').value.trim();
+      const desc = document.getElementById('upscTargetDesc').value.trim();
 
-                container.innerHTML = data.items
-                  .map(item => `
-                    <div class="border rounded p-2 mb-1" style="font-size:12px;">
-                      ${item.title ? `<div class="fw-semibold">${item.title}</div>` : ''}
-                      ${item.description ? `<div class="text-muted">${item.description}</div>` : ''}
-                      ${item.link ? `<a href="${item.link}" target="_blank">Open</a>` : ''}
-                    </div>
-                  `)
-                  .join('');
-              })
-              .catch(err => {
-                console.error('Load content error:', err);
-              });
-        }
+      if (!dateInput || !title) {
+        alert('Please select date and enter target title');
+        return;
+      }
 
-        function initialLoadContent() {
-          // UPSC
-          loadContentList('UPSC', 'announcement', 'upscAnnList');
-          loadContentList('UPSC', 'pyq', 'upscTestsList');
-          loadContentList('UPSC', 'mock_test', 'upscTestsList');
-          loadContentList('UPSC', 'test_series', 'upscTestsList');
-          loadContentList('UPSC', 'book', 'upscMatList');
-          loadContentList('UPSC', 'notes', 'upscMatList');
-          loadContentList('UPSC', 'current_affairs', 'upscMatList');
-          loadContentList('UPSC', 'path', 'upscPathList');
+      const dateStr = dateInput;
 
-          // JEE
-          loadContentList('JEE', 'announcement', 'jeeAnnList');
-          loadContentList('JEE', 'pyq', 'jeeTestsList');
-          loadContentList('JEE', 'mock_test', 'jeeTestsList');
-          loadContentList('JEE', 'test_series', 'jeeTestsList');
-          loadContentList('JEE', 'book', 'jeeMatList');
-          loadContentList('JEE', 'notes', 'jeeMatList');
-          loadContentList('JEE', 'formula', 'jeeMatList');
-          loadContentList('JEE', 'path', 'jeePathList');
+      const url =
+        `${SCRIPT_URL}?action=saveContent` +
+        `&exam=${encodeURIComponent('UPSC')}` +
+        `&type=${encodeURIComponent('target')}` +
+        `&title=${encodeURIComponent(dateStr + ' - ' + title)}` +
+        `&description=${encodeURIComponent(desc)}` +
+        `&link=${encodeURIComponent('')}`;
 
-          // NEET
-          loadContentList('NEET', 'announcement', 'neetAnnList');
-          loadContentList('NEET', 'pyq', 'neetTestsList');
-          loadContentList('NEET', 'mock_test', 'neetTestsList');
-          loadContentList('NEET', 'test_series', 'neetTestsList');
-          loadContentList('NEET', 'book', 'neetMatList');
-          loadContentList('NEET', 'notes', 'neetMatList');
-          loadContentList('NEET', 'path', 'neetPathList');
+      fetch(url)
+        .then((r) => r.json())
+        .then((data) => {
+          if (!data.success) {
+            alert(data.message || 'Error saving target');
+            return;
+          }
+          alert('Daily target saved.');
 
-          // RPSC
-          loadContentList('RPSC', 'announcement', 'rpscAnnList');
-          loadContentList('RPSC', 'pyq', 'rpscTestsList');
-          loadContentList('RPSC', 'mock_test', 'rpscTestsList');
-          loadContentList('RPSC', 'test_series', 'rpscTestsList');
-          loadContentList('RPSC', 'book', 'rpscMatList');
-          loadContentList('RPSC', 'notes', 'rpscMatList');
-          loadContentList('RPSC', 'path', 'rpscPathList');
-        }
+          document.getElementById('upscTargetDate').value = '';
+          document.getElementById('upscTargetTitle').value = '';
+          document.getElementById('upscTargetDesc').value = '';
 
-        window.onload = function() {
-            loadRegistrations();
-            initialLoadContent();
-        };
-    </script>
+          loadUpscTargets();
+        })
+        .catch((err) => {
+          console.error('Save target error:', err);
+          alert('Error saving target');
+        });
+    }
+
+    function loadUpscTargets() {
+      const url =
+        `${SCRIPT_URL}?action=getContent` +
+        `&exam=${encodeURIComponent('UPSC')}` +
+        `&type=${encodeURIComponent('target')}`;
+
+      fetch(url)
+        .then((r) => r.json())
+        .then((data) => {
+          const container = document.getElementById('upscTargetList');
+          if (!container) return;
+
+          if (!data.success || !data.items || data.items.length === 0) {
+            container.innerHTML =
+              '<div class="text-muted" style="font-size:12px;">No targets added yet.</div>';
+            return;
+          }
+
+          container.innerHTML = data.items
+            .map(
+              (item) => `
+        <div class="border rounded p-2 mb-1" style="font-size:12px;">
+          ${item.title ? `<div class="fw-semibold">${item.title}</div>` : ''}
+          ${item.description ? `<div class="text-muted">${item.description}</div>` : ''}
+        </div>`
+            )
+            .join('');
+        })
+        .catch((err) => {
+          console.error('Load UPSC targets error:', err);
+        });
+    }
+
+    // ========== INITIAL LOAD ==========
+
+    function initialLoadContent() {
+      // UPSC
+      loadContentList('UPSC', 'announcement', 'upscAnnList');
+      loadContentList('UPSC', 'pyq', 'upscTestsList');
+      loadContentList('UPSC', 'mock_test', 'upscTestsList');
+      loadContentList('UPSC', 'test_series', 'upscTestsList');
+      loadContentList('UPSC', 'book', 'upscMatList');
+      loadContentList('UPSC', 'notes', 'upscMatList');
+      loadContentList('UPSC', 'current_affairs', 'upscMatList');
+      loadContentList('UPSC', 'path', 'upscPathList');
+      loadUpscTargets();
+
+      // JEE
+      loadContentList('JEE', 'announcement', 'jeeAnnList');
+      loadContentList('JEE', 'pyq', 'jeeTestsList');
+      loadContentList('JEE', 'mock_test', 'jeeTestsList');
+      loadContentList('JEE', 'test_series', 'jeeTestsList');
+      loadContentList('JEE', 'book', 'jeeMatList');
+      loadContentList('JEE', 'notes', 'jeeMatList');
+      loadContentList('JEE', 'formula', 'jeeMatList');
+      loadContentList('JEE', 'path', 'jeePathList');
+
+      // NEET
+      loadContentList('NEET', 'announcement', 'neetAnnList');
+      loadContentList('NEET', 'pyq', 'neetTestsList');
+      loadContentList('NEET', 'mock_test', 'neetTestsList');
+      loadContentList('NEET', 'test_series', 'neetTestsList');
+      loadContentList('NEET', 'book', 'neetMatList');
+      loadContentList('NEET', 'notes', 'neetMatList');
+      loadContentList('NEET', 'path', 'neetPathList');
+
+      // RPSC
+      loadContentList('RPSC', 'announcement', 'rpscAnnList');
+      loadContentList('RPSC', 'pyq', 'rpscTestsList');
+      loadContentList('RPSC', 'mock_test', 'rpscTestsList');
+      loadContentList('RPSC', 'test_series', 'rpscTestsList');
+      loadContentList('RPSC', 'book', 'rpscMatList');
+      loadContentList('RPSC', 'notes', 'rpscMatList');
+      loadContentList('RPSC', 'path', 'rpscPathList');
+    }
+
+    // Admin email label
+    const adminMail = localStorage.getItem('adminEmail');
+    if (adminMail) {
+      const lbl = document.getElementById('adminEmailLabel');
+      if (lbl) lbl.textContent = `Logged in as: ${adminMail}`;
+    }
+
+    window.onload = function () {
+      loadRegistrations();
+      initialLoadContent();
+    };
+  </script>
 </body>
 </html>
