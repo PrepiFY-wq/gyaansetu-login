@@ -47,6 +47,34 @@
       background: rgba(255,255,255,0.25);
     }
 
+    .notifications {
+      position: relative;
+      font-size: 14px;
+      cursor: pointer;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.1);
+    }
+
+    .notifications:hover {
+      background: rgba(255,255,255,0.2);
+    }
+
+    .badge {
+      position: absolute;
+      top: -6px;
+      right: -8px;
+      background: #ef4444;
+      color: #fff;
+      border-radius: 999px;
+      font-size: 11px;
+      padding: 2px 6px;
+      min-width: 18px;
+      text-align: center;
+      border: 2px solid #4f46e5;
+      box-shadow: 0 0 0 1px rgba(0,0,0,0.1);
+    }
+
     .container {
       max-width: 1400px;
       margin: 25px auto 40px;
@@ -283,6 +311,16 @@
       width: 0%;
     }
 
+    select {
+      background-color: #fff;
+    }
+
+    select:focus {
+      outline: none;
+      border-color: #667eea !important;
+      box-shadow: 0 0 0 3px rgba(102,126,234,0.15);
+    }
+
     @media (max-width: 640px) {
       .header {
         padding: 16px 18px;
@@ -297,11 +335,8 @@
   </style>
 
   <script>
-    // SAME SCRIPT_URL jo index/admin me use kar rahe ho
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby7bW3qS-Sy1zo0jwM8kdfX00vp4alwgA9tKSGn_IEp8F78w4M0S6wPe59keBf-Sdr8vQ/exec';
 
-
-    // Access guard: only logged-in UPSC CSE users
     (function guardAccess() {
       const exam = localStorage.getItem('exam');
       const userId = localStorage.getItem('userId');
@@ -323,6 +358,13 @@
     <h1>UPSC CSE Dashboard</h1>
     <div class="header-right">
       <span id="userName">Welcome</span>
+
+      <!-- Notification badge -->
+      <div class="notifications" onclick="scrollToAnnouncements()">
+        Announcements
+        <span id="announcementBadge" class="badge" style="display:none;">0</span>
+      </div>
+
       <button class="logout-btn" onclick="logout()">Logout</button>
     </div>
   </div>
@@ -397,6 +439,26 @@
           <h3>Mock Tests</h3>
           <div class="number" id="totalTests">0</div>
           <div class="meta">Prelims + GS Mains tests</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PERFORMANCE ANALYTICS -->
+    <section class="section-card">
+      <div class="section-header">
+        <h2>Performance Analytics</h2>
+        <span>Average effort & consistency streak</span>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <h3>Average Study Hours</h3>
+          <div class="number" id="avgHours">0</div>
+          <div class="meta">Per active study day</div>
+        </div>
+        <div class="stat-card">
+          <h3>Current Streak</h3>
+          <div class="number" id="streakDays">0</div>
+          <div class="meta">Consecutive days with study log</div>
         </div>
       </div>
     </section>
@@ -499,6 +561,45 @@
       </div>
     </section>
 
+    <!-- ANSWER WRITING -->
+    <section class="section-card">
+      <div class="section-header">
+        <h2>Answer Writing</h2>
+        <span>Upload copies for evaluation</span>
+      </div>
+
+      <form id="answerForm" onsubmit="submitAnswerCopy(event)">
+        <div class="update-grid">
+          <div class="update-box">
+            <label for="paperType">Select Paper</label>
+            <select id="paperType" required style="width:100%; padding:9px 11px; border-radius:8px; border:2px solid #e5e7eb; font-size:14px;">
+              <option value="">-- Select --</option>
+              <option value="GS1">GS1</option>
+              <option value="GS2">GS2</option>
+              <option value="GS3">GS3</option>
+              <option value="GS4">GS4</option>
+              <option value="Essay">Essay</option>
+              <option value="Ethics">Ethics</option>
+            </select>
+          </div>
+
+          <div class="update-box">
+            <label for="answerFile">Upload your file</label>
+            <input type="file" id="answerFile" required>
+          </div>
+
+          <div class="update-box update-actions">
+            <button type="submit" class="btn">Upload for Evaluation</button>
+          </div>
+        </div>
+      </form>
+
+      <h3 style="font-size: 15px; color:#4b5563; margin:20px 0 8px;">Your Submissions</h3>
+      <div id="answerSubmissions">
+        <div class="empty-state">You have not uploaded any answer copies yet.</div>
+      </div>
+    </section>
+
     <!-- PATH PRADARSHAK -->
     <section class="section-card">
       <div class="section-header">
@@ -552,6 +653,23 @@
       }
     }
 
+    // Scroll to announcements + badge reset
+    function scrollToAnnouncements() {
+      const el = document.getElementById('announcements');
+      if (!el) return;
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      const latest = el.getAttribute('data-latest-id');
+      if (latest) {
+        localStorage.setItem('upsc_last_seen_announcement_id', latest);
+        const badge = document.getElementById('announcementBadge');
+        if (badge) {
+          badge.style.display = 'none';
+          badge.textContent = '0';
+        }
+      }
+    }
+
     // ========== STUDY PROGRESS ==========
 
     function updateProgress(e) {
@@ -596,6 +714,7 @@
           }
           alert('Progress updated successfully!');
           document.getElementById('progressForm').reset();
+          loadAnalytics(); // analytics ko bhi refresh karo
         })
         .catch(err => {
           console.error('Update progress error:', err);
@@ -622,6 +741,28 @@
           }
         })
         .catch(err => console.error('Load totals error:', err));
+    }
+
+    // Performance analytics (avg hours + streak)
+    function loadAnalytics() {
+      const userId = localStorage.getItem('userId');
+      const exam   = localStorage.getItem('exam');
+      if (!userId || !exam) return;
+
+      const url = `${SCRIPT_URL}?action=getStudyAnalytics` +
+                  `&userId=${encodeURIComponent(userId)}` +
+                  `&exam=${encodeURIComponent(exam)}`;
+
+      fetch(url)
+        .then(r => r.json())
+        .then(data => {
+          if (!data || !data.success) return;
+          document.getElementById('avgHours').textContent =
+            (data.avgHours || 0).toFixed(1);
+          document.getElementById('streakDays').textContent =
+            data.streakDays || 0;
+        })
+        .catch(err => console.error('loadAnalytics error:', err));
     }
 
     // ========== DASHBOARD CONTENT (targets, tests, materials, tracker, quotes) ==========
@@ -675,6 +816,34 @@
           // Announcements
           renderList('announcements', data.announcements || [], false);
 
+          // Badge logic (assuming each announcement has id or timestamp)
+          if (data.announcements && data.announcements.length) {
+            const latestId = data.announcements[0].id || data.announcements[0].timestamp || '';
+            const container = document.getElementById('announcements');
+
+            if (container && latestId) {
+              container.setAttribute('data-latest-id', latestId);
+
+              const lastSeen = localStorage.getItem('upsc_last_seen_announcement_id');
+              let newCount = 0;
+
+              if (!lastSeen) {
+                newCount = data.announcements.length;
+              } else {
+                for (const a of data.announcements) {
+                  const aid = a.id || a.timestamp || '';
+                  if (aid && aid > lastSeen) newCount++;
+                }
+              }
+
+              const badge = document.getElementById('announcementBadge');
+              if (badge && newCount > 0) {
+                badge.style.display = 'inline-block';
+                badge.textContent = newCount > 9 ? '9+' : String(newCount);
+              }
+            }
+          }
+
           // Daily targets & recent topics
           renderList('dailyTargets', data.dailyTargets || [], false);
           renderList('recentTopics', data.recentTopics || [], false);
@@ -711,6 +880,125 @@
         });
     }
 
+    // ========== ANSWER WRITING FRONT-END ==========
+
+    function submitAnswerCopy(e) {
+      e.preventDefault();
+
+      const userId = localStorage.getItem('userId');
+      const name   = localStorage.getItem('name') || '';
+      const exam   = localStorage.getItem('exam'); // sirf guard ke liye
+
+      if (!userId || !exam) {
+        alert('Session expired. Please login again.');
+        window.location.href = 'index.html';
+        return;
+      }
+
+      const paperType = document.getElementById('paperType').value;
+      const fileInput = document.getElementById('answerFile');
+      if (!paperType || !fileInput.files.length) {
+        alert('Please select paper and file.');
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('action', 'uploadAnswerCopy');
+      formData.append('userId', userId);
+      formData.append('name', name);
+      formData.append('paperType', paperType);
+      formData.append('file', fileInput.files[0]);
+
+      fetch(SCRIPT_URL, {
+        method: 'POST',
+        body: formData
+      })
+        .then(r => r.json())
+        .then(res => {
+          if (!res.success) {
+            throw new Error(res.message || 'Upload failed');
+          }
+          alert('Answer copy uploaded for evaluation.');
+          document.getElementById('answerForm').reset();
+          loadAnswerSubmissions();
+        })
+        .catch(err => {
+          console.error('submitAnswerCopy error:', err);
+          alert('Error uploading file. Please try again.');
+        });
+    }
+
+    function loadAnswerSubmissions() {
+      const userId = localStorage.getItem('userId');
+      if (!userId) return;
+
+      const url = `${SCRIPT_URL}?action=getAnswerSubmissions` +
+                  `&userId=${encodeURIComponent(userId)}`;
+
+      fetch(url)
+        .then(r => r.json())
+        .then(data => {
+          const container = document.getElementById('answerSubmissions');
+          container.innerHTML = '';
+
+          if (!data || !data.success || !data.submissions || !data.submissions.length) {
+            container.innerHTML =
+              '<div class="empty-state">You have not uploaded any answer copies yet.</div>';
+            return;
+          }
+
+          const list = document.createElement('div');
+          list.className = 'list';
+
+          data.submissions.forEach(sub => {
+            const row = document.createElement('div');
+            row.className = 'list-item';
+            row.style.display = 'flex';
+            row.style.justifyContent = 'space-between';
+            row.style.alignItems = 'center';
+            row.style.gap = '10px';
+
+            const left = document.createElement('div');
+            left.innerHTML =
+              `<strong>${sub.paperType}</strong> | ${sub.uploadedOn} ` +
+              `<span class="tag">${sub.status}</span>`;
+
+            const right = document.createElement('div');
+
+            if (sub.candidateFileUrl) {
+              const viewBtn = document.createElement('a');
+              viewBtn.href = sub.candidateFileUrl;
+              viewBtn.target = '_blank';
+              viewBtn.textContent = 'View';
+              viewBtn.style.fontSize = '12px';
+              viewBtn.style.marginRight = '8px';
+              right.appendChild(viewBtn);
+            }
+
+            if (sub.status === 'Evaluated' && sub.evaluatedFileUrl) {
+              const getBtn = document.createElement('a');
+              getBtn.href = sub.evaluatedFileUrl;
+              getBtn.target = '_blank';
+              getBtn.textContent = 'Get file';
+              getBtn.style.fontSize = '12px';
+              getBtn.style.color = '#16a34a';
+              getBtn.style.fontWeight = '600';
+              right.appendChild(getBtn);
+            }
+
+            row.appendChild(left);
+            row.appendChild(right);
+            list.appendChild(row);
+          });
+
+          container.appendChild(list);
+        })
+        .catch(err => {
+          console.error('loadAnswerSubmissions error:', err);
+        });
+    }
+
+    // ONLOAD
     window.onload = function() {
       document.getElementById('userName').textContent =
         localStorage.getItem('name') || 'Candidate';
@@ -718,9 +1006,11 @@
       updateCountdown();
       setInterval(updateCountdown, 60 * 60 * 1000);
 
-      setDailyQuote(); // initial
+      setDailyQuote();
       loadTotals();
+      loadAnalytics();
       loadDashboardContent();
+      loadAnswerSubmissions();
     };
   </script>
 </body>
