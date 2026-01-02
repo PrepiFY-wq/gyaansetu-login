@@ -1028,12 +1028,14 @@
       }
     }
 
+    // UPDATED: use rejectByContact (no row param)
     async function markRejected(contact) {
       if (!contact) return;
+      if (!confirm("Mark this candidate as Rejected?")) return;
       try {
         const res = await fetch(
           SCRIPT_URL +
-            "?action=updateUser&row=&paymentStatus=Rejected&verificationStatus=Rejected&contact=" +
+            "?action=rejectByContact&contact=" +
             encodeURIComponent(contact)
         );
         const data = await res.json();
