@@ -284,10 +284,75 @@
   </div>
 
   <!-- REGISTRATION MODAL -->
-  <!-- (unchanged; omitted here for brevity, use your existing markup) -->
+  <div id="registrationModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Student Registration</h2>
+        <span class="close" onclick="closeRegistrationModal()">&times;</span>
+      </div>
+      <div class="modal-body">
+        <form id="registrationForm" onsubmit="handleRegistration(event)">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="regName">Full Name</label>
+              <input type="text" id="regName" required>
+            </div>
+            <div class="form-group">
+              <label for="regEmail">Email</label>
+              <input type="email" id="regEmail" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="regContact">Contact Number</label>
+              <input type="tel" id="regContact" required>
+            </div>
+            <div class="form-group">
+              <label for="regExam">Preparing For</label>
+              <select id="regExam" required>
+                <option value="">Select exam</option>
+                <option value="UPSC CSE">UPSC CSE</option>
+                <option value="JEE">JEE</option>
+                <option value="NEET">NEET</option>
+                <option value="RPSC">RPSC</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="regAddress">Address</label>
+            <textarea id="regAddress" rows="3" required></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-primary">Submit Registration</button>
+        </form>
+      </div>
+    </div>
+  </div>
 
   <!-- ADMIN LOGIN MODAL -->
-  <!-- (unchanged; use your existing markup) -->
+  <div id="adminLoginModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Admin Login</h2>
+        <span class="close" onclick="closeAdminLogin()">&times;</span>
+      </div>
+      <div class="modal-body">
+        <form id="adminLoginForm" onsubmit="handleAdminLogin(event)">
+          <div class="form-group">
+            <label for="adminEmail">Admin Email</label>
+            <input type="email" id="adminEmail" required>
+          </div>
+          <div class="form-group">
+            <label for="adminPassword">Password</label>
+            <input type="password" id="adminPassword" required>
+          </div>
+          <button type="submit" class="btn btn-primary">Login as Admin</button>
+        </form>
+      </div>
+    </div>
+  </div>
 
   <script>
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby7bW3qS-Sy1zo0jwM8kdfX00vp4alwgA9tKSGn_IEp8F78w4M0S6wPe59keBf-Sdr8vQ/exec';
