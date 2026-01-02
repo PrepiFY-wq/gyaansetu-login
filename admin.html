@@ -886,6 +886,8 @@
           statusLabel = "Rejected";
         }
 
+        const bothVerified = statusPay === "verified" && statusVer === "verified";
+
         tr.innerHTML = `
           <td>${index + 1}</td>
           <td>
@@ -898,7 +900,8 @@
             <div class="small text-muted">User ID: ${row.userId || "-"}</div>
           </td>
           <td>
-            <div class="small">${row.paymentStatus || "-"}</div>
+            <div class="small">Payment: <span class="fw-semibold">${row.paymentStatus || "-"}</span></div>
+            <div class="small text-muted">Verification: ${row.verificationStatus || "-"}</div>
           </td>
           <td>
             <div class="small">—</div>
@@ -907,14 +910,25 @@
             <span class="status-pill ${statusClass}">${statusLabel}</span>
           </td>
           <td>
-            <button class="btn btn-success btn-sm action-btn-sm mb-1"
-              onclick="markVerified('${row.contact}')">
-              Mark Verified
-            </button>
-            <button class="btn btn-outline-danger btn-sm action-btn-sm"
-              onclick="markRejected('${row.contact}')">
-              Reject
-            </button>
+            <div class="d-flex flex-column gap-1">
+              <button class="btn btn-success btn-sm action-btn-sm"
+                onclick="markPaymentVerified('${row.contact}')">
+                Payment ✓
+              </button>
+              <button class="btn btn-primary btn-sm action-btn-sm"
+                onclick="markRegistrationVerified('${row.contact}')">
+                Registration ✓
+              </button>
+              <button class="btn btn-outline-secondary btn-sm action-btn-sm"
+                onclick="sendLoginMail('${row.email}')"
+                ${bothVerified ? "" : "disabled"}>
+                Send Login Mail
+              </button>
+              <button class="btn btn-outline-danger btn-sm action-btn-sm"
+                onclick="markRejected('${row.contact}')">
+                Reject
+              </button>
+            </div>
           </td>
         `;
         tbody.appendChild(tr);
@@ -976,20 +990,41 @@
       });
     }
 
-    async function markVerified(contact) {
+    async function markPaymentVerified(contact) {
       if (!contact) return;
       try {
         const res = await fetch(
-          SCRIPT_URL + "?action=verify&contact=" + encodeURIComponent(contact)
+          SCRIPT_URL +
+            "?action=updateUserPayment&contact=" +
+            encodeURIComponent(contact)
         );
         const data = await res.json();
         if (data && data.success) {
           await loadRegistrations();
         } else {
-          alert(data.message || "Failed to verify");
+          alert(data.message || "Failed to verify payment");
         }
       } catch (err) {
-        console.error("Error verifying candidate:", err);
+        console.error("Error verifying payment:", err);
+      }
+    }
+
+    async function markRegistrationVerified(contact) {
+      if (!contact) return;
+      try {
+        const res = await fetch(
+          SCRIPT_URL +
+            "?action=updateUserRegistration&contact=" +
+            encodeURIComponent(contact)
+        );
+        const data = await res.json();
+        if (data && data.success) {
+          await loadRegistrations();
+        } else {
+          alert(data.message || "Failed to verify registration");
+        }
+      } catch (err) {
+        console.error("Error verifying registration:", err);
       }
     }
 
@@ -1009,6 +1044,31 @@
         }
       } catch (err) {
         console.error("Error rejecting candidate:", err);
+      }
+    }
+
+    async function sendLoginMail(email) {
+      if (!email) {
+        alert("Email not found for this student.");
+        return;
+      }
+      if (!confirm("Send login email to " + email + "?")) return;
+
+      try {
+        const res = await fetch(
+          SCRIPT_URL +
+            "?action=sendLoginMail&email=" +
+            encodeURIComponent(email)
+        );
+        const data = await res.json();
+        if (data && data.success) {
+          alert("Login mail sent.");
+        } else {
+          alert(data.message || "Failed to send mail.");
+        }
+      } catch (err) {
+        console.error("sendLoginMail error:", err);
+        alert("Error sending mail.");
       }
     }
 
