@@ -230,6 +230,37 @@
       font-size: 13px;
     }
 
+    .list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .list a {
+      font-size: 13px;
+      color: #2563eb;
+      text-decoration: none;
+    }
+
+    .list a:hover {
+      text-decoration: underline;
+    }
+
+    .list-item {
+      font-size: 13px;
+      color: #111827;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      background: #eef2ff;
+      color: #4f46e5;
+      margin-left: 6px;
+    }
+
     .syllabus-item {
       display: flex;
       justify-content: space-between;
@@ -266,6 +297,7 @@
   </style>
 
   <script>
+    // SAME SCRIPT_URL jo index/admin me use kar rahe ho
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyFiEVyWCStmdOxaSz2AAboplrOXAJn0XuW614KRzLihSL60qL8zy3GEgBVvm0DQPcmQg/exec';
 
     // Access guard: only logged-in UPSC CSE users
@@ -322,7 +354,7 @@
         <h2>Update Your Daily Progress</h2>
         <span>Only for your UPSC CSE preparation</span>
       </div>
-      <form onsubmit="updateProgress(event)">
+      <form id="progressForm" onsubmit="updateProgress(event)">
         <div class="update-grid">
           <div class="update-box">
             <label for="studyHours">Study Hours Today</label>
@@ -479,7 +511,8 @@
   </div>
 
   <script>
-    const quotes = [
+    // Local fallback quotes
+    const fallbackQuotes = [
       'The future belongs to those who believe in the beauty of their dreams.',
       'Success is not final, failure is not fatal: it is the courage to continue that counts.',
       'Believe you can and you are halfway there.',
@@ -487,17 +520,18 @@
       'The only way to do great work is to love what you do.'
     ];
 
-    function getRandomQuote() {
-      return quotes[Math.floor(Math.random() * quotes.length)];
+    function getRandomFallbackQuote() {
+      return fallbackQuotes[Math.floor(Math.random() * fallbackQuotes.length)];
     }
 
-    function updateQuote() {
-      document.getElementById('dailyQuote').textContent = getRandomQuote();
+    function setDailyQuote(text) {
+      document.getElementById('dailyQuote').textContent =
+        text || getRandomFallbackQuote();
     }
 
+    // UPSC CSE Prelims 2026: 24 May 2026
     function updateCountdown() {
-      // UPSC CSE Prelims 2026 example date (update when official)
-      const examDate = new Date('2026-06-28T09:00:00');
+      const examDate = new Date('2026-05-24T09:00:00');
       const now = new Date();
       const diff = examDate - now;
 
@@ -517,7 +551,7 @@
       }
     }
 
-    // STUDY PROGRESS
+    // ========== STUDY PROGRESS ==========
 
     function updateProgress(e) {
       e.preventDefault();
@@ -560,7 +594,7 @@
             document.getElementById('totalTests').textContent  = totals.totalMocks || 0;
           }
           alert('Progress updated successfully!');
-          e.target.reset();
+          document.getElementById('progressForm').reset();
         })
         .catch(err => {
           console.error('Update progress error:', err);
@@ -589,6 +623,93 @@
         .catch(err => console.error('Load totals error:', err));
     }
 
+    // ========== DASHBOARD CONTENT (targets, tests, materials, tracker, quotes) ==========
+
+    function renderList(containerId, items, isLink = true) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = '';
+      if (!items || !items.length) {
+        container.innerHTML = '<div class="empty-state">No data yet.</div>';
+        return;
+      }
+      const div = document.createElement('div');
+      div.className = 'list';
+      items.forEach(it => {
+        if (isLink && it.url && it.title) {
+          const a = document.createElement('a');
+          a.href = it.url;
+          a.target = '_blank';
+          a.textContent = it.title;
+          if (it.tag) {
+            const span = document.createElement('span');
+            span.className = 'tag';
+            span.textContent = it.tag;
+            a.appendChild(span);
+          }
+          div.appendChild(a);
+        } else {
+          const p = document.createElement('div');
+          p.className = 'list-item';
+          p.textContent = it.text || it.title || '';
+          div.appendChild(p);
+        }
+      });
+      container.appendChild(div);
+    }
+
+    function loadDashboardContent() {
+      const userId = localStorage.getItem('userId');
+      if (!userId) return;
+
+      const url = `${SCRIPT_URL}?action=getUpscDashboardContent&userId=${encodeURIComponent(userId)}`;
+
+      fetch(url)
+        .then(r => r.json())
+        .then(data => {
+          if (!data || !data.success) {
+            setDailyQuote();
+            return;
+          }
+
+          // Announcements
+          renderList('announcements', data.announcements || [], false);
+
+          // Daily targets & recent topics
+          renderList('dailyTargets', data.dailyTargets || [], false);
+          renderList('recentTopics', data.recentTopics || [], false);
+
+          // Tests
+          renderList('mockTestsList', data.mockTests || []);
+          renderList('testSeriesList', data.testSeries || []);
+          renderList('pypList', data.pyqPapers || []);
+
+          // Study materials
+          renderList('booksList', data.books || [], false);
+          renderList('currentAffairsList', data.currentAffairs || []);
+          renderList('notesList', data.notesPdfs || []);
+
+          // Syllabus tracker
+          if (data.syllabus) {
+            const p = data.syllabus.prelimsPercent || 0;
+            const m = data.syllabus.mainsPercent || 0;
+            document.getElementById('prelimsPercent').textContent = p + '% Complete';
+            document.getElementById('mainsPercent').textContent   = m + '% Complete';
+            document.getElementById('prelimsBar').style.width = p + '%';
+            document.getElementById('mainsBar').style.width   = m + '%';
+          }
+
+          // Path Pradarshak quotes
+          renderList('motivationalQuotes', data.quotes || [], false);
+
+          // Main quote
+          setDailyQuote(data.dailyQuote || '');
+        })
+        .catch(err => {
+          console.error('loadDashboardContent error:', err);
+          setDailyQuote();
+        });
+    }
+
     window.onload = function() {
       document.getElementById('userName').textContent =
         localStorage.getItem('name') || 'Candidate';
@@ -596,10 +717,9 @@
       updateCountdown();
       setInterval(updateCountdown, 60 * 60 * 1000);
 
-      updateQuote();
-      setInterval(updateQuote, 24 * 60 * 60 * 1000);
-
+      setDailyQuote(); // initial
       loadTotals();
+      loadDashboardContent();
     };
   </script>
 </body>
