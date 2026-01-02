@@ -1,0 +1,32 @@
+<script>
+  let totalStudyHours = 0;
+  let totalTopicsCovered = 0;
+  let totalMocksCompleted = 0;
+
+  const form = document.getElementById('dailyProgressForm');
+  const inputStudyHours = document.getElementById('inputStudyHours');
+  const inputTopicsCovered = document.getElementById('inputTopicsCovered');
+  const inputMocksCompleted = document.getElementById('inputMocksCompleted');
+
+  const totalStudyHoursEl = document.getElementById('totalStudyHours');
+  const totalTopicsCoveredEl = document.getElementById('totalTopicsCovered');
+  const totalMocksCompletedEl = document.getElementById('totalMocksCompleted');
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    const todayHours = parseFloat(inputStudyHours.value) || 0;
+    const todayTopics = parseInt(inputTopicsCovered.value) || 0;
+    const todayMocks = parseInt(inputMocksCompleted.value) || 0;
+
+    totalStudyHours += todayHours;
+    totalTopicsCovered += todayTopics;
+    totalMocksCompleted += todayMocks;
+
+    totalStudyHoursEl.textContent = totalStudyHours.toFixed(1);
+    totalTopicsCoveredEl.textContent = totalTopicsCovered;
+    totalMocksCompletedEl.textContent = totalMocksCompleted;
+
+    form.reset();
+  });
+</script>
