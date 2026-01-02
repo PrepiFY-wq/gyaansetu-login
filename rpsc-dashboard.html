@@ -1,19 +1,17 @@
-<!-- MAIN: all sections full width -->
 <main class="col-12 col-md-9 col-lg-10 px-4 py-3">
   <!-- Top bar -->
   <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
     <div>
-      <h4 class="mb-1">Welcome back, RPSC Aspirant</h4>
+      <h4 class="mb-1">
+        Welcome back, <span id="userNameHeader">RPSC Aspirant</span>
+      </h4>
       <div class="text-muted small">
         Consistent answer writing and revision crack <strong>RAS</strong> & Teaching services.
       </div>
     </div>
     <div class="d-flex align-items-center gap-2">
-      <button class="btn btn-outline-secondary btn-sm">
-        <i class="bi bi-moon-stars"></i>
-      </button>
-      <button class="btn btn-primary btn-sm">
-        <i class="bi bi-plus-lg me-1"></i> Add Study Session
+      <button class="btn btn-outline-secondary btn-sm" onclick="logout()">
+        <i class="bi bi-box-arrow-right me-1"></i> Logout
       </button>
       <div
         class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center"
@@ -24,6 +22,51 @@
     </div>
   </div>
 
+  <!-- COUNTDOWN + QUOTE -->
+  <section class="rpsc-card p-3 mb-3">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <div>
+        <h5 class="mb-0">RPSC Exam Countdown</h5>
+        <div class="small text-muted">
+          RAS Pre, 1st Grade & 2nd Grade – plan your months wisely.
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-3 mb-3">
+      <div class="col-12 col-md-4">
+        <div class="border rounded p-3 h-100 text-center">
+          <div class="small text-muted mb-1">RAS Prelims 2026</div>
+          <div class="fs-4 fw-semibold" id="rasDaysLeft">0</div>
+          <div class="small text-muted">Days Left</div>
+        </div>
+      </div>
+      <div class="col-12 col-md-4">
+        <div class="border rounded p-3 h-100 text-center">
+          <div class="small text-muted mb-1">RPSC 1st Grade</div>
+          <div class="fs-4 fw-semibold" id="firstGradeDaysLeft">0</div>
+          <div class="small text-muted">Days Left</div>
+        </div>
+      </div>
+      <div class="col-12 col-md-4">
+        <div class="border rounded p-3 h-100 text-center">
+          <div class="small text-muted mb-1">RPSC 2nd Grade</div>
+          <div class="fs-4 fw-semibold" id="secondGradeDaysLeft">0</div>
+          <div class="small text-muted">Days Left</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="border rounded p-3 bg-light">
+      <div class="small text-primary fw-semibold mb-1">
+        आज का मोटिवेशन (RPSC Quote of the Day)
+      </div>
+      <div id="dailyQuoteRpsc" class="small">
+        जो आज जवाब लिखने की आदत बना रहा है, वही कल RAS और शिक्षक बनकर जवाबदेही निभाएगा।
+      </div>
+    </div>
+  </section>
+
   <!-- DAILY PROGRESS INPUT -->
   <section class="rpsc-card p-3 mb-3" id="daily-progress">
     <div class="d-flex justify-content-between align-items-center mb-2">
@@ -33,7 +76,7 @@
       </span>
     </div>
 
-    <form id="dailyProgressFormRpsc" class="row g-3">
+    <form id="dailyProgressFormRpsc" class="row g-3" onsubmit="updateProgressRpsc(event)">
       <div class="col-12 col-md-4">
         <label class="form-label small fw-semibold">Study Hours Today</label>
         <input
@@ -124,32 +167,14 @@
         Admin updates; visible in candidate profile
       </span>
     </div>
-    <div class="list-group">
-      <div class="list-group-item border-0 border-bottom">
-        <div class="d-flex justify-content-between">
-          <div>
-            <div class="fw-semibold small">
-              RAS Prelims + 1st Grade + 2nd Grade Combined Test Series
-            </div>
-            <div class="small text-muted">
-              Check schedule in Tests section; pattern aligned with latest RPSC notifications.
-            </div>
-          </div>
-          <span class="badge text-bg-primary align-self-start">New</span>
-        </div>
-      </div>
-      <div class="list-group-item border-0">
-        <div class="fw-semibold small">
-          Updated Syllabus PDFs for RAS, 1st Grade & 2nd Grade uploaded
-        </div>
-        <div class="small text-muted">
-          Download latest syllabus from Study Material before planning your schedule.
-        </div>
+    <div id="announcementsListRpsc">
+      <div class="text-center text-muted small py-3">
+        Admin will post RPSC announcements here.
       </div>
     </div>
   </section>
 
-  <!-- TESTS: only RAS & Teaching -->
+  <!-- TESTS: PYQs + Mock PDFs -->
   <section class="rpsc-card p-3 mb-3" id="tests">
     <h5 class="mb-3">Tests</h5>
     <div class="row g-3">
@@ -160,26 +185,11 @@
             <h6 class="mb-0">PYQs</h6>
             <span class="small text-muted">RAS · 1st Grade · 2nd Grade</span>
           </div>
-          <ul class="list-group list-group-flush small">
-            <li class="list-group-item px-0 d-flex justify-content-between">
-              <span>RAS Prelims PYQs 2013–2023 (GS)</span>
-              <a href="#" class="text-decoration-none">
-                <i class="bi bi-file-earmark-pdf me-1"></i>View
-              </a>
-            </li>
-            <li class="list-group-item px-0 d-flex justify-content-between">
-              <span>1st Grade Teacher PYQs – General Studies</span>
-              <a href="#" class="text-decoration-none">
-                <i class="bi bi-file-earmark-pdf me-1"></i>View
-              </a>
-            </li>
-            <li class="list-group-item px-0 d-flex justify-content-between">
-              <span>2nd Grade Teacher PYQs – Subject wise</span>
-              <a href="#" class="text-decoration-none">
-                <i class="bi bi-file-earmark-pdf me-1"></i>View
-              </a>
-            </li>
-          </ul>
+          <div id="pyqListRpsc">
+            <div class="text-center text-muted small py-3">
+              PYQ PDFs will appear here.
+            </div>
+          </div>
         </div>
       </div>
 
@@ -190,26 +200,11 @@
             <h6 class="mb-0">Mock Tests PDFs</h6>
             <span class="small text-muted">Offline practice papers</span>
           </div>
-          <ul class="list-group list-group-flush small">
-            <li class="list-group-item px-0 d-flex justify-content-between">
-              <span>RAS Prelims Full Syllabus Mock #01</span>
-              <a href="#" class="text-decoration-none">
-                <i class="bi bi-download me-1"></i>Download
-              </a>
-            </li>
-            <li class="list-group-item px-0 d-flex justify-content-between">
-              <span>1st Grade Teacher GS Mock Paper</span>
-              <a href="#" class="text-decoration-none">
-                <i class="bi bi-download me-1"></i>Download
-              </a>
-            </li>
-            <li class="list-group-item px-0 d-flex justify-content-between">
-              <span>2nd Grade Teacher Subject Test (e.g. SST)</span>
-              <a href="#" class="text-decoration-none">
-                <i class="bi bi-download me-1"></i>Download
-              </a>
-            </li>
-          </ul>
+          <div id="mockPdfListRpsc">
+            <div class="text-center text-muted small py-3">
+              Mock test PDFs will appear here.
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -226,17 +221,11 @@
             <h6 class="mb-0">Books</h6>
             <span class="small text-muted">RAS · 1st Grade · 2nd Grade</span>
           </div>
-          <ul class="list-group list-group-flush small">
-            <li class="list-group-item px-0">
-              Rajasthan Adhyan + RajRAS based books (for all three exams)
-            </li>
-            <li class="list-group-item px-0">
-              Laxmikant – Indian Polity (RAS & Teaching)
-            </li>
-            <li class="list-group-item px-0">
-              Subject‑specific textbooks for 1st Grade & 2nd Grade
-            </li>
-          </ul>
+          <div id="booksListRpsc">
+            <div class="text-center text-muted small py-3">
+              Books list will appear here.
+            </div>
+          </div>
         </div>
       </div>
 
@@ -247,26 +236,11 @@
             <h6 class="mb-0">PDFs, Notes & Others</h6>
             <span class="small text-muted">Uploaded by admin</span>
           </div>
-          <ul class="list-group list-group-flush small">
-            <li class="list-group-item px-0 d-flex justify-content-between">
-              <span>RAS Target Notes – Rajasthan GK</span>
-              <a href="#" class="text-decoration-none">
-                <i class="bi bi-file-earmark-arrow-down me-1"></i>Download
-              </a>
-            </li>
-            <li class="list-group-item px-0 d-flex justify-content-between">
-              <span>1st Grade & 2nd Grade Pedagogy Notes</span>
-              <a href="#" class="text-decoration-none">
-                <i class="bi bi-file-earmark-arrow-down me-1"></i>Download
-              </a>
-            </li>
-            <li class="list-group-item px-0 d-flex justify-content-between">
-              <span>Important Current Affairs – Rajasthan & India</span>
-              <a href="#" class="text-decoration-none">
-                <i class="bi bi-file-earmark-arrow-down me-1"></i>Download
-              </a>
-            </li>
-          </ul>
+          <div id="notesListRpsc">
+            <div class="text-center text-muted small py-3">
+              Important PDFs and notes will appear here.
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -280,16 +254,170 @@
         Daily motivation for RAS & Teaching services
       </span>
     </div>
-    <div class="border rounded p-3 bg-light">
-      <p class="small mb-2">
-        “जो आज पढ़ कर खुद को बदल रहा है, वही कल कक्षा और प्रशासन दोनों में
-        बदलाव लाएगा। RAS हो या 1st / 2nd Grade, आपकी मेहनत बच्चों और समाज का
-        भविष्य तय करेगी।”
-      </p>
-      <p class="small mb-0">
-        रोज़ थोड़ा लिखें, थोड़ा पढ़ें, थोड़ा दोहराएँ। तीनों परीक्षाओं के लिए
-        आधार एक ही है – मजबूत <strong>आत्मअनुशासन</strong> और निरंतरता।
-      </p>
+    <div id="pathPradarshakRpsc">
+      <div class="border rounded p-3 bg-light">
+        <p class="small mb-2">
+          “जो आज पढ़ कर खुद को बदल रहा है, वही कल कक्षा और प्रशासन दोनों में
+          बदलाव लाएगा। RAS हो या 1st / 2nd Grade, आपकी मेहनत बच्चों और समाज का
+          भविष्य तय करेगी।”
+        </p>
+        <p class="small mb-0">
+          रोज़ थोड़ा लिखें, थोड़ा पढ़ें, थोड़ा दोहराएँ। तीनों परीक्षाओं के लिए
+          आधार एक ही है – मजबूत <strong>आत्मअनुशासन</strong> और निरंतरता।
+        </p>
+      </div>
     </div>
   </section>
 </main>
+
+<script>
+  // Daily RPSC quote [web:170]
+  const rpscQuotes = [
+    'आज की answer-writing आपकी कल की प्रशासनिक ताकत है।',
+    'हर दिन थोड़ा Rajasthan GK, थोड़ा GS, थोड़ा लिखना – यही RAS का रास्ता है।',
+    'किताबें और नोट्स आपकी ढाल हैं, निरंतरता आपकी तलवार।',
+    'RAS और Teaching दोनों के लिए एक ही मंत्र: रोज़ बैठो, रोज़ लिखो, रोज़ सुधारो।',
+    'जो syllabus को पहले समझता है, वही attempt को सही तरह से इस्तेमाल करता है।'
+  ];
+
+  function loadDailyQuoteRpsc() {
+    const todayKey = new Date().toISOString().slice(0, 10);
+    const stored = localStorage.getItem('rpscQuote');
+    let quote;
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      if (parsed.date === todayKey) quote = parsed.text;
+    }
+    if (!quote) {
+      quote = rpscQuotes[Math.floor(Math.random() * rpscQuotes.length)];
+      localStorage.setItem('rpscQuote', JSON.stringify({ date: todayKey, text: quote }));
+    }
+    document.getElementById('dailyQuoteRpsc').textContent = quote;
+  }
+
+  // Countdown for three exams (tentative dates – update when official) [web:167]
+  function updateRpscCountdowns() {
+    const now = new Date();
+
+    const rasPreDate = new Date('2026-02-15T09:00:00');
+    const firstGradeDate = new Date('2026-03-15T09:00:00');
+    const secondGradeDate = new Date('2026-04-15T09:00:00');
+
+    const rasDays = Math.max(0, Math.floor((rasPreDate - now) / (1000 * 60 * 60 * 24)));
+    const firstDays = Math.max(0, Math.floor((firstGradeDate - now) / (1000 * 60 * 60 * 24)));
+    const secondDays = Math.max(0, Math.floor((secondGradeDate - now) / (1000 * 60 * 60 * 24)));
+
+    document.getElementById('rasDaysLeft').textContent = rasDays;
+    document.getElementById('firstGradeDaysLeft').textContent = firstDays;
+    document.getElementById('secondGradeDaysLeft').textContent = secondDays;
+  }
+
+  function logout() {
+    if (confirm('Logout from GyaanSetu?')) {
+      localStorage.removeItem('userId');
+      localStorage.removeItem('name');
+      localStorage.removeItem('exam');
+      window.location.href = 'index.html';
+    }
+  }
+
+  // Study progress backend pattern [web:169][web:178]
+  function updateProgressRpsc(e) {
+    e.preventDefault();
+
+    const userId = localStorage.getItem('userId');
+    const exam = localStorage.getItem('exam'); // should be "RPSC"
+
+    if (!userId || !exam) {
+      alert('Session expired. Please login again.');
+      window.location.href = 'index.html';
+      return;
+    }
+
+    const hours =
+      parseFloat(document.getElementById('inputStudyHoursRpsc').value) || 0;
+    const topics =
+      parseInt(
+        document.getElementById('inputTopicsCoveredRpsc').value || '0',
+        10
+      ) || 0;
+    const mocks =
+      parseInt(
+        document.getElementById('inputMocksCompletedRpsc').value || '0',
+        10
+      ) || 0;
+
+    const url =
+      `${SCRIPT_URL}?action=logStudy` +
+      `&userId=${encodeURIComponent(userId)}` +
+      `&exam=${encodeURIComponent(exam)}` +
+      `&hours=${encodeURIComponent(hours)}` +
+      `&topics=${encodeURIComponent(topics)}` +
+      `&mocks=${encodeURIComponent(mocks)}`;
+
+    fetch(url)
+      .then((r) => r.json())
+      .then((data) => {
+        if (!data.success) {
+          throw new Error(data.message || 'Failed to save study log');
+        }
+        const totalsUrl =
+          `${SCRIPT_URL}?action=getStudyTotals` +
+          `&userId=${encodeURIComponent(userId)}` +
+          `&exam=${encodeURIComponent(exam)}`;
+        return fetch(totalsUrl).then((r) => r.json());
+      })
+      .then((totals) => {
+        if (totals && totals.success) {
+          document.getElementById('totalStudyHoursRpsc').textContent =
+            totals.totalHours || 0;
+          document.getElementById('totalTopicsCoveredRpsc').textContent =
+            totals.totalTopics || 0;
+          document.getElementById('totalMocksCompletedRpsc').textContent =
+            totals.totalMocks || 0;
+        }
+        alert('Progress updated successfully!');
+        document.getElementById('dailyProgressFormRpsc').reset();
+      })
+      .catch((err) => {
+        console.error('Update progress error:', err);
+        alert('Error updating progress. Please try again.');
+      });
+  }
+
+  function loadTotalsRpsc() {
+    const userId = localStorage.getItem('userId');
+    const exam = localStorage.getItem('exam');
+    if (!userId || !exam) return;
+
+    const totalsUrl =
+      `${SCRIPT_URL}?action=getStudyTotals` +
+      `&userId=${encodeURIComponent(userId)}` +
+      `&exam=${encodeURIComponent(exam)}`;
+
+    fetch(totalsUrl)
+      .then((r) => r.json())
+      .then((totals) => {
+        if (totals && totals.success) {
+          document.getElementById('totalStudyHoursRpsc').textContent =
+            totals.totalHours || 0;
+          document.getElementById('totalTopicsCoveredRpsc').textContent =
+            totals.totalTopics || 0;
+          document.getElementById('totalMocksCompletedRpsc').textContent =
+            totals.totalMocks || 0;
+        }
+      })
+      .catch((err) => console.error('Load totals error:', err));
+  }
+
+  window.onload = function () {
+    document.getElementById('userNameHeader').textContent =
+      localStorage.getItem('name') || 'RPSC Aspirant';
+
+    updateRpscCountdowns();
+    setInterval(updateRpscCountdowns, 60 * 60 * 1000);
+
+    loadDailyQuoteRpsc();
+    loadTotalsRpsc();
+  };
+</script>
