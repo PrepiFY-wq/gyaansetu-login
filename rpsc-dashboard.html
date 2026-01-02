@@ -1,423 +1,646 @@
-<main class="col-12 col-md-9 col-lg-10 px-4 py-3">
-  <!-- Top bar -->
-  <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
-    <div>
-      <h4 class="mb-1">
-        Welcome back, <span id="userNameHeader">RPSC Aspirant</span>
-      </h4>
-      <div class="text-muted small">
-        Consistent answer writing and revision crack <strong>RAS</strong> & Teaching services.
-      </div>
-    </div>
-    <div class="d-flex align-items-center gap-2">
-      <button class="btn btn-outline-secondary btn-sm" onclick="logout()">
-        <i class="bi bi-box-arrow-right me-1"></i> Logout
-      </button>
-      <div
-        class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center"
-        style="width: 36px; height: 36px"
-      >
-        <span class="small fw-semibold">YOU</span>
-      </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>RPSC Dashboard - GyaanSetu</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f5f7fa;
+      min-height: 100vh;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+      color: white;
+      padding: 20px 40px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header h1 { font-size: 26px; }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+    }
+
+    .logout-btn {
+      background: rgba(255,255,255,0.15);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.6);
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    .logout-btn:hover {
+      background: rgba(255,255,255,0.25);
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 25px auto 40px;
+      padding: 0 20px;
+    }
+
+    .section-card {
+      background: white;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 2px 12px rgba(15,23,42,0.06);
+      margin-bottom: 25px;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .section-header h2 {
+      font-size: 18px;
+      color: #111827;
+    }
+
+    .section-header span {
+      font-size: 12px;
+      color: #6b7280;
+    }
+
+    /* Countdown */
+    .exam-countdown {
+      background: linear-gradient(135deg, #6366f1 0%, #0ea5e9 100%);
+      color: white;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+      margin-bottom: 25px;
+    }
+
+    .exam-countdown h2 {
+      font-size: 22px;
+      margin-bottom: 10px;
+    }
+
+    .exam-subtitle {
+      font-size: 13px;
+      opacity: 0.9;
+      margin-bottom: 15px;
+    }
+
+    .countdown-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 15px;
+      margin: 15px 0 10px;
+    }
+
+    .countdown-item {
+      background: rgba(255,255,255,0.15);
+      padding: 12px;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    .countdown-item .title {
+      font-size: 13px;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+
+    .countdown-item .number {
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    .countdown-item .label {
+      font-size: 12px;
+      opacity: 0.9;
+    }
+
+    .quote {
+      font-style: italic;
+      margin-top: 10px;
+      font-size: 14px;
+      opacity: 0.96;
+    }
+
+    /* Update progress as 3 boxes */
+    .update-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    .update-box {
+      background: #f9fafb;
+      border-radius: 12px;
+      padding: 14px 16px;
+      border: 1px solid #e5e7eb;
+    }
+
+    .update-box label {
+      display: block;
+      margin-bottom: 6px;
+      color: #4b5563;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .update-box input {
+      width: 100%;
+      padding: 9px 11px;
+      border-radius: 8px;
+      border: 2px solid #e5e7eb;
+      font-size: 14px;
+    }
+
+    .update-box input:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
+    }
+
+    .update-actions {
+      display: flex;
+      align-items: flex-end;
+      justify-content: flex-start;
+    }
+
+    .btn {
+      padding: 11px 18px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+      color: white;
+    }
+
+    .btn:hover {
+      box-shadow: 0 8px 18px rgba(59,130,246,0.35);
+      transform: translateY(-1px);
+    }
+
+    /* Totals cards */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+    }
+
+    .stat-card {
+      background: white;
+      padding: 16px 18px;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(15,23,42,0.06);
+      border-left: 4px solid #3b82f6;
+    }
+
+    .stat-card h3 {
+      color: #4b5563;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 8px;
+    }
+
+    .stat-card .number {
+      font-size: 26px;
+      font-weight: 700;
+      color: #111827;
+      margin-bottom: 4px;
+    }
+
+    .stat-card .meta {
+      font-size: 12px;
+      color: #6b7280;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 28px 10px;
+      color: #9ca3af;
+      font-size: 13px;
+    }
+
+    .syllabus-item {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      padding: 10px 0 5px;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      border-radius: 999px;
+      background: #e5e7eb;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #3b82f6 0%, #22c55e 100%);
+      width: 0%;
+    }
+
+    @media (max-width: 640px) {
+      .header {
+        padding: 16px 18px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+      .container {
+        padding: 0 14px;
+      }
+    }
+  </style>
+
+  <script>
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyFiEVyWCStmdOxaSz2AAboplrOXAJn0XuW614KRzLihSL60qL8zy3GEgBVvm0DQPcmQg/exec';
+
+    // Access guard: only logged-in RPSC users
+    (function guardAccess() {
+      const exam = localStorage.getItem('exam');
+      const userId = localStorage.getItem('userId');
+
+      if (!exam || !userId) {
+        window.location.href = 'index.html';
+        return;
+      }
+      if (exam !== 'RPSC') {
+        window.location.href = 'index.html';
+        return;
+      }
+    })();
+  </script>
+</head>
+<body>
+  <!-- HEADER -->
+  <div class="header">
+    <h1>RPSC Dashboard</h1>
+    <div class="header-right">
+      <span id="userName">Welcome</span>
+      <button class="logout-btn" onclick="logout()">Logout</button>
     </div>
   </div>
 
-  <!-- COUNTDOWN + QUOTE -->
-  <section class="rpsc-card p-3 mb-3">
-    <div class="d-flex justify-content-between align-items-center mb-2">
-      <div>
-        <h5 class="mb-0">RPSC Exam Countdown</h5>
-        <div class="small text-muted">
-          RAS Pre, 1st Grade & 2nd Grade – plan your months wisely.
+  <div class="container">
+    <!-- COUNTDOWN: RAS Pre, 1st Grade, 2nd Grade -->
+    <section class="exam-countdown">
+      <h2>RPSC Exams 2026</h2>
+      <div class="exam-subtitle">
+        Roz ka disciplined study aapko agle RPSC panel ke saamne confident khada karta hai.
+      </div>
+      <div class="countdown-grid">
+        <div class="countdown-item">
+          <div class="title">RAS Pre 2026</div>
+          <div class="number" id="daysRas">0</div>
+          <div class="label">Days Left</div>
+        </div>
+        <div class="countdown-item">
+          <div class="title">1st Grade 2026</div>
+          <div class="number" id="daysG1">0</div>
+          <div class="label">Days Left</div>
+        </div>
+        <div class="countdown-item">
+          <div class="title">2nd Grade 2026</div>
+          <div class="number" id="daysG2">0</div>
+          <div class="label">Days Left</div>
         </div>
       </div>
-    </div>
+      <div class="quote" id="dailyQuote">
+        Aaj ka ek extra revision page, kal interview board ke saamne extra confidence banega.
+      </div>
+    </section>
 
-    <div class="row g-3 mb-3">
-      <div class="col-12 col-md-4">
-        <div class="border rounded p-3 h-100 text-center">
-          <div class="small text-muted mb-1">RAS Prelims 2026</div>
-          <div class="fs-4 fw-semibold" id="rasDaysLeft">0</div>
-          <div class="small text-muted">Days Left</div>
-        </div>
+    <!-- UPDATE DAILY PROGRESS -->
+    <section class="section-card">
+      <div class="section-header">
+        <h2>Update Your Daily Progress</h2>
+        <span>Track your RPSC preparation honestly</span>
       </div>
-      <div class="col-12 col-md-4">
-        <div class="border rounded p-3 h-100 text-center">
-          <div class="small text-muted mb-1">RPSC 1st Grade</div>
-          <div class="fs-4 fw-semibold" id="firstGradeDaysLeft">0</div>
-          <div class="small text-muted">Days Left</div>
-        </div>
-      </div>
-      <div class="col-12 col-md-4">
-        <div class="border rounded p-3 h-100 text-center">
-          <div class="small text-muted mb-1">RPSC 2nd Grade</div>
-          <div class="fs-4 fw-semibold" id="secondGradeDaysLeft">0</div>
-          <div class="small text-muted">Days Left</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="border rounded p-3 bg-light">
-      <div class="small text-primary fw-semibold mb-1">
-        आज का मोटिवेशन (RPSC Quote of the Day)
-      </div>
-      <div id="dailyQuoteRpsc" class="small">
-        जो आज जवाब लिखने की आदत बना रहा है, वही कल RAS और शिक्षक बनकर जवाबदेही निभाएगा।
-      </div>
-    </div>
-  </section>
-
-  <!-- DAILY PROGRESS INPUT -->
-  <section class="rpsc-card p-3 mb-3" id="daily-progress">
-    <div class="d-flex justify-content-between align-items-center mb-2">
-      <h5 class="mb-0">Update Your Daily Progress</h5>
-      <span class="small text-muted">
-        RAS, 1st Grade & 2nd Grade preparation tracker
-      </span>
-    </div>
-
-    <form id="dailyProgressFormRpsc" class="row g-3" onsubmit="updateProgressRpsc(event)">
-      <div class="col-12 col-md-4">
-        <label class="form-label small fw-semibold">Study Hours Today</label>
-        <input
-          type="number"
-          min="0"
-          step="0.5"
-          class="form-control"
-          id="inputStudyHoursRpsc"
-          placeholder="e.g. 6"
-          required
-        />
-      </div>
-      <div class="col-12 col-md-4">
-        <label class="form-label small fw-semibold">Topics Covered Today</label>
-        <input
-          type="number"
-          min="0"
-          step="1"
-          class="form-control"
-          id="inputTopicsCoveredRpsc"
-          placeholder="e.g. 4"
-          required
-        />
-      </div>
-      <div class="col-12 col-md-4">
-        <label class="form-label small fw-semibold">Mock Tests Completed</label>
-        <input
-          type="number"
-          min="0"
-          step="1"
-          class="form-control"
-          id="inputMocksCompletedRpsc"
-          placeholder="e.g. 1"
-          required
-        />
-      </div>
-
-      <div class="col-12">
-        <button type="submit" class="btn btn-primary btn-sm mt-1">
-          <i class="bi bi-check2-circle me-1"></i> Save & Add to Totals
-        </button>
-      </div>
-    </form>
-  </section>
-
-  <!-- TOTALS -->
-  <section class="rpsc-card p-3 mb-3">
-    <div class="d-flex justify-content-between align-items-center mb-2">
-      <h5 class="mb-0">Overall Progress Totals</h5>
-      <span class="small text-muted">Updated from daily entries</span>
-    </div>
-    <div class="row g-3">
-      <div class="col-12 col-md-4">
-        <div class="border rounded p-3 h-100">
-          <div class="small text-muted mb-1">Total Study Hours</div>
-          <h4 class="mb-1" id="totalStudyHoursRpsc">0</h4>
-          <div class="small text-muted">
-            RAS · 1st Grade · 2nd Grade
+      <form onsubmit="updateProgress(event)">
+        <div class="update-grid">
+          <div class="update-box">
+            <label for="studyHours">Study Hours Today</label>
+            <input type="number" id="studyHours" min="0" step="0.5" placeholder="e.g. 6" required>
+          </div>
+          <div class="update-box">
+            <label for="topicsCovered">Topics Covered Today</label>
+            <input type="number" id="topicsCovered" min="0" step="1" placeholder="Chapters/Topics" required>
+          </div>
+          <div class="update-box">
+            <label for="mockTests">Questions / Tests</label>
+            <input type="number" id="mockTests" min="0" step="1" placeholder="MCQs or tests count" required>
+          </div>
+          <div class="update-box update-actions">
+            <button type="submit" class="btn">Save & Add to Totals</button>
           </div>
         </div>
+      </form>
+    </section>
+
+    <!-- OVERALL TOTALS -->
+    <section class="section-card">
+      <div class="section-header">
+        <h2>Overall Progress Totals</h2>
+        <span>Calculated from your daily entries</span>
       </div>
-      <div class="col-12 col-md-4">
-        <div class="border rounded p-3 h-100">
-          <div class="small text-muted mb-1">Total Topics Covered</div>
-          <h4 class="mb-1" id="totalTopicsCoveredRpsc">0</h4>
-          <div class="small text-muted">
-            Rajasthan GK, GS, Pedagogy, Subjects
-          </div>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <h3>Total Study Hours</h3>
+          <div class="number" id="totalHours">0</div>
+          <div class="meta">GS · Rajasthan GK · Optional combined</div>
+        </div>
+        <div class="stat-card">
+          <h3>Topics Covered</h3>
+          <div class="number" id="totalTopics">0</div>
+          <div class="meta">Syllabus units completed</div>
+        </div>
+        <div class="stat-card">
+          <h3>Questions / Tests</h3>
+          <div class="number" id="totalTests">0</div>
+          <div class="meta">MCQs / test papers attempted</div>
         </div>
       </div>
-      <div class="col-12 col-md-4">
-        <div class="border rounded p-3 h-100">
-          <div class="small text-muted mb-1">Total Mock Tests</div>
-          <h4 class="mb-1" id="totalMocksCompletedRpsc">0</h4>
-          <div class="small text-muted">
-            RAS / 1st Grade / 2nd Grade papers
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- ANNOUNCEMENTS -->
-  <section class="rpsc-card p-3 mb-3" id="announcements">
-    <div class="d-flex justify-content-between align-items-center mb-2">
-      <h5 class="mb-0">Announcements</h5>
-      <span class="small text-muted">
-        Admin updates; visible in candidate profile
-      </span>
-    </div>
-    <div id="announcementsListRpsc">
-      <div class="text-center text-muted small py-3">
-        Admin will post RPSC announcements here.
+    <!-- ANNOUNCEMENTS -->
+    <section class="section-card">
+      <div class="section-header">
+        <h2>Announcements</h2>
+        <span>RPSC related updates from admin</span>
       </div>
-    </div>
-  </section>
+      <div id="announcements">
+        <div class="empty-state">No announcements yet. Admin will update here.</div>
+      </div>
+    </section>
 
-  <!-- TESTS: PYQs + Mock PDFs -->
-  <section class="rpsc-card p-3 mb-3" id="tests">
-    <h5 class="mb-3">Tests</h5>
-    <div class="row g-3">
-      <!-- PYQs -->
-      <div class="col-12 col-lg-6">
-        <div class="border rounded p-3 h-100">
-          <div class="d-flex justify-content-between mb-2">
-            <h6 class="mb-0">PYQs</h6>
-            <span class="small text-muted">RAS · 1st Grade · 2nd Grade</span>
-          </div>
-          <div id="pyqListRpsc">
-            <div class="text-center text-muted small py-3">
-              PYQ PDFs will appear here.
-            </div>
-          </div>
-        </div>
+    <!-- DAILY TARGETS & RECENT TOPICS -->
+    <section class="section-card">
+      <div class="section-header">
+        <h2>Daily Targets & Recent Topics</h2>
+        <span>GS · Rajasthan GK · Optional focus</span>
+      </div>
+      <h3 style="font-size: 15px; color:#4b5563; margin-bottom:8px;">Daily Targets</h3>
+      <div id="dailyTargets">
+        <div class="empty-state">Admin will upload today's targets soon.</div>
       </div>
 
-      <!-- Mock Tests PDFs -->
-      <div class="col-12 col-lg-6">
-        <div class="border rounded p-3 h-100">
-          <div class="d-flex justify-content-between mb-2">
-            <h6 class="mb-0">Mock Tests PDFs</h6>
-            <span class="small text-muted">Offline practice papers</span>
-          </div>
-          <div id="mockPdfListRpsc">
-            <div class="text-center text-muted small py-3">
-              Mock test PDFs will appear here.
-            </div>
-          </div>
-        </div>
+      <h3 style="font-size: 15px; color:#4b5563; margin:20px 0 8px;">Recent Topics</h3>
+      <div id="recentTopics">
+        <div class="empty-state">No recent topics yet.</div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- STUDY MATERIAL -->
-  <section class="rpsc-card p-3 mb-3" id="study-material">
-    <h5 class="mb-3">Study Material</h5>
-    <div class="row g-3">
-      <!-- Books -->
-      <div class="col-12 col-lg-6">
-        <div class="border rounded p-3 h-100">
-          <div class="d-flex justify-content-between mb-2">
-            <h6 class="mb-0">Books</h6>
-            <span class="small text-muted">RAS · 1st Grade · 2nd Grade</span>
-          </div>
-          <div id="booksListRpsc">
-            <div class="text-center text-muted small py-3">
-              Books list will appear here.
-            </div>
-          </div>
-        </div>
+    <!-- TEST PORTAL -->
+    <section class="section-card">
+      <div class="section-header">
+        <h2>Test Portal</h2>
+        <span>Mock Tests · Previous Year Questions</span>
       </div>
 
-      <!-- PDFs, Notes, etc. -->
-      <div class="col-12 col-lg-6">
-        <div class="border rounded p-3 h-100">
-          <div class="d-flex justify-content-between mb-2">
-            <h6 class="mb-0">PDFs, Notes & Others</h6>
-            <span class="small text-muted">Uploaded by admin</span>
-          </div>
-          <div id="notesListRpsc">
-            <div class="text-center text-muted small py-3">
-              Important PDFs and notes will appear here.
-            </div>
-          </div>
-        </div>
+      <h3 style="font-size: 15px; color:#4b5563; margin-bottom:8px;">Mock Tests</h3>
+      <div id="testSeriesList">
+        <div class="empty-state">Admin will upload mock tests soon.</div>
       </div>
-    </div>
-  </section>
 
-  <!-- पथ प्रदर्शक -->
-  <section class="rpsc-card p-3 mb-3" id="path-pradarshak">
-    <div class="d-flex justify-content-between align-items-center mb-2">
-      <h5 class="mb-0">पथ प्रदर्शक</h5>
-      <span class="small text-muted">
-        Daily motivation for RAS & Teaching services
-      </span>
-    </div>
-    <div id="pathPradarshakRpsc">
-      <div class="border rounded p-3 bg-light">
-        <p class="small mb-2">
-          “जो आज पढ़ कर खुद को बदल रहा है, वही कल कक्षा और प्रशासन दोनों में
-          बदलाव लाएगा। RAS हो या 1st / 2nd Grade, आपकी मेहनत बच्चों और समाज का
-          भविष्य तय करेगी।”
-        </p>
-        <p class="small mb-0">
-          रोज़ थोड़ा लिखें, थोड़ा पढ़ें, थोड़ा दोहराएँ। तीनों परीक्षाओं के लिए
-          आधार एक ही है – मजबूत <strong>आत्मअनुशासन</strong> और निरंतरता।
-        </p>
+      <h3 style="font-size: 15px; color:#4b5563; margin:20px 0 8px;">Previous Year Questions (PYQs)</h3>
+      <div id="pypList">
+        <div class="empty-state">Admin will upload PYQ PDFs soon.</div>
       </div>
-    </div>
-  </section>
-</main>
+    </section>
 
-<script>
-  // Daily RPSC quote [web:170]
-  const rpscQuotes = [
-    'आज की answer-writing आपकी कल की प्रशासनिक ताकत है।',
-    'हर दिन थोड़ा Rajasthan GK, थोड़ा GS, थोड़ा लिखना – यही RAS का रास्ता है।',
-    'किताबें और नोट्स आपकी ढाल हैं, निरंतरता आपकी तलवार।',
-    'RAS और Teaching दोनों के लिए एक ही मंत्र: रोज़ बैठो, रोज़ लिखो, रोज़ सुधारो।',
-    'जो syllabus को पहले समझता है, वही attempt को सही तरह से इस्तेमाल करता है।'
-  ];
+    <!-- STUDY MATERIALS -->
+    <section class="section-card">
+      <div class="section-header">
+        <h2>Study Materials</h2>
+        <span>Standard books · Rajasthan specific notes</span>
+      </div>
 
-  function loadDailyQuoteRpsc() {
-    const todayKey = new Date().toISOString().slice(0, 10);
-    const stored = localStorage.getItem('rpscQuote');
-    let quote;
-    if (stored) {
-      const parsed = JSON.parse(stored);
-      if (parsed.date === todayKey) quote = parsed.text;
-    }
-    if (!quote) {
-      quote = rpscQuotes[Math.floor(Math.random() * rpscQuotes.length)];
-      localStorage.setItem('rpscQuote', JSON.stringify({ date: todayKey, text: quote }));
-    }
-    document.getElementById('dailyQuoteRpsc').textContent = quote;
-  }
+      <h3 style="font-size: 15px; color:#4b5563; margin-bottom:8px;">Books</h3>
+      <div id="booksList">
+        <div class="empty-state">Admin will upload books list soon.</div>
+      </div>
 
-  // Countdown for three exams (tentative dates – update when official) [web:167]
-  function updateRpscCountdowns() {
-    const now = new Date();
+      <h3 style="font-size: 15px; color:#4b5563; margin:20px 0 8px;">Important Charts / Maps</h3>
+      <div id="formulaList">
+        <div class="empty-state">Admin will upload charts & maps soon.</div>
+      </div>
 
-    const rasPreDate = new Date('2026-02-15T09:00:00');
-    const firstGradeDate = new Date('2026-03-15T09:00:00');
-    const secondGradeDate = new Date('2026-04-15T09:00:00');
+      <h3 style="font-size: 15px; color:#4b5563; margin:20px 0 8px;">Notes & PDFs</h3>
+      <div id="notesList">
+        <div class="empty-state">Admin will upload notes & PDFs soon.</div>
+      </div>
+    </section>
 
-    const rasDays = Math.max(0, Math.floor((rasPreDate - now) / (1000 * 60 * 60 * 24)));
-    const firstDays = Math.max(0, Math.floor((firstGradeDate - now) / (1000 * 60 * 60 * 24)));
-    const secondDays = Math.max(0, Math.floor((secondGradeDate - now) / (1000 * 60 * 60 * 24)));
+    <!-- SYLLABUS TRACKER -->
+    <section class="section-card">
+      <div class="section-header">
+        <h2>Syllabus Tracker</h2>
+        <span>GS · Rajasthan GK · Optional completion overview</span>
+      </div>
 
-    document.getElementById('rasDaysLeft').textContent = rasDays;
-    document.getElementById('firstGradeDaysLeft').textContent = firstDays;
-    document.getElementById('secondGradeDaysLeft').textContent = secondDays;
-  }
+      <div class="syllabus-item">
+        <span><strong>GS</strong></span>
+        <span id="gsPercent">0% Complete</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="gsBar" style="width: 0%"></div>
+      </div>
 
-  function logout() {
-    if (confirm('Logout from GyaanSetu?')) {
-      localStorage.removeItem('userId');
-      localStorage.removeItem('name');
-      localStorage.removeItem('exam');
-      window.location.href = 'index.html';
-    }
-  }
+      <div class="syllabus-item">
+        <span><strong>Rajasthan GK</strong></span>
+        <span id="rajPercent">0% Complete</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="rajBar" style="width: 0%"></div>
+      </div>
 
-  // Study progress backend pattern [web:169][web:178]
-  function updateProgressRpsc(e) {
-    e.preventDefault();
+      <div class="syllabus-item">
+        <span><strong>Optional / Subject</strong></span>
+        <span id="optPercent">0% Complete</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="optBar" style="width: 0%"></div>
+      </div>
+    </section>
 
-    const userId = localStorage.getItem('userId');
-    const exam = localStorage.getItem('exam'); // should be "RPSC"
+    <!-- PATH PRADARSHAK -->
+    <section class="section-card">
+      <div class="section-header">
+        <h2>पथ प्रदर्शक</h2>
+        <span>Daily motivation for RPSC aspirants</span>
+      </div>
+      <div id="motivationalQuotes">
+        <div class="empty-state">Admin will share motivational quotes soon.</div>
+      </div>
+    </section>
+  </div>
 
-    if (!userId || !exam) {
-      alert('Session expired. Please login again.');
-      window.location.href = 'index.html';
-      return;
-    }
+  <script>
+    // RPSC-focused quotes (RAS + Teaching)
+    const rpscQuotes = [
+      'Aaj likhi gayi har answer practice, kal Mains copy par clarity banegi.',
+      'Classroom me khade hone ka sapna, aaj ke disciplined self-study se poora hoga.',
+      'Rajasthan GK ka ek-ek page aapko interview panel ke sawalon se bachata hai.',
+      'Jo candidate roj thoda likhta hai, wahi paper me pura likh paata hai.',
+      'Ek extra mock test aaj, merit list me ek extra step upar kal.'
+    ];
 
-    const hours =
-      parseFloat(document.getElementById('inputStudyHoursRpsc').value) || 0;
-    const topics =
-      parseInt(
-        document.getElementById('inputTopicsCoveredRpsc').value || '0',
-        10
-      ) || 0;
-    const mocks =
-      parseInt(
-        document.getElementById('inputMocksCompletedRpsc').value || '0',
-        10
-      ) || 0;
+    // Daily quote that changes once per day using localStorage
+    function loadDailyQuote() {
+      const todayKey = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+      const stored = localStorage.getItem('rpscQuote');
+      let quote;
 
-    const url =
-      `${SCRIPT_URL}?action=logStudy` +
-      `&userId=${encodeURIComponent(userId)}` +
-      `&exam=${encodeURIComponent(exam)}` +
-      `&hours=${encodeURIComponent(hours)}` +
-      `&topics=${encodeURIComponent(topics)}` +
-      `&mocks=${encodeURIComponent(mocks)}`;
-
-    fetch(url)
-      .then((r) => r.json())
-      .then((data) => {
-        if (!data.success) {
-          throw new Error(data.message || 'Failed to save study log');
+      if (stored) {
+        try {
+          const parsed = JSON.parse(stored);
+          if (parsed.date === todayKey) {
+            quote = parsed.text;
+          }
+        } catch (e) {
+          // ignore parse error
         }
-        const totalsUrl =
-          `${SCRIPT_URL}?action=getStudyTotals` +
-          `&userId=${encodeURIComponent(userId)}` +
-          `&exam=${encodeURIComponent(exam)}`;
-        return fetch(totalsUrl).then((r) => r.json());
-      })
-      .then((totals) => {
-        if (totals && totals.success) {
-          document.getElementById('totalStudyHoursRpsc').textContent =
-            totals.totalHours || 0;
-          document.getElementById('totalTopicsCoveredRpsc').textContent =
-            totals.totalTopics || 0;
-          document.getElementById('totalMocksCompletedRpsc').textContent =
-            totals.totalMocks || 0;
-        }
-        alert('Progress updated successfully!');
-        document.getElementById('dailyProgressFormRpsc').reset();
-      })
-      .catch((err) => {
-        console.error('Update progress error:', err);
-        alert('Error updating progress. Please try again.');
-      });
-  }
+      }
 
-  function loadTotalsRpsc() {
-    const userId = localStorage.getItem('userId');
-    const exam = localStorage.getItem('exam');
-    if (!userId || !exam) return;
+      if (!quote) {
+        quote = rpscQuotes[Math.floor(Math.random() * rpscQuotes.length)];
+        localStorage.setItem('rpscQuote', JSON.stringify({ date: todayKey, text: quote }));
+      }
 
-    const totalsUrl =
-      `${SCRIPT_URL}?action=getStudyTotals` +
-      `&userId=${encodeURIComponent(userId)}` +
-      `&exam=${encodeURIComponent(exam)}`;
+      document.getElementById('dailyQuote').textContent = quote;
+    }
 
-    fetch(totalsUrl)
-      .then((r) => r.json())
-      .then((totals) => {
-        if (totals && totals.success) {
-          document.getElementById('totalStudyHoursRpsc').textContent =
-            totals.totalHours || 0;
-          document.getElementById('totalTopicsCoveredRpsc').textContent =
-            totals.totalTopics || 0;
-          document.getElementById('totalMocksCompletedRpsc').textContent =
-            totals.totalMocks || 0;
-        }
-      })
-      .catch((err) => console.error('Load totals error:', err));
-  }
+    // Countdown: RAS Pre, 1st Grade, 2nd Grade (tentative/official windows)
+    function updateCountdown() {
+      // RAS Pre 2026: 21 June 2026 (speculated) [web:354]
+      const rasDate = new Date('2026-06-21T10:00:00');
 
-  window.onload = function () {
-    document.getElementById('userNameHeader').textContent =
-      localStorage.getItem('name') || 'RPSC Aspirant';
+      // RPSC 1st Grade: 31 May – 16 June 2026 -> start date used [web:364][web:361]
+      const g1Date  = new Date('2026-05-31T10:00:00');
 
-    updateRpscCountdowns();
-    setInterval(updateRpscCountdowns, 60 * 60 * 1000);
+      // RPSC 2nd Grade: 12–18 July 2026 -> start date used [web:356][web:362]
+      const g2Date  = new Date('2026-07-12T10:00:00');
 
-    loadDailyQuoteRpsc();
-    loadTotalsRpsc();
-  };
-</script>
+      const now = new Date();
+
+      const dRas = Math.max(0, Math.floor((rasDate - now) / (1000 * 60 * 60 * 24)));
+      const dG1  = Math.max(0, Math.floor((g1Date  - now) / (1000 * 60 * 60 * 24)));
+      const dG2  = Math.max(0, Math.floor((g2Date  - now) / (1000 * 60 * 60 * 24)));
+
+      document.getElementById('daysRas').textContent = dRas;
+      document.getElementById('daysG1').textContent  = dG1;
+      document.getElementById('daysG2').textContent  = dG2;
+    }
+
+    function logout() {
+      if (confirm('Logout from GyaanSetu?')) {
+        localStorage.removeItem('userId');
+        localStorage.removeItem('name');
+        localStorage.removeItem('exam');
+        window.location.href = 'index.html';
+      }
+    }
+
+    // STUDY PROGRESS
+    function updateProgress(e) {
+      e.preventDefault();
+
+      const userId = localStorage.getItem('userId');
+      const exam   = localStorage.getItem('exam');
+
+      if (!userId || !exam) {
+        alert('Session expired. Please login again.');
+        window.location.href = 'index.html';
+        return;
+      }
+
+      const hours  = parseFloat(document.getElementById('studyHours').value) || 0;
+      const topics = parseInt(document.getElementById('topicsCovered').value || '0', 10);
+      const mocks  = parseInt(document.getElementById('mockTests').value || '0', 10);
+
+      const url = `${SCRIPT_URL}?action=logStudy` +
+                  `&userId=${encodeURIComponent(userId)}` +
+                  `&exam=${encodeURIComponent(exam)}` +
+                  `&hours=${encodeURIComponent(hours)}` +
+                  `&topics=${encodeURIComponent(topics)}` +
+                  `&mocks=${encodeURIComponent(mocks)}`;
+
+      fetch(url)
+        .then(r => r.json())
+        .then(data => {
+          if (!data.success) {
+            throw new Error(data.message || 'Failed to save study log');
+          }
+          const totalsUrl = `${SCRIPT_URL}?action=getStudyTotals` +
+                            `&userId=${encodeURIComponent(userId)}` +
+                            `&exam=${encodeURIComponent(exam)}`;
+          return fetch(totalsUrl).then(r => r.json());
+        })
+        .then(totals => {
+          if (totals && totals.success) {
+            document.getElementById('totalHours').textContent  = totals.totalHours || 0;
+            document.getElementById('totalTopics').textContent = totals.totalTopics || 0;
+            document.getElementById('totalTests').textContent  = totals.totalMocks || 0;
+          }
+          alert('Progress updated successfully!');
+          e.target.reset();
+        })
+        .catch(err => {
+          console.error('Update progress error:', err);
+          alert('Error updating progress. Please try again.');
+        });
+    }
+
+    function loadTotals() {
+      const userId = localStorage.getItem('userId');
+      const exam   = localStorage.getItem('exam');
+      if (!userId || !exam) return;
+
+      const totalsUrl = `${SCRIPT_URL}?action=getStudyTotals` +
+                        `&userId=${encodeURIComponent(userId)}` +
+                        `&exam=${encodeURIComponent(exam)}`;
+
+      fetch(totalsUrl)
+        .then(r => r.json())
+        .then(totals => {
+          if (totals && totals.success) {
+            document.getElementById('totalHours').textContent  = totals.totalHours || 0;
+            document.getElementById('totalTopics').textContent = totals.totalTopics || 0;
+            document.getElementById('totalTests').textContent  = totals.totalMocks || 0;
+          }
+        })
+        .catch(err => console.error('Load totals error:', err));
+    }
+
+    window.onload = function() {
+      document.getElementById('userName').textContent =
+        localStorage.getItem('name') || 'Candidate';
+
+      updateCountdown();
+      setInterval(updateCountdown, 60 * 60 * 1000);
+
+      loadDailyQuote();
+      loadTotals();
+    };
+  </script>
+</body>
+</html>
