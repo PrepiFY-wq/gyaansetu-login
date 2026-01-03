@@ -243,6 +243,30 @@
     .list-item {
       font-size: 13px;
       color: #111827;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .list-title {
+      flex: 1 1 auto;
+    }
+
+    .list-actions a {
+      font-size: 12px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      border: 1px solid #3b82f6;
+      color: #1d4ed8;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .list-actions a:hover {
+      background: #3b82f6;
+      color: #fff;
     }
 
     @media (max-width: 640px) {
@@ -459,13 +483,11 @@
       document.getElementById('dailyQuote').textContent = quote;
     }
 
-    // Fixed countdown numbers
+    // Fixed countdown numbers (example)
     function updateCountdown() {
       document.getElementById('daysRas').textContent = 168;
       document.getElementById('daysG1').textContent  = 148;
       document.getElementById('daysG2').textContent  = 190;
-      // Hours agar dikhane hote to alag spans chahiye hote; abhi UI me sirf days labels hain.
-      // 168 days ≈ 4032 hours, 148 days ≈ 3552 hours, 190 days ≈ 4560 hours.
     }
 
     function logout() {
@@ -494,12 +516,12 @@
       const topics = parseInt(document.getElementById('topicsCovered').value || '0', 10);
       const mocks  = parseInt(document.getElementById('mockTests').value || '0', 10);
 
-      const url = `${SCRIPT_URL}?action=logStudy` +
-                  `&userId=${encodeURIComponent(userId)}` +
-                  `&exam=${encodeURIComponent(exam)}` +
-                  `&hours=${encodeURIComponent(hours)}` +
-                  `&topics=${encodeURIComponent(topics)}` +
-                  `&mocks=${encodeURIComponent(mocks)}`;
+      const url = `${SCRIPT_URL}?action=logStudy`
+                + `&userId=${encodeURIComponent(userId)}`
+                + `&exam=${encodeURIComponent(exam)}`
+                + `&hours=${encodeURIComponent(hours)}`
+                + `&topics=${encodeURIComponent(topics)}`
+                + `&mocks=${encodeURIComponent(mocks)}`;
 
       fetch(url)
         .then(r => r.json())
@@ -507,9 +529,9 @@
           if (!data.success) {
             throw new Error(data.message || 'Failed to save study log');
           }
-          const totalsUrl = `${SCRIPT_URL}?action=getStudyTotals` +
-                            `&userId=${encodeURIComponent(userId)}` +
-                            `&exam=${encodeURIComponent(exam)}`;
+          const totalsUrl = `${SCRIPT_URL}?action=getStudyTotals`
+                          + `&userId=${encodeURIComponent(userId)}`
+                          + `&exam=${encodeURIComponent(exam)}`;
           return fetch(totalsUrl).then(r => r.json());
         })
         .then(totals => {
@@ -532,9 +554,9 @@
       const exam   = localStorage.getItem('exam');
       if (!userId || !exam) return;
 
-      const totalsUrl = `${SCRIPT_URL}?action=getStudyTotals` +
-                        `&userId=${encodeURIComponent(userId)}` +
-                        `&exam=${encodeURIComponent(exam)}`;
+      const totalsUrl = `${SCRIPT_URL}?action=getStudyTotals`
+                      + `&userId=${encodeURIComponent(userId)}`
+                      + `&exam=${encodeURIComponent(exam)}`;
 
       fetch(totalsUrl)
         .then(r => r.json())
@@ -548,23 +570,55 @@
         .catch(err => console.error('Load totals error:', err));
     }
 
-    // Common list renderer
-    function renderList(containerId, items) {
+    // List renderer with View button for links
+    function renderListWithLinks(containerId, items, emptyMessage) {
       const container = document.getElementById(containerId);
       if (!container) return;
       container.innerHTML = '';
       if (!items || !items.length) {
-        container.innerHTML = '<div class="empty-state">No data yet.</div>';
+        container.innerHTML = `<div class="empty-state">${emptyMessage || 'No data yet.'}</div>`;
         return;
       }
+
       const div = document.createElement('div');
       div.className = 'list';
-      items.forEach(text => {
-        const p = document.createElement('div');
-        p.className = 'list-item';
-        p.textContent = typeof text === 'string' ? text : (text.text || text.title || '');
-        div.appendChild(p);
+
+      items.forEach(raw => {
+        const itemText = typeof raw === 'string'
+          ? raw
+          : (raw.text || raw.title || raw.content || raw.link || '');
+
+        const row = document.createElement('div');
+        row.className = 'list-item';
+
+        const titleSpan = document.createElement('span');
+        titleSpan.className = 'list-title';
+
+        let urlMatch = itemText.match(/https?:\/\/\S+/);
+        let link = urlMatch ? urlMatch[0] : null;
+        let titleOnly = link ? itemText.replace(link, '').trim().replace(/-\s*$/, '').trim() : itemText;
+
+        titleSpan.textContent = titleOnly || itemText;
+
+        row.appendChild(titleSpan);
+
+        if (link) {
+          const actions = document.createElement('span');
+          actions.className = 'list-actions';
+
+          const a = document.createElement('a');
+          a.href = link;
+          a.target = '_blank';
+          a.rel = 'noopener noreferrer';
+          a.textContent = 'View';
+
+          actions.appendChild(a);
+          row.appendChild(actions);
+        }
+
+        div.appendChild(row);
       });
+
       container.appendChild(div);
     }
 
@@ -579,25 +633,32 @@
           const p = data.payload;
 
           if (p.announcements) {
-            renderList('announcements', p.announcements.items || []);
+            renderListWithLinks('announcements', p.announcements.items || [],
+              'No announcements yet. Admin will update here.');
           }
           if (p.mockTests) {
-            renderList('testSeriesList', p.mockTests.items || []);
+            renderListWithLinks('testSeriesList', p.mockTests.items || [],
+              'Admin will upload mock tests soon.');
           }
           if (p.pyqPapers) {
-            renderList('pypList', p.pyqPapers.items || []);
+            renderListWithLinks('pypList', p.pyqPapers.items || [],
+              'Admin will upload PYQ PDFs soon.');
           }
           if (p.books) {
-            renderList('booksList', p.books.items || []);
+            renderListWithLinks('booksList', p.books.items || [],
+              'Admin will upload books list soon.');
           }
           if (p.formulaSheets) {
-            renderList('formulaList', p.formulaSheets.items || []);
+            renderListWithLinks('formulaList', p.formulaSheets.items || [],
+              'Admin will upload charts & maps soon.');
           }
           if (p.notesPdfs) {
-            renderList('notesList', p.notesPdfs.items || []);
+            renderListWithLinks('notesList', p.notesPdfs.items || [],
+              'Admin will upload notes & PDFs soon.');
           }
           if (p.quotes && Array.isArray(p.quotes.items) && p.quotes.items.length) {
-            renderList('motivationalQuotes', p.quotes.items || []);
+            renderListWithLinks('motivationalQuotes', p.quotes.items || [],
+              'Admin will share motivational quotes soon.');
           }
         })
         .catch(err => console.error('loadRpscDashboardContent error:', err));
