@@ -249,28 +249,6 @@
       margin-left: 6px;
     }
 
-    .syllabus-item {
-      display: flex;
-      justify-content: space-between;
-      font-size: 13px;
-      padding: 10px 0 5px;
-    }
-
-    .progress-bar {
-      width: 100%;
-      height: 6px;
-      border-radius: 999px;
-      background: #e5e7eb;
-      overflow: hidden;
-      margin-bottom: 10px;
-    }
-
-    .progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #10b981 0%, #3b82f6 100%);
-      width: 0%;
-    }
-
     @media (max-width: 640px) {
       .header {
         padding: 16px 18px;
@@ -429,23 +407,6 @@
       </div>
     </section>
 
-    <!-- DAILY TARGETS & RECENT TOPICS -->
-    <section class="section-card">
-      <div class="section-header">
-        <h2>Daily Targets & Recent Topics</h2>
-        <span>Keep Physics · Chemistry · Maths in balanced focus</span>
-      </div>
-      <h3 style="font-size: 15px; color:#4b5563; margin-bottom:8px;">Daily Targets</h3>
-      <div id="dailyTargets">
-        <div class="empty-state">Admin will upload today's targets soon.</div>
-      </div>
-
-      <h3 style="font-size: 15px; color:#4b5563; margin:20px 0 8px;">Recent Topics</h3>
-      <div id="recentTopics">
-        <div class="empty-state">No recent topics yet.</div>
-      </div>
-    </section>
-
     <!-- TEST PORTAL -->
     <section class="section-card">
       <div class="section-header">
@@ -484,38 +445,6 @@
       <h3 style="font-size: 15px; color:#4b5563; margin:20px 0 8px;">Notes & PDFs</h3>
       <div id="notesList">
         <div class="empty-state">Admin will upload notes & PDFs soon.</div>
-      </div>
-    </section>
-
-    <!-- SYLLABUS TRACKER -->
-    <section class="section-card">
-      <div class="section-header">
-        <h2>Syllabus Tracker</h2>
-        <span>Physics · Chemistry · Maths completion overview</span>
-      </div>
-
-      <div class="syllabus-item">
-        <span><strong>Physics</strong></span>
-        <span id="phyPercent">0% Complete</span>
-      </div>
-      <div class="progress-bar">
-        <div class="progress-fill" id="phyBar" style="width: 0%"></div>
-      </div>
-
-      <div class="syllabus-item">
-        <span><strong>Chemistry</strong></span>
-        <span id="chemPercent">0% Complete</span>
-      </div>
-      <div class="progress-bar">
-        <div class="progress-fill" id="chemBar" style="width: 0%"></div>
-      </div>
-
-      <div class="syllabus-item">
-        <span><strong>Maths</strong></span>
-        <span id="mathPercent">0% Complete</span>
-      </div>
-      <div class="progress-bar">
-        <div class="progress-fill" id="mathBar" style="width: 0%"></div>
       </div>
     </section>
 
@@ -563,17 +492,12 @@
       document.getElementById('dailyQuote').textContent = quote;
     }
 
-    // Fixed countdown numbers (as requested)
+    // Fixed countdown numbers
     function updateCountdown() {
-      // JEE Main Session 1
       document.getElementById('daysLeft1').textContent  = 17;
       document.getElementById('hoursLeft1').textContent = 420;
-
-      // JEE Main Session 2
       document.getElementById('daysLeft2').textContent  = 89;
       document.getElementById('hoursLeft2').textContent = 2124;
-
-      // JEE Advanced
       document.getElementById('daysLeftAdv').textContent  = 133;
       document.getElementById('hoursLeftAdv').textContent = 3204;
     }
@@ -587,7 +511,7 @@
       }
     }
 
-    // STUDY PROGRESS: logStudy + getStudyTotals + getStudyAnalytics
+    // STUDY PROGRESS
     function updateProgress(e) {
       e.preventDefault();
 
@@ -620,7 +544,7 @@
           if (!data || !data.success) {
             throw new Error(data && data.message ? data.message : 'Failed to save study log');
           }
-          // After saving, reload totals
+
           const totalsUrl = `${SCRIPT_URL}?action=getStudyTotals` +
                             `&userId=${encodeURIComponent(userId)}` +
                             `&exam=${encodeURIComponent(exam)}`;
@@ -636,7 +560,6 @@
           }
           alert('Progress updated successfully!');
           document.getElementById('progressForm').reset();
-          // Analytics also update according to same logs
           loadAnalytics();
         })
         .catch(err => {
@@ -666,7 +589,6 @@
         .catch(err => console.error('Load totals error:', err));
     }
 
-    // Performance analytics (avg hours + streak) – getStudyAnalytics
     function loadAnalytics() {
       const userId = localStorage.getItem('userId');
       const exam   = localStorage.getItem('exam');
@@ -688,7 +610,7 @@
         .catch(err => console.error('loadAnalytics error:', err));
     }
 
-    // GENERIC LIST RENDERERS
+    // LIST RENDERERS
     function renderSimpleList(containerId, items) {
       const container = document.getElementById(containerId);
       container.innerHTML = '';
@@ -728,34 +650,6 @@
           const tag = document.createElement('span');
           tag.className = 'tag';
           tag.textContent = highlightLabel;
-          row.appendChild(tag);
-        }
-        list.appendChild(row);
-      });
-      container.appendChild(list);
-    }
-
-    function renderDailyTargets(items) {
-      const container = document.getElementById('dailyTargets');
-      container.innerHTML = '';
-      if (!items || !items.length) {
-        container.innerHTML = '<div class="empty-state">Admin will upload today\'s targets soon.</div>';
-        return;
-      }
-      const list = document.createElement('div');
-      list.className = 'list';
-      items.forEach((it, index) => {
-        const row = document.createElement('div');
-        row.className = 'list-item';
-        row.textContent = typeof it === 'string' ? it : (it.text || it.title || '');
-        if (index === 0) {
-          row.style.fontWeight = '600';
-          row.style.background = '#dcfce7';
-          row.style.borderRadius = '6px';
-          row.style.padding = '6px 8px';
-          const tag = document.createElement('span');
-          tag.className = 'tag';
-          tag.textContent = 'Today';
           row.appendChild(tag);
         }
         list.appendChild(row);
@@ -806,14 +700,6 @@
             renderAnnouncements(p.announcements.items);
           }
 
-          if (p.dailyTargets && Array.isArray(p.dailyTargets.items)) {
-            renderDailyTargets(p.dailyTargets.items);
-          }
-
-          if (p.recentTopics && Array.isArray(p.recentTopics.items)) {
-            renderSimpleList('recentTopics', p.recentTopics.items);
-          }
-
           if (p.testSeries && Array.isArray(p.testSeries.items)) {
             renderHighlightList('testSeriesList', p.testSeries.items, 'NEW');
           }
@@ -834,19 +720,6 @@
             renderHighlightList('notesList', p.notesPdfs.items, 'NEW');
           }
 
-          if (p.syllabus) {
-            const s = p.syllabus;
-            const phy  = s.phyPercent  || 0;
-            const chem = s.chemPercent || 0;
-            const math = s.mathPercent || 0;
-            document.getElementById('phyPercent').textContent  = phy + '% Complete';
-            document.getElementById('chemPercent').textContent = chem + '% Complete';
-            document.getElementById('mathPercent').textContent = math + '% Complete';
-            document.getElementById('phyBar').style.width  = phy  + '%';
-            document.getElementById('chemBar').style.width = chem + '%';
-            document.getElementById('mathBar').style.width = math + '%';
-          }
-
           if (p.quotes && Array.isArray(p.quotes.items) && p.quotes.items.length) {
             renderHighlightList('motivationalQuotes', p.quotes.items, 'NEW');
           }
@@ -858,8 +731,7 @@
       document.getElementById('userName').textContent =
         localStorage.getItem('name') || 'Candidate';
 
-      updateCountdown();   // fixed values
-
+      updateCountdown();
       loadDailyQuote();
       loadTotals();
       loadAnalytics();
