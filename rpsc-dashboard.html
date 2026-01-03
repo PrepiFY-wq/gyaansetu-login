@@ -43,9 +43,7 @@
       font-size: 13px;
     }
 
-    .logout-btn:hover {
-      background: rgba(255,255,255,0.25);
-    }
+    .logout-btn:hover { background: rgba(255,255,255,0.25); }
 
     .container {
       max-width: 1400px;
@@ -136,7 +134,7 @@
       opacity: 0.96;
     }
 
-    /* Update progress as 3 boxes */
+    /* Update progress */
     .update-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -247,28 +245,6 @@
       color: #111827;
     }
 
-    .syllabus-item {
-      display: flex;
-      justify-content: space-between;
-      font-size: 13px;
-      padding: 10px 0 5px;
-    }
-
-    .progress-bar {
-      width: 100%;
-      height: 6px;
-      border-radius: 999px;
-      background: #e5e7eb;
-      overflow: hidden;
-      margin-bottom: 10px;
-    }
-
-    .progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #3b82f6 0%, #22c55e 100%);
-      width: 0%;
-    }
-
     @media (max-width: 640px) {
       .header {
         padding: 16px 18px;
@@ -290,13 +266,8 @@
       const exam = localStorage.getItem('exam');
       const userId = localStorage.getItem('userId');
 
-      if (!exam || !userId) {
+      if (!exam || !userId || exam !== 'RPSC') {
         window.location.href = 'index.html';
-        return;
-      }
-      if (exam !== 'RPSC') {
-        window.location.href = 'index.html';
-        return;
       }
     })();
   </script>
@@ -403,23 +374,6 @@
       </div>
     </section>
 
-    <!-- DAILY TARGETS & RECENT TOPICS -->
-    <section class="section-card">
-      <div class="section-header">
-        <h2>Daily Targets & Recent Topics</h2>
-        <span>GS · Rajasthan GK · Optional focus</span>
-      </div>
-      <h3 style="font-size: 15px; color:#4b5563; margin-bottom:8px;">Daily Targets</h3>
-      <div id="dailyTargets">
-        <div class="empty-state">Admin will upload today's targets soon.</div>
-      </div>
-
-      <h3 style="font-size: 15px; color:#4b5563; margin:20px 0 8px;">Recent Topics</h3>
-      <div id="recentTopics">
-        <div class="empty-state">No recent topics yet.</div>
-      </div>
-    </section>
-
     <!-- TEST PORTAL -->
     <section class="section-card">
       <div class="section-header">
@@ -458,38 +412,6 @@
       <h3 style="font-size: 15px; color:#4b5563; margin:20px 0 8px;">Notes & PDFs</h3>
       <div id="notesList">
         <div class="empty-state">Admin will upload notes & PDFs soon.</div>
-      </div>
-    </section>
-
-    <!-- SYLLABUS TRACKER -->
-    <section class="section-card">
-      <div class="section-header">
-        <h2>Syllabus Tracker</h2>
-        <span>GS · Rajasthan GK · Optional completion overview</span>
-      </div>
-
-      <div class="syllabus-item">
-        <span><strong>GS</strong></span>
-        <span id="gsPercent">0% Complete</span>
-      </div>
-      <div class="progress-bar">
-        <div class="progress-fill" id="gsBar" style="width: 0%"></div>
-      </div>
-
-      <div class="syllabus-item">
-        <span><strong>Rajasthan GK</strong></span>
-        <span id="rajPercent">0% Complete</span>
-      </div>
-      <div class="progress-bar">
-        <div class="progress-fill" id="rajBar" style="width: 0%"></div>
-      </div>
-
-      <div class="syllabus-item">
-        <span><strong>Optional / Subject</strong></span>
-        <span id="optPercent">0% Complete</span>
-      </div>
-      <div class="progress-bar">
-        <div class="progress-fill" id="optBar" style="width: 0%"></div>
       </div>
     </section>
 
@@ -537,21 +459,13 @@
       document.getElementById('dailyQuote').textContent = quote;
     }
 
-    // Countdown
+    // Fixed countdown numbers
     function updateCountdown() {
-      const rasDate = new Date('2026-06-21T10:00:00');
-      const g1Date  = new Date('2026-05-31T10:00:00');
-      const g2Date  = new Date('2026-07-12T10:00:00');
-
-      const now = new Date();
-
-      const dRas = Math.max(0, Math.floor((rasDate - now) / (1000 * 60 * 60 * 24)));
-      const dG1  = Math.max(0, Math.floor((g1Date  - now) / (1000 * 60 * 60 * 24)));
-      const dG2  = Math.max(0, Math.floor((g2Date  - now) / (1000 * 60 * 60 * 24)));
-
-      document.getElementById('daysRas').textContent = dRas;
-      document.getElementById('daysG1').textContent  = dG1;
-      document.getElementById('daysG2').textContent  = dG2;
+      document.getElementById('daysRas').textContent = 168;
+      document.getElementById('daysG1').textContent  = 148;
+      document.getElementById('daysG2').textContent  = 190;
+      // Hours agar dikhane hote to alag spans chahiye hote; abhi UI me sirf days labels hain.
+      // 168 days ≈ 4032 hours, 148 days ≈ 3552 hours, 190 days ≈ 4560 hours.
     }
 
     function logout() {
@@ -648,7 +562,7 @@
       items.forEach(text => {
         const p = document.createElement('div');
         p.className = 'list-item';
-        p.textContent = text;
+        p.textContent = typeof text === 'string' ? text : (text.text || text.title || '');
         div.appendChild(p);
       });
       container.appendChild(div);
@@ -667,12 +581,6 @@
           if (p.announcements) {
             renderList('announcements', p.announcements.items || []);
           }
-          if (p.dailyTargets) {
-            renderList('dailyTargets', p.dailyTargets.items || []);
-          }
-          if (p.recentTopics) {
-            renderList('recentTopics', p.recentTopics.items || []);
-          }
           if (p.mockTests) {
             renderList('testSeriesList', p.mockTests.items || []);
           }
@@ -688,22 +596,6 @@
           if (p.notesPdfs) {
             renderList('notesList', p.notesPdfs.items || []);
           }
-
-          if (p.syllabus) {
-            const s = p.syllabus;
-            const gs  = s.gsPercent  || 0;
-            const raj = s.rajPercent || 0;
-            const opt = s.optPercent || 0;
-
-            document.getElementById('gsPercent').textContent  = gs  + '% Complete';
-            document.getElementById('rajPercent').textContent = raj + '% Complete';
-            document.getElementById('optPercent').textContent = opt + '% Complete';
-
-            document.getElementById('gsBar').style.width  = gs  + '%';
-            document.getElementById('rajBar').style.width = raj + '%';
-            document.getElementById('optBar').style.width = opt + '%';
-          }
-
           if (p.quotes && Array.isArray(p.quotes.items) && p.quotes.items.length) {
             renderList('motivationalQuotes', p.quotes.items || []);
           }
@@ -716,8 +608,6 @@
         localStorage.getItem('name') || 'Candidate';
 
       updateCountdown();
-      setInterval(updateCountdown, 60 * 60 * 1000);
-
       loadDailyQuote();
       loadTotals();
       loadRpscDashboardContent();
