@@ -199,6 +199,7 @@
             <h5 class="mb-0">Exam Dashboards Content</h5>
             <small class="text-muted">
               UPSC, JEE, NEET, RPSC dashboards ke sections yahan se update honge. Title + items (per line) save kar sakte ho.
+              Upload wale sections se file Drive folder me jayegi aur link auto-add hoga.
             </small>
           </div>
           <div class="card-body">
@@ -227,7 +228,7 @@
               <div class="tab-pane fade show active" id="upsc-pane" role="tabpanel">
                 <div class="row g-3">
 
-                  <!-- UPSC Announcements -->
+                  <!-- UPSC Announcements (NO upload) -->
                   <div class="col-md-6">
                     <div class="card h-100">
                       <div class="card-header d-flex justify-content-between align-items-center">
@@ -259,7 +260,7 @@
                     </div>
                   </div>
 
-                  <!-- UPSC Daily Targets -->
+                  <!-- UPSC Daily Targets (NO upload) -->
                   <div class="col-md-6">
                     <div class="card h-100">
                       <div class="card-header d-flex justify-content-between align-items-center">
@@ -291,7 +292,7 @@
                     </div>
                   </div>
 
-                  <!-- UPSC Mock Tests -->
+                  <!-- UPSC Mock Tests (UPLOAD ON) -->
                   <div class="col-md-6">
                     <div class="card h-100">
                       <div class="card-header d-flex justify-content-between align-items-center">
@@ -304,6 +305,19 @@
                           <input id="upscmockTeststitle" class="form-control form-control-sm section-title-input"
                                  placeholder="e.g. Full-length Tests">
                         </div>
+
+                        <div class="mb-2">
+                          <label class="form-label small">Upload file (PDF / Image / Link)</label>
+                          <input type="file" id="upscmockTestsfile" class="form-control form-control-sm">
+                          <button class="btn btn-sm btn-outline-secondary mt-1"
+                                  onclick="uploadAndAppendLink('UPSC','mockTests')">
+                            Upload & attach
+                          </button>
+                          <small class="text-muted d-block">
+                            Mock test PDFs / links yahan se attach karo.
+                          </small>
+                        </div>
+
                         <div class="mb-2">
                           <label class="form-label small">Items (each line test link)</label>
                           <textarea id="upscmockTestsitems"
@@ -323,7 +337,7 @@
                     </div>
                   </div>
 
-                  <!-- UPSC Test Series -->
+                  <!-- UPSC Test Series (UPLOAD ON) -->
                   <div class="col-md-6">
                     <div class="card h-100">
                       <div class="card-header d-flex justify-content-between align-items-center">
@@ -336,8 +350,21 @@
                           <input id="upsctestSeriestitle" class="form-control form-control-sm section-title-input"
                                  placeholder="e.g. Prelims Test Series">
                         </div>
+
                         <div class="mb-2">
-                          <label class="form-label small">Items (each line series item)</label>
+                          <label class="form-label small">Upload file (PDF / Image / Link)</label>
+                          <input type="file" id="upsctestSeriesfile" class="form-control form-control-sm">
+                          <button class="btn btn-sm btn-outline-secondary mt-1"
+                                  onclick="uploadAndAppendLink('UPSC','testSeries')">
+                            Upload & attach
+                          </button>
+                          <small class="text-muted d-block">
+                            Test series schedule / PDFs yahan upload karo.
+                          </small>
+                        </div>
+
+                        <div class="mb-2">
+                          <label class="form-label small">Items (each line series item / link)</label>
                           <textarea id="upsctestSeriesitems"
                                     class="form-control form-control-sm section-items"
                                     placeholder="Test Series 2026 - Paper 1"></textarea>
@@ -355,7 +382,7 @@
                     </div>
                   </div>
 
-                  <!-- UPSC PYQs -->
+                  <!-- UPSC PYQs (UPLOAD ON) -->
                   <div class="col-md-6">
                     <div class="card h-100">
                       <div class="card-header d-flex justify-content-between align-items-center">
@@ -368,6 +395,19 @@
                           <input id="upscpyqPaperstitle" class="form-control form-control-sm section-title-input"
                                  placeholder="e.g. Previous Year Papers">
                         </div>
+
+                        <div class="mb-2">
+                          <label class="form-label small">Upload file (PDF / Image / Link)</label>
+                          <input type="file" id="upscpyqPapersfile" class="form-control form-control-sm">
+                          <button class="btn btn-sm btn-outline-secondary mt-1"
+                                  onclick="uploadAndAppendLink('UPSC','pyqPapers')">
+                            Upload & attach
+                          </button>
+                          <small class="text-muted d-block">
+                            PYQ PDFs yahan se attach karo.
+                          </small>
+                        </div>
+
                         <div class="mb-2">
                           <label class="form-label small">Items (each line paper link)</label>
                           <textarea id="upscpyqPapersitems"
@@ -387,7 +427,7 @@
                     </div>
                   </div>
 
-                  <!-- UPSC Books & Materials -->
+                  <!-- UPSC Books & Materials (UPLOAD ON) -->
                   <div class="col-md-6">
                     <div class="card h-100">
                       <div class="card-header d-flex justify-content-between align-items-center">
@@ -400,6 +440,19 @@
                           <input id="upscbookstitle" class="form-control form-control-sm section-title-input"
                                  placeholder="e.g. Booklist">
                         </div>
+
+                        <div class="mb-2">
+                          <label class="form-label small">Upload file (PDF / Image / Link)</label>
+                          <input type="file" id="upscbooksfile" class="form-control form-control-sm">
+                          <button class="btn btn-sm btn-outline-secondary mt-1"
+                                  onclick="uploadAndAppendLink('UPSC','books')">
+                            Upload & attach
+                          </button>
+                          <small class="text-muted d-block">
+                            Booklist / notes ke PDFs yahan upload karo.
+                          </small>
+                        </div>
+
                         <div class="mb-2">
                           <label class="form-label small">Items (book / note link per line)</label>
                           <textarea id="upscbooksitems"
@@ -419,7 +472,7 @@
                     </div>
                   </div>
 
-                  <!-- UPSC Current Affairs -->
+                  <!-- UPSC Current Affairs (UPLOAD ON) -->
                   <div class="col-md-6">
                     <div class="card h-100">
                       <div class="card-header d-flex justify-content-between align-items-center">
@@ -432,6 +485,19 @@
                           <input id="upsccurrentAffairstitle" class="form-control form-control-sm section-title-input"
                                  placeholder="e.g. Daily CA">
                         </div>
+
+                        <div class="mb-2">
+                          <label class="form-label small">Upload file (PDF / Image / Link)</label>
+                          <input type="file" id="upsccurrentAffairsfile" class="form-control form-control-sm">
+                          <button class="btn btn-sm btn-outline-secondary mt-1"
+                                  onclick="uploadAndAppendLink('UPSC','currentAffairs')">
+                            Upload & attach
+                          </button>
+                          <small class="text-muted d-block">
+                            Daily CA PDFs / links yahan se attach karo.
+                          </small>
+                        </div>
+
                         <div class="mb-2">
                           <label class="form-label small">Items (CA source / file link per line)</label>
                           <textarea id="upsccurrentAffairsitems"
@@ -451,7 +517,7 @@
                     </div>
                   </div>
 
-                  <!-- UPSC Notes & PDFs -->
+                  <!-- UPSC Notes & PDFs (UPLOAD ON) -->
                   <div class="col-md-6">
                     <div class="card h-100">
                       <div class="card-header d-flex justify-content-between align-items-center">
@@ -464,6 +530,19 @@
                           <input id="upscnotesPdfstitle" class="form-control form-control-sm section-title-input"
                                  placeholder="e.g. Notes PDFs">
                         </div>
+
+                        <div class="mb-2">
+                          <label class="form-label small">Upload file (PDF / Image)</label>
+                          <input type="file" id="upscnotesPdfsfile" class="form-control form-control-sm">
+                          <button class="btn btn-sm btn-outline-secondary mt-1"
+                                  onclick="uploadAndAppendLink('UPSC','notesPdfs')">
+                            Upload & attach
+                          </button>
+                          <small class="text-muted d-block">
+                            Notes PDFs yahan upload karo, neeche list me link add ho jayega.
+                          </small>
+                        </div>
+
                         <div class="mb-2">
                           <label class="form-label small">Items (note PDF link per line)</label>
                           <textarea id="upscnotesPdfsitems"
@@ -483,7 +562,7 @@
                     </div>
                   </div>
 
-                  <!-- UPSC Quotes -->
+                  <!-- UPSC Quotes (NO upload) -->
                   <div class="col-md-6">
                     <div class="card h-100">
                       <div class="card-header d-flex justify-content-between align-items-center">
@@ -515,7 +594,7 @@
                     </div>
                   </div>
 
-                  <!-- UPSC Syllabus -->
+                  <!-- UPSC Syllabus (NO upload) -->
                   <div class="col-md-6">
                     <div class="card h-100">
                       <div class="card-header d-flex justify-content-between align-items-center">
@@ -623,7 +702,7 @@
                     </div>
                   </div>
 
-                  <!-- JEE Test Series (mock tests on JEE dashboard) -->
+                  <!-- JEE Test Series -->
                   <div class="col-md-6">
                     <div class="card h-100">
                       <div class="card-header d-flex justify-content-between align-items-center">
@@ -751,7 +830,7 @@
                     </div>
                   </div>
 
-                  <!-- JEE Notes & PDFs -->
+                  <!-- JEE Notes & PDFs (UPLOAD ON) -->
                   <div class="col-md-6">
                     <div class="card h-100">
                       <div class="card-header d-flex justify-content-between align-items-center">
@@ -764,6 +843,19 @@
                           <input id="jeenotesPdfstitle" class="form-control form-control-sm section-title-input"
                                  placeholder="e.g. Notes PDFs">
                         </div>
+
+                        <div class="mb-2">
+                          <label class="form-label small">Upload file (PDF / Image)</label>
+                          <input type="file" id="jeenotesPdfsfile" class="form-control form-control-sm">
+                          <button class="btn btn-sm btn-outline-secondary mt-1"
+                                  onclick="uploadAndAppendLink('JEE','notesPdfs')">
+                            Upload & attach
+                          </button>
+                          <small class="text-muted d-block">
+                            JEE notes PDFs yahan upload karo, neeche list me link add ho jayega.
+                          </small>
+                        </div>
+
                         <div class="mb-2">
                           <label class="form-label small">Items (note PDF link per line)</label>
                           <textarea id="jeenotesPdfsitems"
@@ -821,6 +913,7 @@
               <!-- ================= NEET TAB ================= -->
               <div class="tab-pane fade" id="neet-pane" role="tabpanel">
                 <div class="row g-3">
+
                   <!-- NEET Announcements -->
                   <div class="col-md-6">
                     <div class="card h-100">
@@ -853,7 +946,7 @@
                     </div>
                   </div>
 
-                  <!-- NEET Mock Tests (testSeries key on NEET dashboard) -->
+                  <!-- NEET Mock Tests -->
                   <div class="col-md-6">
                     <div class="card h-100">
                       <div class="card-header d-flex justify-content-between align-items-center">
@@ -949,7 +1042,7 @@
                     </div>
                   </div>
 
-                  <!-- NEET Diagrams / Charts (formulaSheets key) -->
+                  <!-- NEET Diagrams / Charts -->
                   <div class="col-md-6">
                     <div class="card h-100">
                       <div class="card-header d-flex justify-content-between align-items-center">
@@ -981,7 +1074,7 @@
                     </div>
                   </div>
 
-                  <!-- NEET Notes & PDFs -->
+                  <!-- NEET Notes & PDFs (UPLOAD ON) -->
                   <div class="col-md-6">
                     <div class="card h-100">
                       <div class="card-header d-flex justify-content-between align-items-center">
@@ -994,6 +1087,19 @@
                           <input id="neetnotesPdfstitle" class="form-control form-control-sm section-title-input"
                                  placeholder="e.g. Notes PDFs">
                         </div>
+
+                        <div class="mb-2">
+                          <label class="form-label small">Upload file (PDF / Image)</label>
+                          <input type="file" id="neetnotesPdfsfile" class="form-control form-control-sm">
+                          <button class="btn btn-sm btn-outline-secondary mt-1"
+                                  onclick="uploadAndAppendLink('NEET','notesPdfs')">
+                            Upload & attach
+                          </button>
+                          <small class="text-muted d-block">
+                            NEET notes PDFs yahan upload karo, neeche list me link add ho jayega.
+                          </small>
+                        </div>
+
                         <div class="mb-2">
                           <label class="form-label small">Items (note PDF link per line)</label>
                           <textarea id="neetnotesPdfsitems"
@@ -1084,7 +1190,7 @@
                     </div>
                   </div>
 
-                  <!-- RPSC Mock Tests (testSeries key) -->
+                  <!-- RPSC Mock Tests -->
                   <div class="col-md-6">
                     <div class="card h-100">
                       <div class="card-header d-flex justify-content-between align-items-center">
@@ -1180,7 +1286,7 @@
                     </div>
                   </div>
 
-                  <!-- RPSC Charts / Maps (formulaSheets key) -->
+                  <!-- RPSC Charts / Maps -->
                   <div class="col-md-6">
                     <div class="card h-100">
                       <div class="card-header d-flex justify-content-between align-items-center">
@@ -1212,7 +1318,7 @@
                     </div>
                   </div>
 
-                  <!-- RPSC Notes & PDFs -->
+                  <!-- RPSC Notes & PDFs (UPLOAD ON) -->
                   <div class="col-md-6">
                     <div class="card h-100">
                       <div class="card-header d-flex justify-content-between align-items-center">
@@ -1225,6 +1331,19 @@
                           <input id="rpscnotesPdfstitle" class="form-control form-control-sm section-title-input"
                                  placeholder="e.g. Notes PDFs">
                         </div>
+
+                        <div class="mb-2">
+                          <label class="form-label small">Upload file (PDF / Image)</label>
+                          <input type="file" id="rpscnotesPdfsfile" class="form-control form-control-sm">
+                          <button class="btn btn-sm btn-outline-secondary mt-1"
+                                  onclick="uploadAndAppendLink('RPSC','notesPdfs')">
+                            Upload & attach
+                          </button>
+                          <small class="text-muted d-block">
+                            RPSC notes PDFs yahan upload karo, neeche list me link add ho jayega.
+                          </small>
+                        </div>
+
                         <div class="mb-2">
                           <label class="form-label small">Items (note PDF link per line)</label>
                           <textarea id="rpscnotesPdfsitems"
@@ -1290,13 +1409,11 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-  // ================== CONFIG ==================
-  const SCRIPTURL = 'https://script.google.com/macros/s/AKfycbyFiEVyWCStmdOxaSz2AAboplrOXAJn0XuW614KRzLihSL60qL8zy3GEgBVvm0DQPcmQg/exec'; // same Apps Script endpoint [file:45]
+  const SCRIPTURL = 'https://script.google.com/macros/s/AKfycbyFiEVyWCStmdOxaSz2AAboplrOXAJn0XuW614KRzLihSL60qL8zy3GEgBVvm0DQPcmQg/exec';
 
   let registrationsData = [];
   let answerCopiesData = [];
 
-  // ================== HELPERS ==================
   function switchView(viewId, btn) {
     document.getElementById('view-registrations').classList.add('d-none');
     document.getElementById('view-content').classList.add('d-none');
@@ -1314,7 +1431,7 @@
       });
   }
 
-  // ================== REGISTRATIONS ==================
+  // REGISTRATIONS
   function loadRegistrations() {
     const url = SCRIPTURL + '?action=getAll';
     safeFetchJson(url)
@@ -1360,7 +1477,6 @@
 
     filtered.forEach((row, index) => {
       const tr = document.createElement('tr');
-
       const statusPay = (row.paymentStatus || '').toLowerCase();
       const statusVer = (row.verificationStatus || '').toLowerCase();
 
@@ -1500,7 +1616,7 @@
   document.getElementById('filterExam').addEventListener('change', renderRegistrations);
   document.getElementById('filterStatus').addEventListener('change', renderRegistrations);
 
-  // ================== DASHBOARD CONTENT ==================
+  // DASHBOARD CONTENT
   function getItemsFromTextarea(id) {
     const raw = document.getElementById(id).value || '';
     return raw
@@ -1563,7 +1679,6 @@
           setTimeout(() => { msgEl.textContent = ''; }, 2000);
         }
 
-        // Latest content reload
         loadDashboardContentForAdmin(examType);
       })
       .catch(err => {
@@ -1581,18 +1696,6 @@
     if (examType === 'UPSC') {
       payload.prelimsPercent = Number(document.getElementById('upscsyllabusprelims').value || 0);
       payload.mainsPercent   = Number(document.getElementById('upscsyllabusmains').value   || 0);
-    } else if (examType === 'JEE') {
-      payload.phyPercent  = Number(document.getElementById('jeesyllabusphy').value  || 0);
-      payload.chemPercent = Number(document.getElementById('jeesyllabuschem').value || 0);
-      payload.mathPercent = Number(document.getElementById('jeesyllabusmath').value || 0);
-    } else if (examType === 'NEET') {
-      payload.phyPercent  = Number(document.getElementById('neetsyllabusphy').value  || 0);
-      payload.chemPercent = Number(document.getElementById('neetsyllabuschem').value || 0);
-      payload.bioPercent  = Number(document.getElementById('neetsyllabusbio').value  || 0);
-    } else if (examType === 'RPSC') {
-      payload.gsPercent  = Number(document.getElementById('rpscsyllabusgs').value  || 0);
-      payload.rajPercent = Number(document.getElementById('rpscsyllabusraj').value || 0);
-      payload.optPercent = Number(document.getElementById('rpscsyllabusopt').value || 0);
     }
 
     const formData = new FormData();
@@ -1623,18 +1726,6 @@
         if (examType === 'UPSC') {
           document.getElementById('upscsyllabusprelims').value = '';
           document.getElementById('upscsyllabusmains').value   = '';
-        } else if (examType === 'JEE') {
-          document.getElementById('jeesyllabusphy').value  = '';
-          document.getElementById('jeesyllabuschem').value = '';
-          document.getElementById('jeesyllabusmath').value = '';
-        } else if (examType === 'NEET') {
-          document.getElementById('neetsyllabusphy').value  = '';
-          document.getElementById('neetsyllabuschem').value = '';
-          document.getElementById('neetsyllabusbio').value  = '';
-        } else if (examType === 'RPSC') {
-          document.getElementById('rpscsyllabusgs').value  = '';
-          document.getElementById('rpscsyllabusraj').value = '';
-          document.getElementById('rpscsyllabusopt').value = '';
         }
 
         if (msgEl) {
@@ -1685,41 +1776,85 @@
           }
         }
 
-        // Common keys used on dashboards
         [
           'announcements',
-          'dailyTargets',   // sirf UPSC me use hoga; JEE/NEET/RPSC me ignore ho jayega
+          'dailyTargets',
           'mockTests',
           'testSeries',
           'pyqPapers',
           'books',
-          'currentAffairs', // UPSC only; baaki me ignore
+          'currentAffairs',
           'formulaSheets',
           'notesPdfs',
           'quotes'
         ].forEach(fillSection);
-
-        if (p.syllabus) {
-          if (examType === 'UPSC') {
-            document.getElementById('upscsyllabusprelims').value = '';
-            document.getElementById('upscsyllabusmains').value   = '';
-            const last = document.getElementById('upscsyllabuslast');
-            if (last) {
-              last.value =
-                'Prelims: ' + (p.syllabus.prelimsPercent || 0) + '%\n' +
-                'Mains: '   + (p.syllabus.mainsPercent   || 0) + '%';
-            }
-          }
-          // JEE / NEET / RPSC syllabus trackers ab dashboards se hata diye gaye hain,
-          // isliye yahan unka last text show karne ki zarurat nahi hai.
-        }
       })
       .catch(err => {
         console.error('loadDashboardContentForAdmin error', err);
       });
   }
 
-  // ================== ANSWER COPIES ==================
+  // FILE UPLOAD
+  function uploadAndAppendLink(examType, sectionKey) {
+    const prefix = prefixForExam(examType);
+    const fileInputId = prefix + sectionKey + 'file';
+    const itemsId = prefix + sectionKey + 'items';
+    const msgId   = prefix + sectionKey + 'msg';
+
+    const fileInput = document.getElementById(fileInputId);
+    const file = fileInput?.files?.[0];
+    if (!file) {
+      alert('Pehele file choose karo');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('action', 'uploadDashboardFile');
+    formData.append('examType', examType);
+    formData.append('sectionKey', sectionKey);
+    formData.append('file', file);
+
+    const msgEl = document.getElementById(msgId);
+    if (msgEl) {
+      msgEl.textContent = 'Uploading...';
+      msgEl.className = 'text-muted small';
+    }
+
+    fetch(SCRIPTURL, {
+      method: 'POST',
+      body: formData
+    })
+      .then(r => r.json())
+      .then(res => {
+        if (!res.success || !res.link) {
+          throw new Error(res.message || 'Upload failed');
+        }
+
+        const textarea = document.getElementById(itemsId);
+        const current = textarea.value.trim();
+        const title = res.name || file.name;
+        const line = title + ' - ' + res.link;
+
+        textarea.value = current ? (current + '\n' + line) : line;
+        fileInput.value = '';
+
+        if (msgEl) {
+          msgEl.textContent = 'File uploaded, link added';
+          msgEl.className = 'text-success small';
+          setTimeout(() => { msgEl.textContent = ''; }, 2000);
+        }
+      })
+      .catch(err => {
+        console.error('uploadAndAppendLink error', err);
+        alert('Error uploading file');
+        if (msgEl) {
+          msgEl.textContent = 'Upload error';
+          msgEl.className = 'text-danger small';
+        }
+      });
+  }
+
+  // ANSWER COPIES
   function loadAnswerCopies() {
     const tbody = document.getElementById('answerCopiesBody');
     tbody.innerHTML = `
@@ -1822,7 +1957,6 @@
       });
   }
 
-  // ================== INIT ==================
   function init() {
     loadRegistrations();
     loadDashboardContentForAdmin('UPSC');
