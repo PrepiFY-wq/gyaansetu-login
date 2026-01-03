@@ -340,12 +340,10 @@
   <script>
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyFiEVyWCStmdOxaSz2AAboplrOXAJn0XuW614KRzLihSL60qL8zy3GEgBVvm0DQPcmQg/exec';
 
-    // UPSC CSE Prelims 2026: 24 May 2026, 9:00 AM (local) [web:39]
-   // 24 May 2026, 9:00 AM IST
-const examDate = new Date('2026-05-24T09:00:00+05:30'); // [web:92][web:79]
-
-    // Countdown visible start: 3 Jan 2026, 8:00 AM
-    const countdownStart = new Date(2026, 0, 3, 8, 0, 0);
+    // 24 May 2026, 9:00 AM IST [web:100]
+    const examDate = new Date('2026-05-24T09:00:00+05:30');
+    // Countdown visible start: 3 Jan 2026, 8:00 AM IST
+    const countdownStart = new Date('2026-01-03T08:00:00+05:30');
 
     (function guardAccess() {
       const exam = localStorage.getItem('exam');
@@ -653,7 +651,6 @@ const examDate = new Date('2026-05-24T09:00:00+05:30'); // [web:92][web:79]
       const storedDate = localStorage.getItem('upsc_daily_quote_date');
       const storedQuote = localStorage.getItem('upsc_daily_quote_text');
 
-      // Agar same date hai aur stored quote hai, wahi dikhाओ
       if (storedDate === today && storedQuote && !text) {
         document.getElementById('dailyQuote').textContent = storedQuote;
         return;
@@ -662,65 +659,34 @@ const examDate = new Date('2026-05-24T09:00:00+05:30'); // [web:92][web:79]
       let finalText = text || getRandomFallbackQuote();
       document.getElementById('dailyQuote').textContent = finalText;
 
-      // Store for the day
       localStorage.setItem('upsc_daily_quote_date', today);
       localStorage.setItem('upsc_daily_quote_text', finalText);
     }
 
-    // COUNTDOWN (days + hours) – har second refresh
- function updateCountdown() {
-  const now = new Date();
+    // COUNTDOWN (days + total hours)
+    function updateCountdown() {
+      const now = new Date();
 
-  // 3 Jan 2026, 8:00 AM se pehle ho to 0-0
-  if (now < countdownStart) {
-    document.getElementById('daysLeft').textContent  = 0;
-    document.getElementById('hoursLeft').textContent = 0;
-    return;
-  }
+      if (now < countdownStart) {
+        document.getElementById('daysLeft').textContent  = 0;
+        document.getElementById('hoursLeft').textContent = 0;
+        return;
+      }
 
-  const diffMs = examDate.getTime() - now.getTime();
+      const diffMs = examDate.getTime() - now.getTime();
 
-  if (diffMs <= 0) {
-    document.getElementById('daysLeft').textContent  = 0;
-    document.getElementById('hoursLeft').textContent = 0;
-    return;
-  }
+      if (diffMs <= 0) {
+        document.getElementById('daysLeft').textContent  = 0;
+        document.getElementById('hoursLeft').textContent = 0;
+        return;
+      }
 
-  // Total days + total hours exam tak [web:57][web:62]
-  const totalHours = Math.floor(diffMs / (1000 * 60 * 60));
-  const days       = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+      // Total days and total hours until exam [web:64][web:94]
+      const totalHours = Math.floor(diffMs / (1000 * 60 * 60));
+      const days       = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
-  document.getElementById('daysLeft').textContent  = days;
-  document.getElementById('hoursLeft').textContent = totalHours;
-}
-
-
-     function updateCountdown() {
-  const now = new Date();
-
-  // 3 Jan 2026, 8:00 AM se pehle ho to 0-0
-  if (now < countdownStart) {
-    document.getElementById('daysLeft').textContent  = 0;
-    document.getElementById('hoursLeft').textContent = 0;
-    return;
-  }
-
-  const diffMs = examDate.getTime() - now.getTime();
-
-  if (diffMs <= 0) {
-    document.getElementById('daysLeft').textContent  = 0;
-    document.getElementById('hoursLeft').textContent = 0;
-    return;
-  }
-
-  // Total hours exam tak
-  const totalHours = Math.floor(diffMs / (1000 * 60 * 60)); // [web:62][web:68]
-  const days  = Math.floor(diffMs / (1000 * 60 * 60 * 24)); // total days
-  // Hours box me ab se exam tak ke TOTAL hours dikhayenge
-  document.getElementById('daysLeft').textContent  = days;
-  document.getElementById('hoursLeft').textContent = totalHours;
-}
-
+      document.getElementById('daysLeft').textContent  = days;
+      document.getElementById('hoursLeft').textContent = totalHours;
     }
 
     function logout() {
@@ -845,7 +811,7 @@ const examDate = new Date('2026-05-24T09:00:00+05:30'); // [web:92][web:79]
         .catch(err => console.error('loadAnalytics error:', err));
     }
 
-    // ========== GENERIC LIST RENDER HELPERS ==========
+    // ========== GENERIC LIST RENDER HELPERS (latest + recents) ==========
 
     function renderAnnouncements(items) {
       const container = document.getElementById('announcements');
@@ -871,7 +837,7 @@ const examDate = new Date('2026-05-24T09:00:00+05:30'); // [web:92][web:79]
           row.style.padding = '6px 8px';
         }
 
-        if (it.id && it.id !== lastSeen) {
+        if (it.id && it.id !== lastSeen && index === 0) {
           const tag = document.createElement('span');
           tag.className = 'tag';
           tag.textContent = 'NEW';
@@ -1166,9 +1132,9 @@ const examDate = new Date('2026-05-24T09:00:00+05:30'); // [web:92][web:79]
       document.getElementById('userName').textContent =
         localStorage.getItem('name') || 'Candidate';
 
+      // Countdown: har second, days + total hours
       updateCountdown();
-      // Har second countdown refresh
-      setInterval(updateCountdown, 1000); // [web:49]
+      setInterval(updateCountdown, 1000); // [web:59]
 
       setDailyQuote();
       loadTotals();
