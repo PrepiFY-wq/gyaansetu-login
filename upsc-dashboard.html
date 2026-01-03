@@ -340,10 +340,10 @@
   <script>
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyFiEVyWCStmdOxaSz2AAboplrOXAJn0XuW614KRzLihSL60qL8zy3GEgBVvm0DQPcmQg/exec';
 
-    // UPSC CSE Prelims 2026: 24 May 2026, 9:00 AM IST [web:150][web:152]
-    const examDate = new Date('2026-05-24T09:00:00+05:30');
-    // Countdown start: 3 Jan 2026, 8:00 AM IST
-    const countdownStart = new Date('2026-01-03T08:00:00+05:30');
+    // UPSC CSE Prelims 2026: 24 May 2026, 9:00 AM (local) [web:150][web:152]
+    const examDate = new Date(2026, 4, 24, 9, 0, 0);      // May = 4 (0-based) [web:151][web:146]
+    // Countdown start: 3 Jan 2026, 8:00 AM
+    const countdownStart = new Date(2026, 0, 3, 8, 0, 0); // Jan = 0
 
     (function guardAccess() {
       const exam = localStorage.getItem('exam');
@@ -634,31 +634,30 @@
         text || getRandomFallbackQuote();
     }
 
-    // COUNTDOWN (days + hours) using fixed start 3 Jan 2026, 8:00 AM
-   // COUNTDOWN (days + hours) – robust version
-function updateCountdown() {
-  const now = new Date();
+    // COUNTDOWN (days + hours) – robust version
+    function updateCountdown() {
+      const now = new Date();
 
-  // 3 Jan 2026, 8:00 AM se pehle ho to bhi base 3 Jan hi rahe
-  const effectiveNow = now < countdownStart ? countdownStart : now;
+      // 3 Jan 2026, 8:00 AM se pehle ho to bhi base 3 Jan hi rahe
+      const effectiveNow = now < countdownStart ? countdownStart : now;
 
-  const diffMs = examDate.getTime() - effectiveNow.getTime();
+      const diffMs = examDate.getTime() - effectiveNow.getTime();
 
-  if (diffMs <= 0) {
-    document.getElementById('daysLeft').textContent = 0;
-    document.getElementById('hoursLeft').textContent = 0;
-    return;
-  }
+      if (diffMs <= 0) {
+        document.getElementById('daysLeft').textContent = 0;
+        document.getElementById('hoursLeft').textContent = 0;
+        return;
+      }
 
-  // Total hours bache hue
-  const totalHours = Math.floor(diffMs / (1000 * 60 * 60)); // [web:23][web:229]
+      // Total hours bache hue
+      const totalHours = Math.floor(diffMs / (1000 * 60 * 60)); // [web:23][web:125]
 
-  const days  = Math.floor(totalHours / 24);
-  const hours = totalHours % 24;
+      const days  = Math.floor(totalHours / 24);
+      const hours = totalHours % 24;
 
-  document.getElementById('daysLeft').textContent  = days;
-  document.getElementById('hoursLeft').textContent = hours;
-}
+      document.getElementById('daysLeft').textContent  = days;
+      document.getElementById('hoursLeft').textContent = hours;
+    }
 
     function logout() {
       if (confirm('Logout from GyaanSetu?')) {
@@ -1111,7 +1110,7 @@ function updateCountdown() {
 
       updateCountdown();
       // Har hour me countdown refresh (fixed hours countdown)
-      setInterval(updateCountdown, 60 * 60 * 1000); // [web:218][web:159]
+      setInterval(updateCountdown, 60 * 60 * 1000); // [web:39][web:218]
 
       setDailyQuote();
       loadTotals();
