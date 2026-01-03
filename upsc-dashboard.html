@@ -340,7 +340,8 @@
   <script>
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyFiEVyWCStmdOxaSz2AAboplrOXAJn0XuW614KRzLihSL60qL8zy3GEgBVvm0DQPcmQg/exec';
 
-    // UPSC CSE Prelims 2026: 24 May 2026, 9:00 AM IST
+    // UPSC CSE Prelims 2026: 24 May 2026, Sunday (UPSC calendar) [web:150][web:152]
+    // 9:00 AM IST as target time
     const examDate = new Date('2026-05-24T09:00:00+05:30');
 
     (function guardAccess() {
@@ -632,7 +633,7 @@
         text || getRandomFallbackQuote();
     }
 
-    // COUNTDOWN (days + hours exact)
+    // COUNTDOWN (days + hours exact, live update)
     function updateCountdown() {
       const now = new Date();
       const diff = examDate - now;
@@ -1101,8 +1102,8 @@
         localStorage.getItem('name') || 'Candidate';
 
       updateCountdown();
-      // 1 minute me ek baar countdown refresh
-      setInterval(updateCountdown, 60 * 1000);
+      // 1 minute me ek baar countdown refresh (hours & date auto update)
+      setInterval(updateCountdown, 60 * 1000); // [web:133][web:123]
 
       setDailyQuote();
       loadTotals();
