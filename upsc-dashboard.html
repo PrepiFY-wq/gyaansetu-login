@@ -635,30 +635,30 @@
     }
 
     // COUNTDOWN (days + hours) using fixed start 3 Jan 2026, 8:00 AM
-    function updateCountdown() {
-      const now = new Date();
+   // COUNTDOWN (days + hours) – robust version
+function updateCountdown() {
+  const now = new Date();
 
-      // 3 Jan 8AM se pehle ho to bhi base 3 Jan 8AM hi rahe
-      const effectiveNow = now < countdownStart ? countdownStart : now;
+  // 3 Jan 2026, 8:00 AM se pehle ho to bhi base 3 Jan hi rahe
+  const effectiveNow = now < countdownStart ? countdownStart : now;
 
-      const diffMs = examDate - effectiveNow;
+  const diffMs = examDate.getTime() - effectiveNow.getTime();
 
-      if (diffMs <= 0) {
-        document.getElementById('daysLeft').textContent = 0;
-        document.getElementById('hoursLeft').textContent = 0;
-        return;
-      }
+  if (diffMs <= 0) {
+    document.getElementById('daysLeft').textContent = 0;
+    document.getElementById('hoursLeft').textContent = 0;
+    return;
+  }
 
-      // Total hours remaining from effectiveNow to exam
-      const totalHours = Math.floor(diffMs / (1000 * 60 * 60)); // ms → hours [web:159][web:160]
+  // Total hours bache hue
+  const totalHours = Math.floor(diffMs / (1000 * 60 * 60)); // [web:23][web:229]
 
-      // Days + remaining hours (layout same rakha)
-      const days = Math.floor(totalHours / 24);
-      const hours = totalHours % 24;
+  const days  = Math.floor(totalHours / 24);
+  const hours = totalHours % 24;
 
-      document.getElementById('daysLeft').textContent  = days;
-      document.getElementById('hoursLeft').textContent = hours;
-    }
+  document.getElementById('daysLeft').textContent  = days;
+  document.getElementById('hoursLeft').textContent = hours;
+}
 
     function logout() {
       if (confirm('Logout from GyaanSetu?')) {
