@@ -129,7 +129,7 @@
 
     .countdown-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      grid-template-columns: repeat(2, minmax(140px, 1fr));
       gap: 15px;
       margin: 15px 0 10px;
     }
@@ -340,8 +340,8 @@
   <script>
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyFiEVyWCStmdOxaSz2AAboplrOXAJn0XuW614KRzLihSL60qL8zy3GEgBVvm0DQPcmQg/exec';
 
-    // UPSC CSE Prelims 2026: 24 May 2026, 9:00 AM (local) [web:150][web:152]
-    const examDate = new Date(2026, 4, 24, 9, 0, 0);      // May = 4 (0-based) [web:151][web:146]
+    // UPSC CSE Prelims 2026: 24 May 2026, 9:00 AM (local) [web:39]
+    const examDate = new Date(2026, 4, 24, 9, 0, 0);
     // Countdown visible start: 3 Jan 2026, 8:00 AM
     const countdownStart = new Date(2026, 0, 3, 8, 0, 0);
 
@@ -616,6 +616,23 @@
   </div>
 
   <script>
+    // ---------- Generic safe fetch helper (with basic retries) ----------
+    async function safeFetchJson(url, options = {}, retries = 1) {
+      try {
+        const res = await fetch(url, options);
+        if (!res.ok) {
+          throw new Error('HTTP ' + res.status);
+        }
+        return await res.json();
+      } catch (err) {
+        if (retries > 0) {
+          return safeFetchJson(url, options, retries - 1);
+        }
+        console.error('API error:', err);
+        throw err;
+      }
+    }
+
     // Local fallback quotes
     const fallbackQuotes = [
       'The future belongs to those who believe in the beauty of their dreams.',
@@ -630,15 +647,29 @@
     }
 
     function setDailyQuote(text) {
-      document.getElementById('dailyQuote').textContent =
-        text || getRandomFallbackQuote();
+      const today = new Date().toISOString().slice(0, 10);
+      const storedDate = localStorage.getItem('upsc_daily_quote_date');
+      const storedQuote = localStorage.getItem('upsc_daily_quote_text');
+
+      // Agar same date hai aur stored quote hai, wahi dikhाओ
+      if (storedDate === today && storedQuote && !text) {
+        document.getElementById('dailyQuote').textContent = storedQuote;
+        return;
+      }
+
+      let finalText = text || getRandomFallbackQuote();
+      document.getElementById('dailyQuote').textContent = finalText;
+
+      // Store for the day
+      localStorage.setItem('upsc_daily_quote_date', today);
+      localStorage.setItem('upsc_daily_quote_text', finalText);
     }
 
-    // COUNTDOWN (days + hours) – final stable version
+    // COUNTDOWN (days + hours) – har second refresh
     function updateCountdown() {
       const now = new Date();
 
-      // 3 Jan 2026, 8:00 AM se pehle ho to kuch mat dikhाओ
+      // 3 Jan 2026, 8:00 AM se pehle ho to 0-0
       if (now < countdownStart) {
         document.getElementById('daysLeft').textContent  = 0;
         document.getElementById('hoursLeft').textContent = 0;
@@ -653,9 +684,7 @@
         return;
       }
 
-      // Total hours exam tak
-      const totalHours = Math.floor(diffMs / (1000 * 60 * 60)); // [web:154][web:198]
-
+      const totalHours = Math.floor(diffMs / (1000 * 60 * 60));
       const days  = Math.floor(totalHours / 24);
       const hours = totalHours % 24;
 
@@ -714,11 +743,7 @@
                   `&topics=${encodeURIComponent(topics)}` +
                   `&mocks=${encodeURIComponent(mocks)}`;
 
-      fetch(url)
-        .then(r => {
-          if (!r.ok) throw new Error('Network error: ' + r.status);
-          return r.json();
-        })
+      safeFetchJson(url)
         .then(data => {
           if (!data || !data.success) {
             throw new Error(data && data.message ? data.message : 'Failed to save study log');
@@ -726,7 +751,7 @@
           const totalsUrl = `${SCRIPT_URL}?action=getStudyTotals` +
                             `&userId=${encodeURIComponent(userId)}` +
                             `&exam=${encodeURIComponent(exam)}`;
-          return fetch(totalsUrl).then(r => r.json());
+          return safeFetchJson(totalsUrl);
         })
         .then(totals => {
           if (totals && totals.success) {
@@ -742,7 +767,7 @@
         })
         .catch(err => {
           console.error('Update progress error:', err);
-          alert('Error updating progress: ' + err.message);
+          alert('Error updating progress. Please try again later.');
         });
     }
 
@@ -755,8 +780,7 @@
                         `&userId=${encodeURIComponent(userId)}` +
                         `&exam=${encodeURIComponent(exam)}`;
 
-      fetch(totalsUrl)
-        .then(r => r.json())
+      safeFetchJson(totalsUrl)
         .then(totals => {
           if (totals && totals.success) {
             document.getElementById('totalHours').textContent  = totals.totalHours || 0;
@@ -764,7 +788,9 @@
             document.getElementById('totalTests').textContent  = totals.totalMocks || 0;
           }
         })
-        .catch(err => console.error('Load totals error:', err));
+        .catch(err => {
+          console.error('Load totals error:', err);
+        });
     }
 
     // Performance analytics (avg hours + streak)
@@ -777,8 +803,7 @@
                   `&userId=${encodeURIComponent(userId)}` +
                   `&exam=${encodeURIComponent(exam)}`;
 
-      fetch(url)
-        .then(r => r.json())
+      safeFetchJson(url)
         .then(data => {
           if (!data || !data.success) return;
           document.getElementById('avgHours').textContent =
@@ -911,8 +936,7 @@
     function loadDashboardContent() {
       const url = `${SCRIPT_URL}?action=getDashboardContent&examType=UPSC`;
 
-      fetch(url)
-        .then(r => r.json())
+      safeFetchJson(url)
         .then(data => {
           if (!data || !data.success || !data.payload) {
             setDailyQuote();
@@ -1033,7 +1057,7 @@
         })
         .catch(err => {
           console.error('submitAnswerCopy error:', err);
-          alert('Error uploading file. Please try again.');
+          alert('Error uploading file. Please try again later.');
         });
     }
 
@@ -1044,8 +1068,7 @@
       const url = `${SCRIPT_URL}?action=getAnswerSubmissions` +
                   `&userId=${encodeURIComponent(userId)}`;
 
-      fetch(url)
-        .then(r => r.json())
+      safeFetchJson(url)
         .then(data => {
           const container = document.getElementById('answerSubmissions');
           container.innerHTML = '';
@@ -1107,20 +1130,26 @@
         });
     }
 
-    // ONLOAD
+    // ONLOAD + periodic auto-refresh
     window.onload = function() {
       document.getElementById('userName').textContent =
         localStorage.getItem('name') || 'Candidate';
 
       updateCountdown();
-      // Har ghante countdown refresh
-      setInterval(updateCountdown, 60 * 60 * 1000); // [web:39][web:218]
+      // Har second countdown refresh
+      setInterval(updateCountdown, 1000); // [web:49]
 
       setDailyQuote();
       loadTotals();
       loadAnalytics();
       loadDashboardContent();
       loadAnswerSubmissions();
+
+      // Auto-refresh admin data har 5 minute me
+      setInterval(loadDashboardContent, 5 * 60 * 1000);
+      setInterval(loadTotals, 5 * 60 * 1000);
+      setInterval(loadAnalytics, 5 * 60 * 1000);
+      setInterval(loadAnswerSubmissions, 5 * 60 * 1000);
     };
   </script>
 </body>
