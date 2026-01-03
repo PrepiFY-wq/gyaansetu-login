@@ -959,51 +959,76 @@
 
     // ========== ANSWER WRITING FRONT-END ==========
 
-    function submitAnswerCopy(e) {
-      e.preventDefault();
+ function submitAnswerCopy(e) {
+  e.preventDefault();
 
-      const userId = localStorage.getItem('userId');
-      const name   = localStorage.getItem('name') || '';
-      const exam   = localStorage.getItem('exam');
+  const userId = localStorage.getItem('userId');
+  const name   = localStorage.getItem('name') || '';
+  const exam   = localStorage.getItem('exam');
 
-      if (!userId || !exam) {
-        alert('Session expired. Please login again.');
-        window.location.href = 'index.html';
-        return;
-      }
+  if (!userId || !exam) {
+    alert('Session expired. Please login again.');
+    window.location.href = 'index.html';
+    return;
+  }
 
-      const paperType = document.getElementById('paperType').value;
-      const fileInput = document.getElementById('answerFile');
-      if (!paperType || !fileInput.files.length) {
-        alert('Please select paper and file.');
-        return;
-      }
+  const paperType = document.getElementById('paperType').value;
+  const fileInput = document.getElementById('answerFile');
+  if (!paperType || !fileInput.files.length) {
+    alert('Please select paper and file.');
+    return;
+  }
 
-      const formData = new FormData();
-      formData.append('action', 'uploadAnswerCopy');
-      formData.append('userId', userId);
-      formData.append('name', name);
-      formData.append('paperType', paperType);
-      formData.append('file', fileInput.files[0]);
+  const file = fileInput.files[0];
+  const reader = new FileReader();
 
-      fetch(SCRIPT_URL, {
-        method: 'POST',
-        body: formData
+  reader.onload = function(ev) {
+    // ev.target.result = "data:<mime>;base64,AAAA..."
+    const dataUrl = ev.target.result;
+    const base64  = dataUrl.split(',')[1] || '';
+    const mime    = dataUrl.substring(
+      dataUrl.indexOf(':') + 1,
+      dataUrl.indexOf(';')
+    ) || file.type || 'application/octet-stream';
+
+    const payload = {
+      action   : 'uploadAnswerCopy',
+      userId   : userId,
+      name     : name,
+      paperType: paperType,
+      fileName : file.name,
+      mimeType : mime,
+      data     : base64
+    };
+
+    fetch(SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    })
+      .then(r => r.json())
+      .then(res => {
+        if (!res.success) {
+          throw new Error(res.message || 'Upload failed');
+        }
+        alert('Answer copy uploaded for evaluation.');
+        document.getElementById('answerForm').reset();
+        loadAnswerSubmissions();
       })
-        .then(r => r.json())
-        .then(res => {
-          if (!res.success) {
-            throw new Error(res.message || 'Upload failed');
-          }
-          alert('Answer copy uploaded for evaluation.');
-          document.getElementById('answerForm').reset();
-          loadAnswerSubmissions();
-        })
-        .catch(err => {
-          console.error('submitAnswerCopy error:', err);
-          alert('Error uploading file. Please try again later.');
-        });
-    }
+      .catch(err => {
+        console.error('submitAnswerCopy error:', err);
+        alert('Error uploading file. Please try again later.');
+      });
+  };
+
+  reader.onerror = function(err) {
+    console.error('FileReader error:', err);
+    alert('Could not read file.');
+  };
+
+  reader.readAsDataURL(file);
+}
+
 
     function loadAnswerSubmissions() {
       const userId = localStorage.getItem('userId');
