@@ -1,1174 +1,1412 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GyaanSetu Admin Panel</title>
+<meta charset="UTF-8">
+<title>GyaanSetu Admin Panel</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Bootstrap CSS -->
-  <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-    rel="stylesheet"
-  />
+<!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-  <style>
-    body {
-      background-color: #f4f5fb;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    }
-    .sidebar {
-      min-height: 100vh;
-      background: #111827;
-      color: #e5e7eb;
-    }
-    .sidebar .nav-link {
-      color: #9ca3af;
-      border-radius: 8px;
-      margin-bottom: 4px;
-    }
-    .sidebar .nav-link.active,
-    .sidebar .nav-link:hover {
-      color: #fff;
-      background: #1f2937;
-    }
-    .brand {
-      font-weight: 700;
-      font-size: 20px;
-      letter-spacing: 0.03em;
-    }
-    .status-pill {
-      display: inline-flex;
-      align-items: center;
-      padding: 2px 10px;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: 600;
-    }
-    .status-pending {
-      background: #fef3c7;
-      color: #92400e;
-    }
-    .status-verified {
-      background: #dcfce7;
-      color: #166534;
-    }
-    .status-rejected {
-      background: #fee2e2;
-      color: #b91c1c;
-    }
-    .card {
-      border-radius: 16px;
-      border: none;
-      box-shadow: 0 10px 30px rgba(15,23,42,0.06);
-    }
-    .card-header {
-      background: transparent;
-      border-bottom: 1px solid #e5e7eb;
-    }
-    .metric-value {
-      font-size: 28px;
-      font-weight: 700;
-      color: #111827;
-    }
-    .metric-label {
-      font-size: 14px;
-      color: #6b7280;
-    }
-    textarea.section-items {
-      min-height: 100px;
-      resize: vertical;
-    }
-    .section-title-input {
-      font-size: 14px;
-    }
-    .tab-pane {
-      padding-top: 10px;
-    }
-    .action-btn-sm {
-      font-size: 12px;
-      padding-inline: 10px;
-    }
-  </style>
+<style>
+body {
+  background-color: #f4f5fb;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+.sidebar {
+  min-height: 100vh;
+  background: #111827;
+  color: #e5e7eb;
+}
+.sidebar .nav-link {
+  color: #9ca3af;
+  border-radius: 8px;
+  margin-bottom: 4px;
+}
+.sidebar .nav-link.active,
+.sidebar .nav-link:hover {
+  color: #fff;
+  background: #1f2937;
+}
+.brand {
+  font-weight: 700;
+  font-size: 20px;
+  letter-spacing: 0.03em;
+}
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.status-pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+.status-verified {
+  background: #dcfce7;
+  color: #166534;
+}
+.status-rejected {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+.card {
+  border-radius: 16px;
+  border: none;
+  box-shadow: 0 10px 30px rgba(15,23,42,0.06);
+}
+.card-header {
+  background: transparent;
+  border-bottom: 1px solid #e5e7eb;
+}
+.metric-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: #111827;
+}
+.metric-label {
+  font-size: 14px;
+  color: #6b7280;
+}
+textarea.section-items {
+  min-height: 100px;
+  resize: vertical;
+}
+.section-title-input {
+  font-size: 14px;
+}
+.tab-pane {
+  padding-top: 10px;
+}
+.action-btn-sm {
+  font-size: 12px;
+}
+</style>
 </head>
 <body>
-  <div class="container-fluid">
-    <div class="row">
-      <!-- SIDEBAR -->
-      <nav class="col-md-3 col-lg-2 d-md-block sidebar p-3">
-        <div class="d-flex align-items-center mb-4">
-          <span class="brand">GyaanSetu Admin</span>
+<div class="container-fluid">
+  <div class="row">
+    <!-- SIDEBAR -->
+    <nav class="col-md-3 col-lg-2 d-md-block sidebar p-3">
+      <div class="d-flex align-items-center mb-4">
+        <span class="brand">GyaanSetu Admin</span>
+      </div>
+
+      <div class="mb-3 small text-gray-400 text-uppercase">Main</div>
+      <ul class="nav flex-column mb-4">
+        <li class="nav-item">
+          <button class="nav-link active w-100 text-start"
+                  onclick="switchView('view-registrations', this)">
+            Registrations &amp; Fees
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link w-100 text-start"
+                  onclick="switchView('view-content', this)">
+            Exam Dashboards Content
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link w-100 text-start"
+                  onclick="switchView('view-answers', this)">
+            Answer Copies
+          </button>
+        </li>
+      </ul>
+
+      <div class="mt-auto small text-gray-500">
+        Logged in as <span id="adminEmail">admin@gyaansetu</span>
+      </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <main class="col-md-9 ms-sm-auto col-lg-10 px-4 py-4">
+
+      <!-- REGISTRATIONS VIEW -->
+      <section id="view-registrations">
+        <div class="row g-3 mb-3">
+          <div class="col-md-4">
+            <div class="card p-3">
+              <div class="metric-label">Total Registrations</div>
+              <div class="metric-value" id="totalRegistrations">0</div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card p-3">
+              <div class="metric-label">Pending Verification</div>
+              <div class="metric-value" id="pendingPayments">0</div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card p-3">
+              <div class="metric-label">Approved Active Users</div>
+              <div class="metric-value" id="verifiedPayments">0</div>
+            </div>
+          </div>
         </div>
 
-        <div class="mb-3 small text-gray-400 text-uppercase">Main</div>
-        <ul class="nav flex-column mb-4">
-          <li class="nav-item">
-            <button class="nav-link active w-100 text-start" onclick="switchView('view-registrations', this)">
-              Registrations & Fees
-            </button>
-          </li>
-          <li class="nav-item">
-            <button class="nav-link w-100 text-start" onclick="switchView('view-content', this)">
-              Exam Dashboards Content
-            </button>
-          </li>
-        </ul>
-
-        <div class="mt-auto small text-gray-500">
-          Logged in as: <span id="adminEmail">admin@gyaansetu</span>
+        <div class="card mb-4">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <div>
+              <h5 class="mb-0">Registrations</h5>
+              <small class="text-muted">Approve / Reject / send login mail</small>
+            </div>
+            <div class="d-flex gap-2">
+              <select id="filterExam" class="form-select form-select-sm" style="width:auto">
+                <option value="">All Exams</option>
+                <option value="UPSC CSE">UPSC CSE</option>
+                <option value="JEE">JEE</option>
+                <option value="NEET">NEET</option>
+                <option value="RPSC">RPSC</option>
+              </select>
+              <select id="filterStatus" class="form-select form-select-sm" style="width:auto">
+                <option value="">All Status</option>
+                <option value="pending">Pending</option>
+                <option value="approved">Approved</option>
+                <option value="rejected">Rejected</option>
+              </select>
+            </div>
+          </div>
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table class="table table-hover mb-0 align-middle">
+                <thead class="table-light">
+                  <tr>
+                    <th>#</th>
+                    <th>Student</th>
+                    <th>Exam &amp; User ID</th>
+                    <th>Payment / Verification</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="registrationsBody"></tbody>
+              </table>
+            </div>
+          </div>
         </div>
-      </nav>
+      </section>
 
-      <!-- MAIN CONTENT -->
-      <main class="col-md-9 ms-sm-auto col-lg-10 px-4 py-4">
-        <!-- REGISTRATIONS VIEW -->
-        <section id="view-registrations">
-          <div class="row g-3 mb-3">
-            <div class="col-md-4">
-              <div class="card p-3">
-                <div class="metric-label">Total Registrations</div>
-                <div class="metric-value" id="totalRegistrations">0</div>
+      <!-- CONTENT VIEW -->
+      <section id="view-content" class="d-none">
+        <div class="card mb-4">
+          <div class="card-header">
+            <h5 class="mb-0">Exam Dashboards Content</h5>
+            <small class="text-muted">
+              UPSC, JEE, NEET, RPSC dashboards ke sections yahan se update honge. (Title + items per line)
+            </small>
+          </div>
+          <div class="card-body">
+            <ul class="nav nav-tabs" role="tablist">
+              <li class="nav-item" role="presentation">
+                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#upsc-pane"
+                        type="button" role="tab">
+                  UPSC
+                </button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#jee-pane"
+                        type="button" role="tab">
+                  JEE
+                </button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#neet-pane"
+                        type="button" role="tab">
+                  NEET
+                </button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#rpsc-pane"
+                        type="button" role="tab">
+                  RPSC
+                </button>
+              </li>
+            </ul>
+
+            <div class="tab-content pt-3">
+              <!-- UPSC TAB -->
+              <div class="tab-pane fade show active" id="upsc-pane" role="tabpanel">
+                <div class="row g-3">
+                  <!-- Announcements -->
+                  <div class="col-md-6">
+                    <div class="card h-100">
+                      <div class="card-header d-flex justify-content-between align-items-center">
+                        <span>UPSC Announcements</span>
+                        <small id="upscannouncementsmsg" class="text-muted small"></small>
+                      </div>
+                      <div class="card-body">
+                        <div class="mb-2">
+                          <label class="form-label small">Section Title</label>
+                          <input id="upscannouncementstitle" class="form-control form-control-sm section-title-input"
+                                 placeholder="e.g. Important Updates">
+                        </div>
+                        <div>
+                          <label class="form-label small">Items (each line one announcement)</label>
+                          <textarea id="upscannouncementsitems"
+                                    class="form-control form-control-sm section-items"
+                                    placeholder="New test series from 10 Jan&#10;Syllabus completion target for this week"></textarea>
+                        </div>
+                      </div>
+                      <div class="card-footer text-end">
+                        <button class="btn btn-sm btn-primary"
+                                onclick="saveSection('UPSC','announcements')">Save</button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Daily Targets -->
+                  <div class="col-md-6">
+                    <div class="card h-100">
+                      <div class="card-header d-flex justify-content-between align-items-center">
+                        <span>UPSC Daily Targets</span>
+                        <small id="upscdailyTargetsmsg" class="text-muted small"></small>
+                      </div>
+                      <div class="card-body">
+                        <div class="mb-2">
+                          <label class="form-label small">Section Title</label>
+                          <input id="upscdailyTargetstitle"
+                                 class="form-control form-control-sm section-title-input"
+                                 placeholder="e.g. Today's Targets">
+                        </div>
+                        <div>
+                          <label class="form-label small">Items (each line one target)</label>
+                          <textarea id="upscdailyTargetsitems"
+                                    class="form-control form-control-sm section-items"
+                                    placeholder="2 GS tests&#10;Polity Laxmikanth revision"></textarea>
+                        </div>
+                      </div>
+                      <div class="card-footer text-end">
+                        <button class="btn btn-sm btn-primary"
+                                onclick="saveSection('UPSC','dailyTargets')">Save</button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Mock Tests -->
+                  <div class="col-md-6">
+                    <div class="card h-100">
+                      <div class="card-header d-flex justify-content-between align-items-center">
+                        <span>UPSC Mock Tests</span>
+                        <small id="upscmockTestsmsg" class="text-muted small"></small>
+                      </div>
+                      <div class="card-body">
+                        <div class="mb-2">
+                          <label class="form-label small">Section Title</label>
+                          <input id="upscmockTeststitle"
+                                 class="form-control form-control-sm section-title-input"
+                                 placeholder="e.g. Full-length Tests">
+                        </div>
+                        <div>
+                          <label class="form-label small">Items (each line: test link)</label>
+                          <textarea id="upscmockTestsitems"
+                                    class="form-control form-control-sm section-items"
+                                    placeholder="FLT-1 Polity - Drive link"></textarea>
+                        </div>
+                      </div>
+                      <div class="card-footer text-end">
+                        <button class="btn btn-sm btn-primary"
+                                onclick="saveSection('UPSC','mockTests')">Save</button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Test Series -->
+                  <div class="col-md-6">
+                    <div class="card h-100">
+                      <div class="card-header d-flex justify-content-between align-items-center">
+                        <span>UPSC Test Series</span>
+                        <small id="upsctestSeriesmsg" class="text-muted small"></small>
+                      </div>
+                      <div class="card-body">
+                        <div class="mb-2">
+                          <label class="form-label small">Section Title</label>
+                          <input id="upsctestSeriestitle"
+                                 class="form-control form-control-sm section-title-input"
+                                 placeholder="e.g. Prelims Test Series">
+                        </div>
+                        <div>
+                          <label class="form-label small">Items (each line: series item)</label>
+                          <textarea id="upsctestSeriesitems"
+                                    class="form-control form-control-sm section-items"
+                                    placeholder="Test Series 2026 - Paper 1"></textarea>
+                        </div>
+                      </div>
+                      <div class="card-footer text-end">
+                        <button class="btn btn-sm btn-primary"
+                                onclick="saveSection('UPSC','testSeries')">Save</button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- PYQs -->
+                  <div class="col-md-6">
+                    <div class="card h-100">
+                      <div class="card-header d-flex justify-content-between align-items-center">
+                        <span>UPSC PYQs</span>
+                        <small id="upscpyqPapersmsg" class="text-muted small"></small>
+                      </div>
+                      <div class="card-body">
+                        <div class="mb-2">
+                          <label class="form-label small">Section Title</label>
+                          <input id="upscpyqPaperstitle"
+                                 class="form-control form-control-sm section-title-input"
+                                 placeholder="e.g. Previous Year Papers">
+                        </div>
+                        <div>
+                          <label class="form-label small">Items (each line: paper link)</label>
+                          <textarea id="upscpyqPapersitems"
+                                    class="form-control form-control-sm section-items"
+                                    placeholder="Prelims 2023 Question Paper - PDF link"></textarea>
+                        </div>
+                      </div>
+                      <div class="card-footer text-end">
+                        <button class="btn btn-sm btn-primary"
+                                onclick="saveSection('UPSC','pyqPapers')">Save</button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Books -->
+                  <div class="col-md-6">
+                    <div class="card h-100">
+                      <div class="card-header d-flex justify-content-between align-items-center">
+                        <span>UPSC Books &amp; Materials</span>
+                        <small id="upscbooksmsg" class="text-muted small"></small>
+                      </div>
+                      <div class="card-body">
+                        <div class="mb-2">
+                          <label class="form-label small">Section Title</label>
+                          <input id="upscbookstitle"
+                                 class="form-control form-control-sm section-title-input"
+                                 placeholder="e.g. Booklist">
+                        </div>
+                        <div>
+                          <label class="form-label small">Items (book / note / link per line)</label>
+                          <textarea id="upscbooksitems"
+                                    class="form-control form-control-sm section-items"
+                                    placeholder="Laxmikanth - Polity&#10;Spectrum - Modern History"></textarea>
+                        </div>
+                      </div>
+                      <div class="card-footer text-end">
+                        <button class="btn btn-sm btn-primary"
+                                onclick="saveSection('UPSC','books')">Save</button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Current Affairs -->
+                  <div class="col-md-6">
+                    <div class="card h-100">
+                      <div class="card-header d-flex justify-content-between align-items-center">
+                        <span>UPSC Current Affairs</span>
+                        <small id="upsccurrentAffairsmsg" class="text-muted small"></small>
+                      </div>
+                      <div class="card-body">
+                        <div class="mb-2">
+                          <label class="form-label small">Section Title</label>
+                          <input id="upsccurrentAffairstitle"
+                                 class="form-control form-control-sm section-title-input"
+                                 placeholder="e.g. Daily CA">
+                        </div>
+                        <div>
+                          <label class="form-label small">Items (CA source / file link per line)</label>
+                          <textarea id="upsccurrentAffairsitems"
+                                    class="form-control form-control-sm section-items"
+                                    placeholder="3 Jan 2026 - Daily CA PDF - Drive link"></textarea>
+                        </div>
+                      </div>
+                      <div class="card-footer text-end">
+                        <button class="btn btn-sm btn-primary"
+                                onclick="saveSection('UPSC','currentAffairs')">Save</button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Notes & PDFs -->
+                  <div class="col-md-6">
+                    <div class="card h-100">
+                      <div class="card-header d-flex justify-content-between align-items-center">
+                        <span>UPSC Notes &amp; PDFs</span>
+                        <small id="upscnotesPdfsmsg" class="text-muted small"></small>
+                      </div>
+                      <div class="card-body">
+                        <div class="mb-2">
+                          <label class="form-label small">Section Title</label>
+                          <input id="upscnotesPdfstitle"
+                                 class="form-control form-control-sm section-title-input"
+                                 placeholder="e.g. Notes PDFs">
+                        </div>
+                        <div>
+                          <label class="form-label small">Items (note / PDF link per line)</label>
+                          <textarea id="upscnotesPdfsitems"
+                                    class="form-control form-control-sm section-items"
+                                    placeholder="GS-2 Governance notes - PDF link"></textarea>
+                        </div>
+                      </div>
+                      <div class="card-footer text-end">
+                        <button class="btn btn-sm btn-primary"
+                                onclick="saveSection('UPSC','notesPdfs')">Save</button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Quotes / Path Pradarshak -->
+                  <div class="col-md-6">
+                    <div class="card h-100">
+                      <div class="card-header d-flex justify-content-between align-items-center">
+                        <span>UPSC Path Pradarshak Quotes</span>
+                        <small id="upscquotesmsg" class="text-muted small"></small>
+                      </div>
+                      <div class="card-body">
+                        <div class="mb-2">
+                          <label class="form-label small">Section Title</label>
+                          <input id="upscquotestitle"
+                                 class="form-control form-control-sm section-title-input"
+                                 placeholder="e.g. Path Pradarshak">
+                        </div>
+                        <div>
+                          <label class="form-label small">Items (each line: quote)</label>
+                          <textarea id="upscquotesitems"
+                                    class="form-control form-control-sm section-items"
+                                    placeholder="The future belongs to those who believe in the beauty of their dreams."></textarea>
+                        </div>
+                      </div>
+                      <div class="card-footer text-end">
+                        <button class="btn btn-sm btn-primary"
+                                onclick="saveSection('UPSC','quotes')">Save</button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Syllabus UPSC -->
+                  <div class="col-md-6">
+                    <div class="card h-100">
+                      <div class="card-header d-flex justify-content-between align-items-center">
+                        <span>UPSC Syllabus Progress</span>
+                        <small id="upscsyllabusmsg" class="text-muted small"></small>
+                      </div>
+                      <div class="card-body">
+                        <div class="row g-2">
+                          <div class="col-6">
+                            <label class="form-label small">Prelims %</label>
+                            <input type="number" min="0" max="100"
+                                   id="upscsyllabusprelims"
+                                   class="form-control form-control-sm">
+                          </div>
+                          <div class="col-6">
+                            <label class="form-label small">Mains %</label>
+                            <input type="number" min="0" max="100"
+                                   id="upscsyllabusmains"
+                                   class="form-control form-control-sm">
+                          </div>
+                        </div>
+                      </div>
+                      <div class="card-footer text-end">
+                        <button class="btn btn-sm btn-primary"
+                                onclick="saveSyllabus('UPSC')">Save</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
+
+              <!-- JEE TAB (shorter) -->
+              <div class="tab-pane fade" id="jee-pane" role="tabpanel">
+                <div class="row g-3">
+                  <!-- Announcements -->
+                  <div class="col-md-6">
+                    <div class="card h-100">
+                      <div class="card-header d-flex justify-content-between align-items-center">
+                        <span>JEE Announcements</span>
+                        <small id="jeeannouncementsmsg" class="text-muted small"></small>
+                      </div>
+                      <div class="card-body">
+                        <div class="mb-2">
+                          <label class="form-label small">Section Title</label>
+                          <input id="jeeannouncementstitle"
+                                 class="form-control form-control-sm section-title-input">
+                        </div>
+                        <div>
+                          <label class="form-label small">Items (per line)</label>
+                          <textarea id="jeeannouncementsitems"
+                                    class="form-control form-control-sm section-items"></textarea>
+                        </div>
+                      </div>
+                      <div class="card-footer text-end">
+                        <button class="btn btn-sm btn-primary"
+                                onclick="saveSection('JEE','announcements')">Save</button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Test Series -->
+                  <div class="col-md-6">
+                    <div class="card h-100">
+                      <div class="card-header d-flex justify-content-between align-items-center">
+                        <span>JEE Test Series</span>
+                        <small id="jeetestSeriesmsg" class="text-muted small"></small>
+                      </div>
+                      <div class="card-body">
+                        <div class="mb-2">
+                          <label class="form-label small">Section Title</label>
+                          <input id="jeetestSeriestitle"
+                                 class="form-control form-control-sm section-title-input">
+                        </div>
+                        <div>
+                          <label class="form-label small">Items (per line)</label>
+                          <textarea id="jeetestSeriesitems"
+                                    class="form-control form-control-sm section-items"></textarea>
+                        </div>
+                      </div>
+                      <div class="card-footer text-end">
+                        <button class="btn btn-sm btn-primary"
+                                onclick="saveSection('JEE','testSeries')">Save</button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- PYQs -->
+                  <div class="col-md-6">
+                    <div class="card h-100">
+                      <div class="card-header d-flex justify-content-between align-items-center">
+                        <span>JEE PYQs</span>
+                        <small id="jeepyqPapersmsg" class="text-muted small"></small>
+                      </div>
+                      <div class="card-body">
+                        <div class="mb-2">
+                          <label class="form-label small">Section Title</label>
+                          <input id="jeepyqPaperstitle"
+                                 class="form-control form-control-sm section-title-input">
+                        </div>
+                        <div>
+                          <label class="form-label small">Items (per line)</label>
+                          <textarea id="jeepyqPapersitems"
+                                    class="form-control form-control-sm section-items"></textarea>
+                        </div>
+                      </div>
+                      <div class="card-footer text-end">
+                        <button class="btn btn-sm btn-primary"
+                                onclick="saveSection('JEE','pyqPapers')">Save</button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Syllabus JEE -->
+                  <div class="col-md-6">
+                    <div class="card h-100">
+                      <div class="card-header d-flex justify-content-between align-items-center">
+                        <span>JEE Syllabus Progress</span>
+                        <small id="jeesyllabusmsg" class="text-muted small"></small>
+                      </div>
+                      <div class="card-body">
+                        <div class="row g-2">
+                          <div class="col-4">
+                            <label class="form-label small">Physics</label>
+                            <input type="number" min="0" max="100"
+                                   id="jeesyllabusphy"
+                                   class="form-control form-control-sm">
+                          </div>
+                          <div class="col-4">
+                            <label class="form-label small">Chemistry</label>
+                            <input type="number" min="0" max="100"
+                                   id="jeesyllabuschem"
+                                   class="form-control form-control-sm">
+                          </div>
+                          <div class="col-4">
+                            <label class="form-label small">Maths</label>
+                            <input type="number" min="0" max="100"
+                                   id="jeesyllabusmath"
+                                   class="form-control form-control-sm">
+                          </div>
+                        </div>
+                      </div>
+                      <div class="card-footer text-end">
+                        <button class="btn btn-sm btn-primary"
+                                onclick="saveSyllabus('JEE')">Save</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- NEET TAB -->
+              <div class="tab-pane fade" id="neet-pane" role="tabpanel">
+                <div class="row g-3">
+                  <!-- Announcements -->
+                  <div class="col-md-6">
+                    <div class="card h-100">
+                      <div class="card-header d-flex justify-content-between align-items-center">
+                        <span>NEET Announcements</span>
+                        <small id="neetannouncementsmsg" class="text-muted small"></small>
+                      </div>
+                      <div class="card-body">
+                        <div class="mb-2">
+                          <label class="form-label small">Section Title</label>
+                          <input id="neetannouncementstitle"
+                                 class="form-control form-control-sm section-title-input">
+                        </div>
+                        <div>
+                          <label class="form-label small">Items (per line)</label>
+                          <textarea id="neetannouncementsitems"
+                                    class="form-control form-control-sm section-items"></textarea>
+                        </div>
+                      </div>
+                      <div class="card-footer text-end">
+                        <button class="btn btn-sm btn-primary"
+                                onclick="saveSection('NEET','announcements')">Save</button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Test Series -->
+                  <div class="col-md-6">
+                    <div class="card h-100">
+                      <div class="card-header d-flex justify-content-between align-items-center">
+                        <span>NEET Test Series</span>
+                        <small id="neettestSeriesmsg" class="text-muted small"></small>
+                      </div>
+                      <div class="card-body">
+                        <div class="mb-2">
+                          <label class="form-label small">Section Title</label>
+                          <input id="neettestSeriestitle"
+                                 class="form-control form-control-sm section-title-input">
+                        </div>
+                        <div>
+                          <label class="form-label small">Items (per line)</label>
+                          <textarea id="neettestSeriesitems"
+                                    class="form-control form-control-sm section-items"></textarea>
+                        </div>
+                      </div>
+                      <div class="card-footer text-end">
+                        <button class="btn btn-sm btn-primary"
+                                onclick="saveSection('NEET','testSeries')">Save</button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- PYQs -->
+                  <div class="col-md-6">
+                    <div class="card h-100">
+                      <div class="card-header d-flex justify-content-between align-items-center">
+                        <span>NEET PYQs</span>
+                        <small id="neetpyqPapersmsg" class="text-muted small"></small>
+                      </div>
+                      <div class="card-body">
+                        <div class="mb-2">
+                          <label class="form-label small">Section Title</label>
+                          <input id="neetpyqPaperstitle"
+                                 class="form-control form-control-sm section-title-input">
+                        </div>
+                        <div>
+                          <label class="form-label small">Items (per line)</label>
+                          <textarea id="neetpyqPapersitems"
+                                    class="form-control form-control-sm section-items"></textarea>
+                        </div>
+                      </div>
+                      <div class="card-footer text-end">
+                        <button class="btn btn-sm btn-primary"
+                                onclick="saveSection('NEET','pyqPapers')">Save</button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Syllabus NEET -->
+                  <div class="col-md-6">
+                    <div class="card h-100">
+                      <div class="card-header d-flex justify-content-between align-items-center">
+                        <span>NEET Syllabus Progress</span>
+                        <small id="neetsyllabusmsg" class="text-muted small"></small>
+                      </div>
+                      <div class="card-body">
+                        <div class="row g-2">
+                          <div class="col-4">
+                            <label class="form-label small">Physics</label>
+                            <input type="number" min="0" max="100"
+                                   id="neetsyllabusphy"
+                                   class="form-control form-control-sm">
+                          </div>
+                          <div class="col-4">
+                            <label class="form-label small">Chemistry</label>
+                            <input type="number" min="0" max="100"
+                                   id="neetsyllabuschem"
+                                   class="form-control form-control-sm">
+                          </div>
+                          <div class="col-4">
+                            <label class="form-label small">Biology</label>
+                            <input type="number" min="0" max="100"
+                                   id="neetsyllabusbio"
+                                   class="form-control form-control-sm">
+                          </div>
+                        </div>
+                      </div>
+                      <div class="card-footer text-end">
+                        <button class="btn btn-sm btn-primary"
+                                onclick="saveSyllabus('NEET')">Save</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- RPSC TAB -->
+              <div class="tab-pane fade" id="rpsc-pane" role="tabpanel">
+                <div class="row g-3">
+                  <!-- Announcements -->
+                  <div class="col-md-6">
+                    <div class="card h-100">
+                      <div class="card-header d-flex justify-content-between align-items-center">
+                        <span>RPSC Announcements</span>
+                        <small id="rpscannouncementsmsg" class="text-muted small"></small>
+                      </div>
+                      <div class="card-body">
+                        <div class="mb-2">
+                          <label class="form-label small">Section Title</label>
+                          <input id="rpscannouncementstitle"
+                                 class="form-control form-control-sm section-title-input">
+                        </div>
+                        <div>
+                          <label class="form-label small">Items (per line)</label>
+                          <textarea id="rpscannouncementsitems"
+                                    class="form-control form-control-sm section-items"></textarea>
+                        </div>
+                      </div>
+                      <div class="card-footer text-end">
+                        <button class="btn btn-sm btn-primary"
+                                onclick="saveSection('RPSC','announcements')">Save</button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Test Series -->
+                  <div class="col-md-6">
+                    <div class="card h-100">
+                      <div class="card-header d-flex justify-content-between align-items-center">
+                        <span>RPSC Test Series</span>
+                        <small id="rpsctestSeriesmsg" class="text-muted small"></small>
+                      </div>
+                      <div class="card-body">
+                        <div class="mb-2">
+                          <label class="form-label small">Section Title</label>
+                          <input id="rpsctestSeriestitle"
+                                 class="form-control form-control-sm section-title-input">
+                        </div>
+                        <div>
+                          <label class="form-label small">Items (per line)</label>
+                          <textarea id="rpsctestSeriesitems"
+                                    class="form-control form-control-sm section-items"></textarea>
+                        </div>
+                      </div>
+                      <div class="card-footer text-end">
+                        <button class="btn btn-sm btn-primary"
+                                onclick="saveSection('RPSC','testSeries')">Save</button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- PYQs -->
+                  <div class="col-md-6">
+                    <div class="card h-100">
+                      <div class="card-header d-flex justify-content-between align-items-center">
+                        <span>RPSC PYQs</span>
+                        <small id="rpscpyqPapersmsg" class="text-muted small"></small>
+                      </div>
+                      <div class="card-body">
+                        <div class="mb-2">
+                          <label class="form-label small">Section Title</label>
+                          <input id="rpscpyqPaperstitle"
+                                 class="form-control form-control-sm section-title-input">
+                        </div>
+                        <div>
+                          <label class="form-label small">Items (per line)</label>
+                          <textarea id="rpscpyqPapersitems"
+                                    class="form-control form-control-sm section-items"></textarea>
+                        </div>
+                      </div>
+                      <div class="card-footer text-end">
+                        <button class="btn btn-sm btn-primary"
+                                onclick="saveSection('RPSC','pyqPapers')">Save</button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Syllabus RPSC -->
+                  <div class="col-md-6">
+                    <div class="card h-100">
+                      <div class="card-header d-flex justify-content-between align-items-center">
+                        <span>RPSC Syllabus Progress</span>
+                        <small id="rpscsyllabusmsg" class="text-muted small"></small>
+                      </div>
+                      <div class="card-body">
+                        <div class="row g-2">
+                          <div class="col-4">
+                            <label class="form-label small">GS</label>
+                            <input type="number" min="0" max="100"
+                                   id="rpscsyllabusgs"
+                                   class="form-control form-control-sm">
+                          </div>
+                          <div class="col-4">
+                            <label class="form-label small">Rajasthan</label>
+                            <input type="number" min="0" max="100"
+                                   id="rpscsyllabusraj"
+                                   class="form-control form-control-sm">
+                          </div>
+                          <div class="col-4">
+                            <label class="form-label small">Optional</label>
+                            <input type="number" min="0" max="100"
+                                   id="rpscsyllabusopt"
+                                   class="form-control form-control-sm">
+                          </div>
+                        </div>
+                      </div>
+                      <div class="card-footer text-end">
+                        <button class="btn btn-sm btn-primary"
+                                onclick="saveSyllabus('RPSC')">Save</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div> <!-- tab-content -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ANSWER COPIES VIEW -->
+      <section id="view-answers" class="d-none">
+        <div class="card mb-4">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <div>
+              <h5 class="mb-0">Answer Copies</h5>
+              <small class="text-muted">Under Evaluation / Evaluated status update</small>
             </div>
-            <div class="col-md-4">
-              <div class="card p-3">
-                <div class="metric-label">Pending Verification</div>
-                <div class="metric-value" id="pendingPayments">0</div>
-              </div>
-            </div>
-            <div class="col-md-4">
-              <div class="card p-3">
-                <div class="metric-label">Approved (Active Users)</div>
-                <div class="metric-value" id="verifiedPayments">0</div>
-              </div>
+            <button class="btn btn-sm btn-outline-secondary" onclick="loadAnswerCopies()">
+              Refresh
+            </button>
+          </div>
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table class="table table-hover mb-0 align-middle">
+                <thead class="table-light">
+                  <tr>
+                    <th>#</th>
+                    <th>Student</th>
+                    <th>Paper</th>
+                    <th>Submitted On</th>
+                    <th>File</th>
+                    <th>Status</th>
+                    <th>Update</th>
+                  </tr>
+                </thead>
+                <tbody id="answerCopiesBody">
+                  <tr>
+                    <td colspan="7" class="text-center py-3 text-muted">
+                      Click Refresh to load answer copies.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
+        </div>
+      </section>
 
-          <div class="card mb-4">
-            <div class="card-header d-flex justify-content-between align-items-center">
-              <div>
-                <h5 class="mb-0">Registrations</h5>
-                <small class="text-muted">Approve / Reject & send login mail</small>
-              </div>
-              <div class="d-flex gap-2">
-                <select id="filterExam" class="form-select form-select-sm" style="width:auto;">
-                  <option value="">All Exams</option>
-                  <option value="UPSC CSE">UPSC CSE</option>
-                  <option value="JEE">JEE</option>
-                  <option value="NEET">NEET</option>
-                  <option value="RPSC">RPSC</option>
-                </select>
-                <select id="filterStatus" class="form-select form-select-sm" style="width:auto;">
-                  <option value="">All Status</option>
-                  <option value="pending">Pending</option>
-                  <option value="approved">Approved</option>
-                  <option value="rejected">Rejected</option>
-                </select>
-              </div>
-            </div>
-            <div class="card-body p-0">
-              <div class="table-responsive">
-                <table class="table table-hover mb-0 align-middle">
-                  <thead class="table-light">
-                    <tr>
-                      <th>#</th>
-                      <th>Student</th>
-                      <th>Exam / User ID</th>
-                      <th>Status</th>
-                      <th>Notes</th>
-                      <th>Overall</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody id="registrationsBody"></tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- CONTENT VIEW -->
-        <section id="view-content" class="d-none">
-          <div class="card mb-4">
-            <div class="card-header">
-              <h5 class="mb-0">Exam Dashboards Content</h5>
-              <small class="text-muted">
-                UPSC, JEE, NEET, RPSC dashboards ke sections yahan se update honge (title + items per line).
-              </small>
-            </div>
-            <div class="card-body">
-              <ul class="nav nav-tabs" role="tablist">
-                <li class="nav-item" role="presentation">
-                  <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#upsc-pane" type="button" role="tab">
-                    UPSC
-                  </button>
-                </li>
-                <li class="nav-item" role="presentation">
-                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#jee-pane" type="button" role="tab">
-                    JEE
-                  </button>
-                </li>
-                <li class="nav-item" role="presentation">
-                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#neet-pane" type="button" role="tab">
-                    NEET
-                  </button>
-                </li>
-                <li class="nav-item" role="presentation">
-                  <button class="nav-link" data-bs-toggle="tab" data-bs-target="#rpsc-pane" type="button" role="tab">
-                    RPSC
-                  </button>
-                </li>
-              </ul>
-
-              <div class="tab-content pt-3">
-                <!-- UPSC TAB -->
-                <div class="tab-pane fade show active" id="upsc-pane" role="tabpanel">
-                  <div class="row g-3">
-                    <!-- Announcements -->
-                    <div class="col-md-6">
-                      <div class="card h-100">
-                        <div class="card-header d-flex justify-content-between">
-                          <span>UPSC Announcements</span>
-                          <small id="upsc_announcements_msg" class="text-muted small"></small>
-                        </div>
-                        <div class="card-body">
-                          <div class="mb-2">
-                            <label class="form-label small">Section Title</label>
-                            <input id="upsc_announcements_title" class="form-control form-control-sm section-title-input" placeholder="e.g. Important Updates" />
-                          </div>
-                          <div>
-                            <label class="form-label small">Items (each line = one announcement)</label>
-                            <textarea id="upsc_announcements_items" class="form-control form-control-sm section-items"
-                              placeholder="New test series from 10 Jan&#10;Syllabus completion target for this week"></textarea>
-                          </div>
-                        </div>
-                        <div class="card-footer text-end">
-                          <button class="btn btn-sm btn-primary" onclick="saveSection('UPSC','announcements')">Save</button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- Daily Targets -->
-                    <div class="col-md-6">
-                      <div class="card h-100">
-                        <div class="card-header d-flex justify-content-between">
-                          <span>UPSC Daily Targets</span>
-                          <small id="upsc_dailyTargets_msg" class="text-muted small"></small>
-                        </div>
-                        <div class="card-body">
-                          <div class="mb-2">
-                            <label class="form-label small">Section Title</label>
-                            <input id="upsc_dailyTargets_title" class="form-control form-control-sm section-title-input" placeholder="e.g. Today's Targets" />
-                          </div>
-                          <div>
-                            <label class="form-label small">Items (each line = one target)</label>
-                            <textarea id="upsc_dailyTargets_items" class="form-control form-control-sm section-items"
-                              placeholder="2 GS tests&#10;Polity Laxmikanth revision"></textarea>
-                          </div>
-                        </div>
-                        <div class="card-footer text-end">
-                          <button class="btn btn-sm btn-primary" onclick="saveSection('UPSC','dailyTargets')">Save</button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- Mock Tests -->
-                    <div class="col-md-6">
-                      <div class="card h-100">
-                        <div class="card-header d-flex justify-content-between">
-                          <span>UPSC Mock Tests</span>
-                          <small id="upsc_mockTests_msg" class="text-muted small"></small>
-                        </div>
-                        <div class="card-body">
-                          <div class="mb-2">
-                            <label class="form-label small">Section Title</label>
-                            <input id="upsc_mockTests_title" class="form-control form-control-sm section-title-input" placeholder="e.g. Full-length Tests" />
-                          </div>
-                          <div>
-                            <label class="form-label small">Items (each line = test / link)</label>
-                            <textarea id="upsc_mockTests_items" class="form-control form-control-sm section-items"
-                              placeholder="FLT-1: Polity (Drive link)"></textarea>
-                          </div>
-                        </div>
-                        <div class="card-footer text-end">
-                          <button class="btn btn-sm btn-primary" onclick="saveSection('UPSC','mockTests')">Save</button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- Test Series -->
-                    <div class="col-md-6">
-                      <div class="card h-100">
-                        <div class="card-header d-flex justify-content-between">
-                          <span>UPSC Test Series</span>
-                          <small id="upsc_testSeries_msg" class="text-muted small"></small>
-                        </div>
-                        <div class="card-body">
-                          <div class="mb-2">
-                            <label class="form-label small">Section Title</label>
-                            <input id="upsc_testSeries_title" class="form-control form-control-sm section-title-input" placeholder="e.g. Prelims Test Series" />
-                          </div>
-                          <div>
-                            <label class="form-label small">Items (each line = series item)</label>
-                            <textarea id="upsc_testSeries_items" class="form-control form-control-sm section-items"
-                              placeholder="Test Series 2026 - Paper 1"></textarea>
-                          </div>
-                        </div>
-                        <div class="card-footer text-end">
-                          <button class="btn btn-sm btn-primary" onclick="saveSection('UPSC','testSeries')">Save</button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- PYQs -->
-                    <div class="col-md-6">
-                      <div class="card h-100">
-                        <div class="card-header d-flex justify-content-between">
-                          <span>UPSC PYQs</span>
-                          <small id="upsc_pyqPapers_msg" class="text-muted small"></small>
-                        </div>
-                        <div class="card-body">
-                          <div class="mb-2">
-                            <label class="form-label small">Section Title</label>
-                            <input id="upsc_pyqPapers_title" class="form-control form-control-sm section-title-input" placeholder="e.g. Previous Year Papers" />
-                          </div>
-                          <div>
-                            <label class="form-label small">Items (each line = paper / link)</label>
-                            <textarea id="upsc_pyqPapers_items" class="form-control form-control-sm section-items"
-                              placeholder="Prelims 2023 Question Paper (PDF link)"></textarea>
-                          </div>
-                        </div>
-                        <div class="card-footer text-end">
-                          <button class="btn btn-sm btn-primary" onclick="saveSection('UPSC','pyqPapers')">Save</button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- Books -->
-                    <div class="col-md-6">
-                      <div class="card h-100">
-                        <div class="card-header d-flex justify-content-between">
-                          <span>UPSC Books / Materials</span>
-                          <small id="upsc_books_msg" class="text-muted small"></small>
-                        </div>
-                        <div class="card-body">
-                          <div class="mb-2">
-                            <label class="form-label small">Section Title</label>
-                            <input id="upsc_books_title" class="form-control form-control-sm section-title-input" placeholder="e.g. Booklist" />
-                          </div>
-                          <div>
-                            <label class="form-label small">Items (book / note / link per line)</label>
-                            <textarea id="upsc_books_items" class="form-control form-control-sm section-items"
-                              placeholder="Laxmikanth - Polity&#10;Spectrum - Modern History"></textarea>
-                          </div>
-                        </div>
-                        <div class="card-footer text-end">
-                          <button class="btn btn-sm btn-primary" onclick="saveSection('UPSC','books')">Save</button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- Current Affairs -->
-                    <div class="col-md-6">
-                      <div class="card h-100">
-                        <div class="card-header d-flex justify-content-between">
-                          <span>UPSC Current Affairs</span>
-                          <small id="upsc_currentAffairs_msg" class="text-muted small"></small>
-                        </div>
-                        <div class="card-body">
-                          <div class="mb-2">
-                            <label class="form-label small">Section Title</label>
-                            <input id="upsc_currentAffairs_title" class="form-control form-control-sm section-title-input" placeholder="e.g. Daily CA" />
-                          </div>
-                          <div>
-                            <label class="form-label small">Items (CA source / file / link per line)</label>
-                            <textarea id="upsc_currentAffairs_items" class="form-control form-control-sm section-items"
-                              placeholder="3 Jan 2026 - Daily CA PDF (Drive link)"></textarea>
-                          </div>
-                        </div>
-                        <div class="card-footer text-end">
-                          <button class="btn btn-sm btn-primary" onclick="saveSection('UPSC','currentAffairs')">Save</button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- Notes & PDFs -->
-                    <div class="col-md-6">
-                      <div class="card h-100">
-                        <div class="card-header d-flex justify-content-between">
-                          <span>UPSC Notes & PDFs</span>
-                          <small id="upsc_notesPdfs_msg" class="text-muted small"></small>
-                        </div>
-                        <div class="card-body">
-                          <div class="mb-2">
-                            <label class="form-label small">Section Title</label>
-                            <input id="upsc_notesPdfs_title" class="form-control form-control-sm section-title-input" placeholder="e.g. Notes & PDFs" />
-                          </div>
-                          <div>
-                            <label class="form-label small">Items (note / PDF link per line)</label>
-                            <textarea id="upsc_notesPdfs_items" class="form-control form-control-sm section-items"
-                              placeholder="GS-2 Governance notes (PDF link)"></textarea>
-                          </div>
-                        </div>
-                        <div class="card-footer text-end">
-                          <button class="btn btn-sm btn-primary" onclick="saveSection('UPSC','notesPdfs')">Save</button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- Quotes / Path Pradarshak -->
-                    <div class="col-md-6">
-                      <div class="card h-100">
-                        <div class="card-header d-flex justify-content-between">
-                          <span>UPSC Path Pradarshak (Quotes)</span>
-                          <small id="upsc_quotes_msg" class="text-muted small"></small>
-                        </div>
-                        <div class="card-body">
-                          <div class="mb-2">
-                            <label class="form-label small">Section Title</label>
-                            <input id="upsc_quotes_title" class="form-control form-control-sm section-title-input" placeholder="e.g. Path Pradarshak" />
-                          </div>
-                          <div>
-                            <label class="form-label small">Items (each line = quote)</label>
-                            <textarea id="upsc_quotes_items" class="form-control form-control-sm section-items"
-                              placeholder="The future belongs to those who believe in the beauty of their dreams."></textarea>
-                          </div>
-                        </div>
-                        <div class="card-footer text-end">
-                          <button class="btn btn-sm btn-primary" onclick="saveSection('UPSC','quotes')">Save</button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- Syllabus UPSC -->
-                    <div class="col-md-6">
-                      <div class="card h-100">
-                        <div class="card-header d-flex justify-content-between">
-                          <span>UPSC Syllabus Progress</span>
-                          <small id="upsc_syllabus_msg" class="text-muted small"></small>
-                        </div>
-                        <div class="card-body">
-                          <div class="row g-2">
-                            <div class="col-6">
-                              <label class="form-label small">Prelims %</label>
-                              <input type="number" min="0" max="100" id="upsc_syllabus_prelims" class="form-control form-control-sm" />
-                            </div>
-                            <div class="col-6">
-                              <label class="form-label small">Mains %</label>
-                              <input type="number" min="0" max="100" id="upsc_syllabus_mains" class="form-control form-control-sm" />
-                            </div>
-                          </div>
-                        </div>
-                        <div class="card-footer text-end">
-                          <button class="btn btn-sm btn-primary" onclick="saveSyllabus('UPSC')">Save</button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- JEE TAB (short) -->
-                <div class="tab-pane fade" id="jee-pane" role="tabpanel">
-                  <div class="row g-3">
-                    <!-- Announcements -->
-                    <div class="col-md-6">
-                      <div class="card h-100">
-                        <div class="card-header d-flex justify-content-between">
-                          <span>JEE Announcements</span>
-                          <small id="jee_announcements_msg" class="text-muted small"></small>
-                        </div>
-                        <div class="card-body">
-                          <div class="mb-2">
-                            <label class="form-label small">Section Title</label>
-                            <input id="jee_announcements_title" class="form-control form-control-sm section-title-input" />
-                          </div>
-                          <div>
-                            <label class="form-label small">Items (per line)</label>
-                            <textarea id="jee_announcements_items" class="form-control form-control-sm section-items"></textarea>
-                          </div>
-                        </div>
-                        <div class="card-footer text-end">
-                          <button class="btn btn-sm btn-primary" onclick="saveSection('JEE','announcements')">Save</button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- Test Series -->
-                    <div class="col-md-6">
-                      <div class="card h-100">
-                        <div class="card-header d-flex justify-content-between">
-                          <span>JEE Test Series</span>
-                          <small id="jee_testSeries_msg" class="text-muted small"></small>
-                        </div>
-                        <div class="card-body">
-                          <div class="mb-2">
-                            <label class="form-label small">Section Title</label>
-                            <input id="jee_testSeries_title" class="form-control form-control-sm section-title-input" />
-                          </div>
-                          <div>
-                            <label class="form-label small">Items (per line)</label>
-                            <textarea id="jee_testSeries_items" class="form-control form-control-sm section-items"></textarea>
-                          </div>
-                        </div>
-                        <div class="card-footer text-end">
-                          <button class="btn btn-sm btn-primary" onclick="saveSection('JEE','testSeries')">Save</button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- PYQs -->
-                    <div class="col-md-6">
-                      <div class="card h-100">
-                        <div class="card-header d-flex justify-content-between">
-                          <span>JEE PYQs</span>
-                          <small id="jee_pyqPapers_msg" class="text-muted small"></small>
-                        </div>
-                        <div class="card-body">
-                          <div class="mb-2">
-                            <label class="form-label small">Section Title</label>
-                            <input id="jee_pyqPapers_title" class="form-control form-control-sm section-title-input" />
-                          </div>
-                          <div>
-                            <label class="form-label small">Items (per line)</label>
-                            <textarea id="jee_pyqPapers_items" class="form-control form-control-sm section-items"></textarea>
-                          </div>
-                        </div>
-                        <div class="card-footer text-end">
-                          <button class="btn btn-sm btn-primary" onclick="saveSection('JEE','pyqPapers')">Save</button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- Syllabus JEE -->
-                    <div class="col-md-6">
-                      <div class="card h-100">
-                        <div class="card-header d-flex justify-content-between">
-                          <span>JEE Syllabus Progress</span>
-                          <small id="jee_syllabus_msg" class="text-muted small"></small>
-                        </div>
-                        <div class="card-body">
-                          <div class="row g-2">
-                            <div class="col-4">
-                              <label class="form-label small">Physics %</label>
-                              <input type="number" min="0" max="100" id="jee_syllabus_phy" class="form-control form-control-sm" />
-                            </div>
-                            <div class="col-4">
-                              <label class="form-label small">Chemistry %</label>
-                              <input type="number" min="0" max="100" id="jee_syllabus_chem" class="form-control form-control-sm" />
-                            </div>
-                            <div class="col-4">
-                              <label class="form-label small">Maths %</label>
-                              <input type="number" min="0" max="100" id="jee_syllabus_math" class="form-control form-control-sm" />
-                            </div>
-                          </div>
-                        </div>
-                        <div class="card-footer text-end">
-                          <button class="btn btn-sm btn-primary" onclick="saveSyllabus('JEE')">Save</button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- NEET TAB -->
-                <div class="tab-pane fade" id="neet-pane" role="tabpanel">
-                  <div class="row g-3">
-                    <!-- Announcements -->
-                    <div class="col-md-6">
-                      <div class="card h-100">
-                        <div class="card-header d-flex justify-content-between">
-                          <span>NEET Announcements</span>
-                          <small id="neet_announcements_msg" class="text-muted small"></small>
-                        </div>
-                        <div class="card-body">
-                          <div class="mb-2">
-                            <label class="form-label small">Section Title</label>
-                            <input id="neet_announcements_title" class="form-control form-control-sm section-title-input" />
-                          </div>
-                          <div>
-                            <label class="form-label small">Items (per line)</label>
-                            <textarea id="neet_announcements_items" class="form-control form-control-sm section-items"></textarea>
-                          </div>
-                        </div>
-                        <div class="card-footer text-end">
-                          <button class="btn btn-sm btn-primary" onclick="saveSection('NEET','announcements')">Save</button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- Test Series -->
-                    <div class="col-md-6">
-                      <div class="card h-100">
-                        <div class="card-header d-flex justify-content-between">
-                          <span>NEET Test Series</span>
-                          <small id="neet_testSeries_msg" class="text-muted small"></small>
-                        </div>
-                        <div class="card-body">
-                          <div class="mb-2">
-                            <label class="form-label small">Section Title</label>
-                            <input id="neet_testSeries_title" class="form-control form-control-sm section-title-input" />
-                          </div>
-                          <div>
-                            <label class="form-label small">Items (per line)</label>
-                            <textarea id="neet_testSeries_items" class="form-control form-control-sm section-items"></textarea>
-                          </div>
-                        </div>
-                        <div class="card-footer text-end">
-                          <button class="btn btn-sm btn-primary" onclick="saveSection('NEET','testSeries')">Save</button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- PYQs -->
-                    <div class="col-md-6">
-                      <div class="card h-100">
-                        <div class="card-header d-flex justify-content-between">
-                          <span>NEET PYQs</span>
-                          <small id="neet_pyqPapers_msg" class="text-muted small"></small>
-                        </div>
-                        <div class="card-body">
-                          <div class="mb-2">
-                            <label class="form-label small">Section Title</label>
-                            <input id="neet_pyqPapers_title" class="form-control form-control-sm section-title-input" />
-                          </div>
-                          <div>
-                            <label class="form-label small">Items (per line)</label>
-                            <textarea id="neet_pyqPapers_items" class="form-control form-control-sm section-items"></textarea>
-                          </div>
-                        </div>
-                        <div class="card-footer text-end">
-                          <button class="btn btn-sm btn-primary" onclick="saveSection('NEET','pyqPapers')">Save</button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- Syllabus NEET -->
-                    <div class="col-md-6">
-                      <div class="card h-100">
-                        <div class="card-header d-flex justify-content-between">
-                          <span>NEET Syllabus Progress</span>
-                          <small id="neet_syllabus_msg" class="text-muted small"></small>
-                        </div>
-                        <div class="card-body">
-                          <div class="row g-2">
-                            <div class="col-4">
-                              <label class="form-label small">Physics %</label>
-                              <input type="number" min="0" max="100" id="neet_syllabus_phy" class="form-control form-control-sm" />
-                            </div>
-                            <div class="col-4">
-                              <label class="form-label small">Chemistry %</label>
-                              <input type="number" min="0" max="100" id="neet_syllabus_chem" class="form-control form-control-sm" />
-                            </div>
-                            <div class="col-4">
-                              <label class="form-label small">Biology %</label>
-                              <input type="number" min="0" max="100" id="neet_syllabus_bio" class="form-control form-control-sm" />
-                            </div>
-                          </div>
-                        </div>
-                        <div class="card-footer text-end">
-                          <button class="btn btn-sm btn-primary" onclick="saveSyllabus('NEET')">Save</button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- RPSC TAB -->
-                <div class="tab-pane fade" id="rpsc-pane" role="tabpanel">
-                  <div class="row g-3">
-                    <!-- Announcements -->
-                    <div class="col-md-6">
-                      <div class="card h-100">
-                        <div class="card-header d-flex justify-content-between">
-                          <span>RPSC Announcements</span>
-                          <small id="rpsc_announcements_msg" class="text-muted small"></small>
-                        </div>
-                        <div class="card-body">
-                          <div class="mb-2">
-                            <label class="form-label small">Section Title</label>
-                            <input id="rpsc_announcements_title" class="form-control form-control-sm section-title-input" />
-                          </div>
-                          <div>
-                            <label class="form-label small">Items (per line)</label>
-                            <textarea id="rpsc_announcements_items" class="form-control form-control-sm section-items"></textarea>
-                          </div>
-                        </div>
-                        <div class="card-footer text-end">
-                          <button class="btn btn-sm btn-primary" onclick="saveSection('RPSC','announcements')">Save</button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- Test Series -->
-                    <div class="col-md-6">
-                      <div class="card h-100">
-                        <div class="card-header d-flex justify-content-between">
-                          <span>RPSC Test Series</span>
-                          <small id="rpsc_testSeries_msg" class="text-muted small"></small>
-                        </div>
-                        <div class="card-body">
-                          <div class="mb-2">
-                            <label class="form-label small">Section Title</label>
-                            <input id="rpsc_testSeries_title" class="form-control form-control-sm section-title-input" />
-                          </div>
-                          <div>
-                            <label class="form-label small">Items (per line)</label>
-                            <textarea id="rpsc_testSeries_items" class="form-control form-control-sm section-items"></textarea>
-                          </div>
-                        </div>
-                        <div class="card-footer text-end">
-                          <button class="btn btn-sm btn-primary" onclick="saveSection('RPSC','testSeries')">Save</button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- PYQs -->
-                    <div class="col-md-6">
-                      <div class="card h-100">
-                        <div class="card-header d-flex justify-content-between">
-                          <span>RPSC PYQs</span>
-                          <small id="rpsc_pyqPapers_msg" class="text-muted small"></small>
-                        </div>
-                        <div class="card-body">
-                          <div class="mb-2">
-                            <label class="form-label small">Section Title</label>
-                            <input id="rpsc_pyqPapers_title" class="form-control form-control-sm section-title-input" />
-                          </div>
-                          <div>
-                            <label class="form-label small">Items (per line)</label>
-                            <textarea id="rpsc_pyqPapers_items" class="form-control form-control-sm section-items"></textarea>
-                          </div>
-                        </div>
-                        <div class="card-footer text-end">
-                          <button class="btn btn-sm btn-primary" onclick="saveSection('RPSC','pyqPapers')">Save</button>
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- Syllabus RPSC -->
-                    <div class="col-md-6">
-                      <div class="card h-100">
-                        <div class="card-header d-flex justify-content-between">
-                          <span>RPSC Syllabus Progress</span>
-                          <small id="rpsc_syllabus_msg" class="text-muted small"></small>
-                        </div>
-                        <div class="card-body">
-                          <div class="row g-2">
-                            <div class="col-4">
-                              <label class="form-label small">GS %</label>
-                              <input type="number" min="0" max="100" id="rpsc_syllabus_gs" class="form-control form-control-sm" />
-                            </div>
-                            <div class="col-4">
-                              <label class="form-label small">Rajasthan %</label>
-                              <input type="number" min="0" max="100" id="rpsc_syllabus_raj" class="form-control form-control-sm" />
-                            </div>
-                            <div class="col-4">
-                              <label class="form-label small">Optional %</label>
-                              <input type="number" min="0" max="100" id="rpsc_syllabus_opt" class="form-control form-control-sm" />
-                            </div>
-                          </div>
-                        </div>
-                        <div class="card-footer text-end">
-                          <button class="btn btn-sm btn-primary" onclick="saveSyllabus('RPSC')">Save</button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-              </div><!-- tab-content -->
-            </div>
-          </div>
-        </section>
-      </main>
-    </div>
+    </main>
   </div>
+</div>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script>
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyFiEVyWCStmdOxaSz2AAboplrOXAJn0XuW614KRzLihSL60qL8zy3GEgBVvm0DQPcmQg/exec';
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+const SCRIPTURL = 'https://script.google.com/macros/s/AKfycbyFiEVyWCStmdOxaSz2AAboplrOXAJn0XuW614KRzLihSL60qL8zy3GEgBVvm0DQPcmQg/exec';
 
-    let registrationsData = [];
+let registrationsData = [];
+let answerCopiesData = [];
 
-    function switchView(viewId, btn) {
-      document.getElementById('view-registrations').classList.add('d-none');
-      document.getElementById('view-content').classList.add('d-none');
-      document.getElementById(viewId).classList.remove('d-none');
+function switchView(viewId, btn) {
+  document.getElementById('view-registrations').classList.add('d-none');
+  document.getElementById('view-content').classList.add('d-none');
+  document.getElementById('view-answers').classList.add('d-none');
+  document.getElementById(viewId).classList.remove('d-none');
 
-      document.querySelectorAll('.sidebar .nav-link').forEach(el => el.classList.remove('active'));
-      btn.classList.add('active');
+  document.querySelectorAll('.sidebar .nav-link').forEach(el => el.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+async function safeFetchJson(url, options = {}, retries = 1) {
+  try {
+    const res = await fetch(url, options);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    return await res.json();
+  } catch (err) {
+    if (retries > 0) return safeFetchJson(url, options, retries - 1);
+    console.error('API error:', err);
+    throw err;
+  }
+}
+
+/* ---------- Registrations ---------- */
+
+function loadRegistrations() {
+  const url = `${SCRIPTURL}?action=getAll`;
+  safeFetchJson(url)
+    .then(data => {
+      if (!data.success) throw new Error(data.message || 'Failed to load users');
+      registrationsData = data.users || [];
+      renderRegistrations();
+      updateStats();
+    })
+    .catch(err => {
+      console.error('loadRegistrations error:', err);
+      alert('Error loading registrations');
+    });
+}
+
+function renderRegistrations() {
+  const tbody = document.getElementById('registrationsBody');
+  tbody.innerHTML = '';
+
+  const examFilter = document.getElementById('filterExam').value;
+  const statusFilter = document.getElementById('filterStatus').value;
+
+  const filtered = registrationsData.filter(row => {
+    const exam = row.exam;
+    const ps = (row.paymentStatus || '').toLowerCase();
+    const vs = (row.verificationStatus || '').toLowerCase();
+
+    if (examFilter && exam !== examFilter) return false;
+
+    if (statusFilter === 'pending') {
+      const isPending = !(ps === 'verified' && vs === 'verified') && !(ps === 'rejected' || vs === 'rejected');
+      return isPending;
+    }
+    if (statusFilter === 'approved') {
+      return ps === 'verified' && vs === 'verified';
+    }
+    if (statusFilter === 'rejected') {
+      return ps === 'rejected' || vs === 'rejected';
+    }
+    return true;
+  });
+
+  filtered.forEach((row, index) => {
+    const tr = document.createElement('tr');
+
+    const statusPay = (row.paymentStatus || '').toLowerCase();
+    const statusVer = (row.verificationStatus || '').toLowerCase();
+
+    let statusClass = 'status-pending';
+    let statusLabel = 'Pending';
+
+    if (statusPay === 'verified' && statusVer === 'verified') {
+      statusClass = 'status-verified';
+      statusLabel = 'Approved';
+    } else if (statusPay === 'rejected' || statusVer === 'rejected') {
+      statusClass = 'status-rejected';
+      statusLabel = 'Rejected';
     }
 
-    function safeFetchJson(url, options = {}, retries = 1) {
-      return fetch(url, options)
-        .then(res => {
-          if (!res.ok) throw new Error('HTTP ' + res.status);
-          return res.json();
-        })
-        .catch(err => {
-          if (retries > 0) return safeFetchJson(url, options, retries - 1);
-          console.error('API error:', err);
-          throw err;
-        });
-    }
+    const bothVerified = (statusPay === 'verified' && statusVer === 'verified');
 
-    // ---------- Registrations ----------
+    tr.innerHTML = `
+      <td>${index + 1}</td>
+      <td>
+        <div class="fw-semibold">${row.name || '-'}</div>
+        <div class="small text-muted">${row.email || '-'}</div>
+        <div class="small text-muted">${row.contact || '-'}</div>
+      </td>
+      <td>
+        <div class="small">Exam: <span class="fw-semibold">${row.exam || '-'}</span></div>
+        <div class="small text-muted">User ID: ${row.userId || '-'}</div>
+      </td>
+      <td>
+        <div class="small">Payment: <span class="fw-semibold">${row.paymentStatus || '-'}</span></div>
+        <div class="small text-muted">Verification: ${row.verificationStatus || '-'}</div>
+      </td>
+      <td>
+        <span class="status-pill ${statusClass}">${statusLabel}</span>
+      </td>
+      <td>
+        <div class="d-flex flex-column gap-1">
+          <button class="btn btn-success btn-sm action-btn-sm"
+                  onclick="markPaymentVerified('${row.contact}')">
+            Payment
+          </button>
+          <button class="btn btn-primary btn-sm action-btn-sm"
+                  onclick="markRegistrationVerified('${row.contact}')">
+            Registration
+          </button>
+          <button class="btn btn-outline-secondary btn-sm action-btn-sm"
+                  onclick="sendLoginMail('${row.email}')"
+                  ${bothVerified ? '' : 'disabled'}>
+            Send Login Mail
+          </button>
+          <button class="btn btn-outline-danger btn-sm action-btn-sm"
+                  onclick="markRejected('${row.contact}')">
+            Reject
+          </button>
+        </div>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
 
-    function loadRegistrations() {
-      const url = `${SCRIPT_URL}?action=getAll`;
-      safeFetchJson(url)
-        .then(data => {
-          if (!data.success) throw new Error(data.message || 'Failed to load users');
-          registrationsData = data.users || [];
-          renderRegistrations();
-          updateStats();
-        })
-        .catch(err => {
-          console.error('loadRegistrations error:', err);
-          alert('Error loading registrations');
-        });
-    }
+function updateStats() {
+  const total = registrationsData.length;
+  const pending = registrationsData.filter(r => {
+    const ps = (r.paymentStatus || '').toLowerCase();
+    const vs = (r.verificationStatus || '').toLowerCase();
+    return !(ps === 'verified' && vs === 'verified') && !(ps === 'rejected' || vs === 'rejected');
+  }).length;
+  const approved = registrationsData.filter(r => {
+    const ps = (r.paymentStatus || '').toLowerCase();
+    const vs = (r.verificationStatus || '').toLowerCase();
+    return ps === 'verified' && vs === 'verified';
+  }).length;
 
-    function renderRegistrations() {
-      const tbody = document.getElementById('registrationsBody');
-      tbody.innerHTML = '';
+  document.getElementById('totalRegistrations').textContent = total;
+  document.getElementById('pendingPayments').textContent = pending;
+  document.getElementById('verifiedPayments').textContent = approved;
+}
 
-      const examFilter = document.getElementById('filterExam').value;
-      const statusFilter = document.getElementById('filterStatus').value;
+function markPaymentVerified(contact) {
+  if (!confirm('Mark payment as Verified for this contact?')) return;
+  const url = `${SCRIPTURL}?action=updateUserPayment&contact=${encodeURIComponent(contact)}`;
+  safeFetchJson(url)
+    .then(res => {
+      if (!res.success) throw new Error(res.message || 'Failed');
+      loadRegistrations();
+    })
+    .catch(err => {
+      console.error('markPaymentVerified error:', err);
+      alert('Error updating payment');
+    });
+}
 
-      const filtered = registrationsData.filter(row => {
-        const exam = row.exam || '';
-        const ps = (row.paymentStatus || '').toLowerCase();
-        const vs = (row.verificationStatus || '').toLowerCase();
+function markRegistrationVerified(contact) {
+  if (!confirm('Mark registration as Verified for this contact?')) return;
+  const url = `${SCRIPTURL}?action=updateUserRegistration&contact=${encodeURIComponent(contact)}`;
+  safeFetchJson(url)
+    .then(res => {
+      if (!res.success) throw new Error(res.message || 'Failed');
+      loadRegistrations();
+    })
+    .catch(err => {
+      console.error('markRegistrationVerified error:', err);
+      alert('Error updating registration');
+    });
+}
 
-        if (examFilter && exam !== examFilter) return false;
+function markRejected(contact) {
+  if (!confirm('Mark this user as Rejected?')) return;
+  const url = `${SCRIPTURL}?action=rejectByContact&contact=${encodeURIComponent(contact)}`;
+  safeFetchJson(url)
+    .then(res => {
+      if (!res.success) throw new Error(res.message || 'Failed');
+      loadRegistrations();
+    })
+    .catch(err => {
+      console.error('markRejected error:', err);
+      alert('Error rejecting user');
+    });
+}
 
-        if (statusFilter === 'pending') {
-          const isPending = !(ps === 'verified' && vs === 'verified') &&
-                            ps !== 'rejected' && vs !== 'rejected';
-          if (!isPending) return false;
-        } else if (statusFilter === 'approved') {
-          if (!(ps === 'verified' && vs === 'verified')) return false;
-        } else if (statusFilter === 'rejected') {
-          if (!(ps === 'rejected' || vs === 'rejected')) return false;
+function sendLoginMail(email) {
+  if (!confirm('Send login mail to this student?')) return;
+  const url = `${SCRIPTURL}?action=sendLoginMail&email=${encodeURIComponent(email)}`;
+  safeFetchJson(url)
+    .then(res => {
+      if (!res.success) throw new Error(res.message || 'Failed');
+      alert('Login mail sent');
+    })
+    .catch(err => {
+      console.error('sendLoginMail error:', err);
+      alert('Error sending login mail');
+    });
+}
+
+document.getElementById('filterExam').addEventListener('change', renderRegistrations);
+document.getElementById('filterStatus').addEventListener('change', renderRegistrations);
+
+/* ---------- Content Dashboard sections ---------- */
+
+function getItemsFromTextarea(id) {
+  const raw = document.getElementById(id).value || '';
+  return raw.split('\n').map(s => s.trim()).filter(s => s.length > 0);
+}
+
+function prefixForExam(examType) {
+  if (examType === 'UPSC') return 'upsc';
+  if (examType === 'JEE') return 'jee';
+  if (examType === 'NEET') return 'neet';
+  if (examType === 'RPSC') return 'rpsc';
+  return '';
+}
+
+function saveSection(examType, sectionKey) {
+  const prefix = prefixForExam(examType);
+  const titleId = prefix + sectionKey + 'title';
+  const itemsId = prefix + sectionKey + 'items';
+  const msgId = prefix + sectionKey + 'msg';
+
+  const title = document.getElementById(titleId)?.value || '';
+  const items = getItemsFromTextarea(itemsId);
+
+  const payload = {
+    examType,
+    sectionKey,
+    title,
+    items
+  };
+
+  const formData = new FormData();
+  formData.append('action', 'saveDashboardSection');
+  formData.append('payload', JSON.stringify(payload));
+
+  const msgEl = document.getElementById(msgId);
+  msgEl.textContent = 'Saving...';
+  msgEl.className = 'text-muted small';
+
+  fetch(SCRIPTURL, {
+    method: 'POST',
+    body: formData
+  })
+    .then(r => r.json())
+    .then(res => {
+      if (!res.success) {
+        msgEl.textContent = 'Error';
+        msgEl.className = 'text-danger small';
+        return;
+      }
+      msgEl.textContent = 'Saved';
+      msgEl.className = 'text-success small';
+      setTimeout(() => {
+        msgEl.textContent = '';
+      }, 2000);
+    })
+    .catch(err => {
+      console.error('saveSection error:', err);
+      msgEl.textContent = 'Error';
+      msgEl.className = 'text-danger small';
+    });
+}
+
+function saveSyllabus(examType) {
+  let payload = {
+    examType,
+    sectionKey: 'syllabus'
+  };
+
+  if (examType === 'UPSC') {
+    payload.prelimsPercent = Number(document.getElementById('upscsyllabusprelims').value || 0);
+    payload.mainsPercent   = Number(document.getElementById('upscsyllabusmains').value || 0);
+  } else if (examType === 'JEE') {
+    payload.phyPercent  = Number(document.getElementById('jeesyllabusphy').value || 0);
+    payload.chemPercent = Number(document.getElementById('jeesyllabuschem').value || 0);
+    payload.mathPercent = Number(document.getElementById('jeesyllabusmath').value || 0);
+  } else if (examType === 'NEET') {
+    payload.phyPercent  = Number(document.getElementById('neetsyllabusphy').value || 0);
+    payload.chemPercent = Number(document.getElementById('neetsyllabuschem').value || 0);
+    payload.bioPercent  = Number(document.getElementById('neetsyllabusbio').value || 0);
+  } else if (examType === 'RPSC') {
+    payload.gsPercent  = Number(document.getElementById('rpscsyllabusgs').value || 0);
+    payload.rajPercent = Number(document.getElementById('rpscsyllabusraj').value || 0);
+    payload.optPercent = Number(document.getElementById('rpscsyllabusopt').value || 0);
+  }
+
+  const formData = new FormData();
+  formData.append('action', 'saveDashboardSection');
+  formData.append('payload', JSON.stringify(payload));
+
+  const msgId = examType.toLowerCase() + 'syllabusmsg';
+  const msgEl = document.getElementById(msgId);
+  msgEl.textContent = 'Saving...';
+  msgEl.className = 'text-muted small';
+
+  fetch(SCRIPTURL, {
+    method: 'POST',
+    body: formData
+  })
+    .then(r => r.json())
+    .then(res => {
+      if (!res.success) {
+        msgEl.textContent = 'Error';
+        msgEl.className = 'text-danger small';
+        return;
+      }
+      msgEl.textContent = 'Saved';
+      msgEl.className = 'text-success small';
+      setTimeout(() => {
+        msgEl.textContent = '';
+      }, 2000);
+    })
+    .catch(err => {
+      console.error('saveSyllabus error:', err);
+      msgEl.textContent = 'Error';
+      msgEl.className = 'text-danger small';
+    });
+}
+
+function loadDashboardContentForAdmin(examType) {
+  const url = `${SCRIPTURL}?action=getDashboardContent&examType=${encodeURIComponent(examType)}`;
+  safeFetchJson(url)
+    .then(data => {
+      if (!data.success || !data.payload) return;
+      const p = data.payload;
+      const prefix = examType.toLowerCase();
+
+      function fillSection(key) {
+        if (!p[key]) return;
+        const sec = p[key];
+        const titleInput = document.getElementById(prefix + key + 'title');
+        const itemsArea  = document.getElementById(prefix + key + 'items');
+        if (titleInput) titleInput.value = sec.title || '';
+        if (itemsArea && Array.isArray(sec.items)) {
+          itemsArea.value = sec.items
+            .map(it => typeof it === 'string' ? it : (it.text || it.title || it.content || ''))
+            .filter(Boolean)
+            .join('\n');
         }
-        return true;
-      });
-
-      filtered.forEach((row, index) => {
-        const tr = document.createElement("tr");
-
-        const statusPay = (row.paymentStatus || "").toLowerCase();
-        const statusVer = (row.verificationStatus || "").toLowerCase();
-
-        let statusClass = "status-pending";
-        let statusLabel = "Pending";
-
-        if (statusPay === "verified" && statusVer === "verified") {
-          statusClass = "status-verified";
-          statusLabel = "Approved";
-        } else if (statusPay === "rejected" || statusVer === "rejected") {
-          statusClass = "status-rejected";
-          statusLabel = "Rejected";
-        }
-
-        const bothVerified = statusPay === "verified" && statusVer === "verified";
-
-        tr.innerHTML = `
-          <td>${index + 1}</td>
-          <td>
-            <div class="fw-semibold">${row.name || "-"}</div>
-            <div class="small text-muted">${row.email || "-"}</div>
-            <div class="small text-muted">${row.contact || "-"}</div>
-          </td>
-          <td>
-            <div class="small">Exam: <span class="fw-semibold">${row.exam || "-"}</span></div>
-            <div class="small text-muted">User ID: ${row.userId || "-"}</div>
-          </td>
-          <td>
-            <div class="small">Payment: <span class="fw-semibold">${row.paymentStatus || "-"}</span></div>
-            <div class="small text-muted">Verification: ${row.verificationStatus || "-"}</div>
-          </td>
-          <td>
-            <div class="small">—</div>
-          </td>
-          <td>
-            <span class="status-pill ${statusClass}">${statusLabel}</span>
-          </td>
-          <td>
-            <div class="d-flex flex-column gap-1">
-              <button class="btn btn-success btn-sm action-btn-sm"
-                onclick="markPaymentVerified('${row.contact}')">
-                Payment ✓
-              </button>
-              <button class="btn btn-primary btn-sm action-btn-sm"
-                onclick="markRegistrationVerified('${row.contact}')">
-                Registration ✓
-              </button>
-              <button class="btn btn-outline-secondary btn-sm action-btn-sm"
-                onclick="sendLoginMail('${row.email}')"
-                ${bothVerified ? "" : "disabled"}>
-                Send Login Mail
-              </button>
-              <button class="btn btn-outline-danger btn-sm action-btn-sm"
-                onclick="markRejected('${row.contact}')">
-                Reject
-              </button>
-            </div>
-          </td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-
-    function updateStats() {
-      const total = registrationsData.length;
-      const pending = registrationsData.filter((r) => {
-        const ps = (r.paymentStatus || "").toLowerCase();
-        const vs = (r.verificationStatus || "").toLowerCase();
-        return !(ps === "verified" && vs === "verified") &&
-               ps !== "rejected" && vs !== "rejected";
-      }).length;
-
-      const approved = registrationsData.filter((r) => {
-        const ps = (r.paymentStatus || "").toLowerCase();
-        const vs = (r.verificationStatus || "").toLowerCase();
-        return ps === "verified" && vs === "verified";
-      }).length;
-
-      document.getElementById("totalRegistrations").textContent = total;
-      document.getElementById("pendingPayments").textContent = pending;
-      document.getElementById("verifiedPayments").textContent = approved;
-    }
-
-    function markPaymentVerified(contact) {
-      if (!confirm('Mark payment as Verified for this contact?')) return;
-      const url = `${SCRIPT_URL}?action=updateUserPayment&contact=${encodeURIComponent(contact)}`;
-      safeFetchJson(url)
-        .then(res => {
-          if (!res.success) throw new Error(res.message || 'Failed');
-          loadRegistrations();
-        })
-        .catch(err => {
-          console.error('markPaymentVerified error:', err);
-          alert('Error updating payment');
-        });
-    }
-
-    function markRegistrationVerified(contact) {
-      if (!confirm('Mark registration as Verified for this contact?')) return;
-      const url = `${SCRIPT_URL}?action=updateUserRegistration&contact=${encodeURIComponent(contact)}`;
-      safeFetchJson(url)
-        .then(res => {
-          if (!res.success) throw new Error(res.message || 'Failed');
-          loadRegistrations();
-        })
-        .catch(err => {
-          console.error('markRegistrationVerified error:', err);
-          alert('Error updating registration');
-        });
-    }
-
-    function markRejected(contact) {
-      if (!confirm('Mark this user as Rejected?')) return;
-      const url = `${SCRIPT_URL}?action=rejectByContact&contact=${encodeURIComponent(contact)}`;
-      safeFetchJson(url)
-        .then(res => {
-          if (!res.success) throw new Error(res.message || 'Failed');
-          loadRegistrations();
-        })
-        .catch(err => {
-          console.error('markRejected error:', err);
-          alert('Error rejecting user');
-        });
-    }
-
-    function sendLoginMail(email) {
-      if (!confirm('Send login mail to this student?')) return;
-      const url = `${SCRIPT_URL}?action=sendLoginMail&email=${encodeURIComponent(email)}`;
-      safeFetchJson(url)
-        .then(res => {
-          if (!res.success) throw new Error(res.message || 'Failed');
-          alert('Login mail sent');
-        })
-        .catch(err => {
-          console.error('sendLoginMail error:', err);
-          alert('Error sending login mail');
-        });
-    }
-
-    document.getElementById('filterExam').addEventListener('change', renderRegistrations);
-    document.getElementById('filterStatus').addEventListener('change', renderRegistrations);
-
-    // ---------- Content (Dashboard sections) ----------
-
-    function getItemsFromTextarea(id) {
-      const raw = document.getElementById(id).value || '';
-      return raw
-        .split('\n')
-        .map(s => s.trim())
-        .filter(s => s.length > 0);
-    }
-
-    function prefixForExam(examType) {
-      if (examType === 'UPSC') return 'upsc_';
-      if (examType === 'JEE')  return 'jee_';
-      if (examType === 'NEET') return 'neet_';
-      if (examType === 'RPSC') return 'rpsc_';
-      return '';
-    }
-
-    function saveSection(examType, sectionKey) {
-      const prefix = prefixForExam(examType);
-      const titleId = `${prefix}${sectionKey}_title`;
-      const itemsId = `${prefix}${sectionKey}_items`;
-      const msgId   = `${prefix}${sectionKey}_msg`;
-
-      const title = document.getElementById(titleId)?.value || '';
-      const items = getItemsFromTextarea(itemsId);
-
-      const payload = {
-        examType,
-        sectionKey,
-        title,
-        items
-      };
-
-      const formData = new FormData();
-      formData.append('action', 'saveDashboardSection');
-      formData.append('payload', JSON.stringify(payload));
-
-      const msgEl = document.getElementById(msgId);
-      msgEl.textContent = 'Saving...';
-      msgEl.className = 'text-muted small';
-
-      fetch(SCRIPT_URL, {
-        method: 'POST',
-        body: formData
-      })
-        .then(r => r.json())
-        .then(res => {
-          if (!res.success) {
-            msgEl.textContent = 'Error';
-            msgEl.className = 'text-danger small';
-            return;
-          }
-          msgEl.textContent = 'Saved';
-          msgEl.className = 'text-success small';
-          setTimeout(() => { msgEl.textContent = ''; }, 2000);
-        })
-        .catch(err => {
-          console.error('saveSection error:', err);
-          msgEl.textContent = 'Error';
-          msgEl.className = 'text-danger small';
-        });
-    }
-
-    function saveSyllabus(examType) {
-      let payload = { examType, sectionKey: 'syllabus' };
-
-      if (examType === 'UPSC') {
-        payload.prelimsPercent = Number(document.getElementById('upsc_syllabus_prelims').value || 0);
-        payload.mainsPercent   = Number(document.getElementById('upsc_syllabus_mains').value || 0);
-      } else if (examType === 'JEE') {
-        payload.phyPercent  = Number(document.getElementById('jee_syllabus_phy').value || 0);
-        payload.chemPercent = Number(document.getElementById('jee_syllabus_chem').value || 0);
-        payload.mathPercent = Number(document.getElementById('jee_syllabus_math').value || 0);
-      } else if (examType === 'NEET') {
-        payload.phyPercent  = Number(document.getElementById('neet_syllabus_phy').value || 0);
-        payload.chemPercent = Number(document.getElementById('neet_syllabus_chem').value || 0);
-        payload.bioPercent  = Number(document.getElementById('neet_syllabus_bio').value || 0);
-      } else if (examType === 'RPSC') {
-        payload.gsPercent  = Number(document.getElementById('rpsc_syllabus_gs').value || 0);
-        payload.rajPercent = Number(document.getElementById('rpsc_syllabus_raj').value || 0);
-        payload.optPercent = Number(document.getElementById('rpsc_syllabus_opt').value || 0);
       }
 
-      const formData = new FormData();
-      formData.append('action', 'saveDashboardSection');
-      formData.append('payload', JSON.stringify(payload));
+      ['announcements','dailyTargets','mockTests','testSeries',
+       'pyqPapers','books','currentAffairs','notesPdfs','quotes']
+        .forEach(fillSection);
 
-      const msgId = `${examType.toLowerCase()}_syllabus_msg`;
-      const msgEl = document.getElementById(msgId);
-      msgEl.textContent = 'Saving...';
-      msgEl.className = 'text-muted small';
+      if (p.syllabus) {
+        if (examType === 'UPSC') {
+          document.getElementById('upscsyllabusprelims').value = p.syllabus.prelimsPercent || 0;
+          document.getElementById('upscsyllabusmains').value   = p.syllabus.mainsPercent   || 0;
+        } else if (examType === 'JEE') {
+          document.getElementById('jeesyllabusphy').value  = p.syllabus.phyPercent  || 0;
+          document.getElementById('jeesyllabuschem').value = p.syllabus.chemPercent || 0;
+          document.getElementById('jeesyllabusmath').value = p.syllabus.mathPercent || 0;
+        } else if (examType === 'NEET') {
+          document.getElementById('neetsyllabusphy').value  = p.syllabus.phyPercent  || 0;
+          document.getElementById('neetsyllabuschem').value = p.syllabus.chemPercent || 0;
+          document.getElementById('neetsyllabusbio').value  = p.syllabus.bioPercent  || 0;
+        } else if (examType === 'RPSC') {
+          document.getElementById('rpscsyllabusgs').value  = p.syllabus.gsPercent  || 0;
+          document.getElementById('rpscsyllabusraj').value = p.syllabus.rajPercent || 0;
+          document.getElementById('rpscsyllabusopt').value = p.syllabus.optPercent || 0;
+        }
+      }
+    })
+    .catch(err => {
+      console.error('loadDashboardContentForAdmin error:', err);
+    });
+}
 
-      fetch(SCRIPT_URL, {
-        method: 'POST',
-        body: formData
-      })
-        .then(r => r.json())
-        .then(res => {
-          if (!res.success) {
-            msgEl.textContent = 'Error';
-            msgEl.className = 'text-danger small';
-            return;
-          }
-          msgEl.textContent = 'Saved';
-          msgEl.className = 'text-success small';
-          setTimeout(() => { msgEl.textContent = ''; }, 2000);
-        })
-        .catch(err => {
-          console.error('saveSyllabus error:', err);
-          msgEl.textContent = 'Error';
-          msgEl.className = 'text-danger small';
-        });
-    }
+/* ---------- Answer Copies (Google Form responses) ---------- */
 
-    // OPTIONAL: load existing dashboard content into admin form (read-only convenience)
-    function loadDashboardContentForAdmin(examType) {
-      const url = `${SCRIPT_URL}?action=getDashboardContent&examType=${encodeURIComponent(examType)}`;
-      safeFetchJson(url)
-        .then(data => {
-          if (!data.success || !data.payload) return;
-          const p = data.payload;
-          const prefix = examType.toLowerCase() + '_';
+function loadAnswerCopies() {
+  const tbody = document.getElementById('answerCopiesBody');
+  tbody.innerHTML = `
+    <tr><td colspan="7" class="text-center py-3 text-muted">Loading...</td></tr>
+  `;
 
-          function fillSection(key) {
-            if (!p[key]) return;
-            const sec = p[key];
-            const titleInput = document.getElementById(prefix + key + '_title');
-            const itemsArea  = document.getElementById(prefix + key + '_items');
-            if (titleInput) titleInput.value = sec.title || '';
-            if (itemsArea && Array.isArray(sec.items)) {
-              itemsArea.value = sec.items
-                .map(it => (typeof it === 'string' ? it : (it.text || it.title || it.content || '')))
-                .filter(Boolean)
-                .join('\n');
-            }
-          }
+  const url = `${SCRIPTURL}?action=getAnswerCopies`;
+  safeFetchJson(url)
+    .then(data => {
+      if (!data.success) throw new Error(data.message || 'Failed to load answer copies');
+      answerCopiesData = data.copies || [];
+      renderAnswerCopies();
+    })
+    .catch(err => {
+      console.error('loadAnswerCopies error:', err);
+      tbody.innerHTML = `
+        <tr><td colspan="7" class="text-center py-3 text-danger">Error loading answer copies</td></tr>
+      `;
+    });
+}
 
-          ['announcements','dailyTargets','mockTests','testSeries','pyqPapers','books','currentAffairs','notesPdfs','quotes'].forEach(fillSection);
+function renderAnswerCopies() {
+  const tbody = document.getElementById('answerCopiesBody');
+  tbody.innerHTML = '';
 
-          if (p.syllabus) {
-            if (examType === 'UPSC') {
-              document.getElementById('upsc_syllabus_prelims').value = p.syllabus.prelimsPercent || 0;
-              document.getElementById('upsc_syllabus_mains').value   = p.syllabus.mainsPercent   || 0;
-            } else if (examType === 'JEE') {
-              document.getElementById('jee_syllabus_phy').value  = p.syllabus.phyPercent  || 0;
-              document.getElementById('jee_syllabus_chem').value = p.syllabus.chemPercent || 0;
-              document.getElementById('jee_syllabus_math').value = p.syllabus.mathPercent || 0;
-            } else if (examType === 'NEET') {
-              document.getElementById('neet_syllabus_phy').value  = p.syllabus.phyPercent  || 0;
-              document.getElementById('neet_syllabus_chem').value = p.syllabus.chemPercent || 0;
-              document.getElementById('neet_syllabus_bio').value  = p.syllabus.bioPercent  || 0;
-            } else if (examType === 'RPSC') {
-              document.getElementById('rpsc_syllabus_gs').value  = p.syllabus.gsPercent  || 0;
-              document.getElementById('rpsc_syllabus_raj').value = p.syllabus.rajPercent || 0;
-              document.getElementById('rpsc_syllabus_opt').value = p.syllabus.optPercent || 0;
-            }
-          }
-        })
-        .catch(err => console.error('loadDashboardContentForAdmin error:', err));
-    }
+  if (!answerCopiesData.length) {
+    tbody.innerHTML = `
+      <tr><td colspan="7" class="text-center py-3 text-muted">
+        No answer copies found. Submissions will appear here after students submit the Google Form.
+      </td></tr>
+    `;
+    return;
+  }
 
-    // INIT
-    (function init() {
-      loadRegistrations();
-      loadDashboardContentForAdmin('UPSC');
-      loadDashboardContentForAdmin('JEE');
-      loadDashboardContentForAdmin('NEET');
-      loadDashboardContentForAdmin('RPSC');
-    })();
-  </script>
+  answerCopiesData.forEach((row, index) => {
+    const tr = document.createElement('tr');
+
+    const status = row.status || 'Under Evaluation';
+    const statusOptions = ['Under Evaluation', 'Evaluated'];
+    const statusSelectId = `ans-status-${index}`;
+
+    tr.innerHTML = `
+      <td>${index + 1}</td>
+      <td>
+        <div class="fw-semibold">${row.name || '-'}</div>
+        <div class="small text-muted">${row.email || '-'}</div>
+      </td>
+      <td>${row.paperType || '-'}</td>
+      <td>${row.submittedOn || '-'}</td>
+      <td>
+        ${row.fileUrl
+          ? `<a href="${row.fileUrl}" target="_blank" class="small">View file</a>`
+          : '<span class="small text-muted">No file</span>'
+        }
+      </td>
+      <td>
+        <select id="${statusSelectId}" class="form-select form-select-sm" style="width:auto">
+          ${statusOptions.map(s => `<option value="${s}" ${s === status ? 'selected' : ''}>${s}</option>`).join('')}
+        </select>
+      </td>
+      <td>
+        <button class="btn btn-sm btn-primary"
+                onclick="updateAnswerStatus('${row.id}', '${statusSelectId}')">
+          Save Status
+        </button>
+      </td>
+    `;
+
+    tbody.appendChild(tr);
+  });
+}
+
+function updateAnswerStatus(rowId, selectId) {
+  const newStatus = document.getElementById(selectId).value;
+  if (!rowId) {
+    alert('Missing row ID');
+    return;
+  }
+  const url = `${SCRIPTURL}?action=updateAnswerStatus` +
+              `&id=${encodeURIComponent(rowId)}` +
+              `&status=${encodeURIComponent(newStatus)}`;
+
+  safeFetchJson(url)
+    .then(res => {
+      if (!res.success) throw new Error(res.message || 'Failed');
+      alert('Status updated');
+      loadAnswerCopies();
+    })
+    .catch(err => {
+      console.error('updateAnswerStatus error:', err);
+      alert('Error updating status');
+    });
+}
+
+/* INIT */
+function init() {
+  loadRegistrations();
+  loadDashboardContentForAdmin('UPSC');
+  loadDashboardContentForAdmin('JEE');
+  loadDashboardContentForAdmin('NEET');
+  loadDashboardContentForAdmin('RPSC');
+}
+
+init();
+</script>
 </body>
 </html>
