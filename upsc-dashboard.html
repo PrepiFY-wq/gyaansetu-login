@@ -262,6 +262,9 @@
       display: flex;
       flex-direction: column;
       gap: 6px;
+      max-height: 260px;
+      overflow-y: auto;
+      padding-right: 4px;
     }
 
     .list a {
@@ -337,6 +340,9 @@
   <script>
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyFiEVyWCStmdOxaSz2AAboplrOXAJn0XuW614KRzLihSL60qL8zy3GEgBVvm0DQPcmQg/exec';
 
+    // UPSC CSE Prelims 2026: 24 May 2026, 9:00 AM IST
+    const examDate = new Date('2026-05-24T09:00:00+05:30');
+
     (function guardAccess() {
       const exam = localStorage.getItem('exam');
       const userId = localStorage.getItem('userId');
@@ -382,7 +388,7 @@
           <div class="label">Days Left</div>
         </div>
         <div class="countdown-item">
-          <div the="number" id="hoursLeft">0</div>
+          <div class="number" id="hoursLeft">0</div>
           <div class="label">Hours Left</div>
         </div>
       </div>
@@ -474,20 +480,15 @@
       </div>
     </section>
 
-    <!-- DAILY TARGETS & RECENT TOPICS -->
+    <!-- DAILY TARGETS -->
     <section class="section-card">
       <div class="section-header">
-        <h2>Daily Targets & Recent Topics</h2>
+        <h2>Daily Targets</h2>
         <span>Short-term focus areas for you</span>
       </div>
       <h3 style="font-size: 15px; color:#4b5563; margin-bottom:8px;">Daily Targets</h3>
       <div id="dailyTargets">
         <div class="empty-state">Admin will upload today's targets soon.</div>
-      </div>
-
-      <h3 style="font-size: 15px; color:#4b5563; margin:20px 0 8px;">Recent Topics</h3>
-      <div id="recentTopics">
-        <div class="empty-state">No recent topics yet.</div>
       </div>
     </section>
 
@@ -585,7 +586,7 @@
 
           <div class="update-box">
             <label for="answerFile">Upload your file</label>
-            <input type="file" id="answerFile" required>
+            <input type="file" id="answerFile" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" required>
           </div>
 
           <div class="update-box update-actions">
@@ -631,14 +632,20 @@
         text || getRandomFallbackQuote();
     }
 
-    // UPSC CSE Prelims 2026: 24 May 2026
+    // COUNTDOWN (days + hours exact)
     function updateCountdown() {
-      const examDate = new Date('2026-05-24T09:00:00');
       const now = new Date();
       const diff = examDate - now;
 
-      const days = Math.max(0, Math.floor(diff / (1000 * 60 * 60 * 24)));
-      const hours = Math.max(0, Math.floor(diff / (1000 * 60 * 60)));
+      if (diff <= 0) {
+        document.getElementById('daysLeft').textContent = 0;
+        document.getElementById('hoursLeft').textContent = 0;
+        return;
+      }
+
+      const totalHours = Math.floor(diff / (1000 * 60 * 60));
+      const days = Math.floor(totalHours / 24);
+      const hours = totalHours % 24;
 
       document.getElementById('daysLeft').textContent = days;
       document.getElementById('hoursLeft').textContent = hours;
@@ -696,10 +703,13 @@
                   `&mocks=${encodeURIComponent(mocks)}`;
 
       fetch(url)
-        .then(r => r.json())
+        .then(r => {
+          if (!r.ok) throw new Error('Network error: ' + r.status);
+          return r.json();
+        })
         .then(data => {
-          if (!data.success) {
-            throw new Error(data.message || 'Failed to save study log');
+          if (!data || !data.success) {
+            throw new Error(data && data.message ? data.message : 'Failed to save study log');
           }
           const totalsUrl = `${SCRIPT_URL}?action=getStudyTotals` +
                             `&userId=${encodeURIComponent(userId)}` +
@@ -711,14 +721,16 @@
             document.getElementById('totalHours').textContent  = totals.totalHours || 0;
             document.getElementById('totalTopics').textContent = totals.totalTopics || 0;
             document.getElementById('totalTests').textContent  = totals.totalMocks || 0;
+          } else {
+            throw new Error(totals && totals.message ? totals.message : 'Failed to load totals');
           }
           alert('Progress updated successfully!');
           document.getElementById('progressForm').reset();
-          loadAnalytics(); // analytics ko bhi refresh karo
+          loadAnalytics();
         })
         .catch(err => {
           console.error('Update progress error:', err);
-          alert('Error updating progress. Please try again.');
+          alert('Error updating progress: ' + err.message);
         });
     }
 
@@ -765,39 +777,124 @@
         .catch(err => console.error('loadAnalytics error:', err));
     }
 
-    // ========== DASHBOARD CONTENT FROM DashboardContent SHEET ==========
+    // ========== GENERIC LIST RENDER HELPERS ==========
 
-    function renderList(containerId, items, isLink = false) {
+    function renderAnnouncements(items) {
+      const container = document.getElementById('announcements');
+      container.innerHTML = '';
+      if (!items || !items.length) {
+        container.innerHTML = '<div class="empty-state">No announcements yet. Admin will update here.</div>';
+        return;
+      }
+
+      const lastSeen = localStorage.getItem('upsc_last_seen_announcement_id') || '';
+      const list = document.createElement('div');
+      list.className = 'list';
+
+      items.forEach((it, index) => {
+        const row = document.createElement('div');
+        row.className = 'list-item';
+        row.textContent = it.text || it.title || '';
+
+        if (index === 0) {
+          row.style.fontWeight = '600';
+          row.style.background = '#eef2ff';
+          row.style.borderRadius = '6px';
+          row.style.padding = '6px 8px';
+        }
+
+        if (it.id && it.id !== lastSeen) {
+          const tag = document.createElement('span');
+          tag.className = 'tag';
+          tag.textContent = 'NEW';
+          row.appendChild(tag);
+        }
+
+        list.appendChild(row);
+      });
+
+      container.appendChild(list);
+
+      if (items[0] && items[0].id) {
+        container.setAttribute('data-latest-id', items[0].id);
+
+        const badge = document.getElementById('announcementBadge');
+        if (items[0].id !== lastSeen && badge) {
+          badge.style.display = 'inline-block';
+          badge.textContent = '1';
+        }
+      }
+    }
+
+    function renderDailyTargets(items) {
+      const container = document.getElementById('dailyTargets');
+      container.innerHTML = '';
+      if (!items || !items.length) {
+        container.innerHTML = '<div class="empty-state">Admin will upload today\'s targets soon.</div>';
+        return;
+      }
+
+      const list = document.createElement('div');
+      list.className = 'list';
+
+      items.forEach((it, index) => {
+        const row = document.createElement('div');
+        row.className = 'list-item';
+        row.textContent = it.text || it.title || '';
+
+        if (index === 0) {
+          row.style.fontWeight = '600';
+          row.style.background = '#dcfce7';
+          row.style.borderRadius = '6px';
+          row.style.padding = '6px 8px';
+
+          const tag = document.createElement('span');
+          tag.className = 'tag';
+          tag.textContent = 'Today';
+          row.appendChild(tag);
+        }
+
+        list.appendChild(row);
+      });
+
+      container.appendChild(list);
+    }
+
+    function renderSectionList(containerId, items, highlightLabel) {
       const container = document.getElementById(containerId);
       container.innerHTML = '';
       if (!items || !items.length) {
         container.innerHTML = '<div class="empty-state">No data yet.</div>';
         return;
       }
-      const div = document.createElement('div');
-      div.className = 'list';
-      items.forEach(it => {
-        if (isLink && it.url && it.title) {
-          const a = document.createElement('a');
-          a.href = it.url;
-          a.target = '_blank';
-          a.textContent = it.title;
-          if (it.tag) {
-            const span = document.createElement('span');
-            span.className = 'tag';
-            span.textContent = it.tag;
-            a.appendChild(span);
-          }
-          div.appendChild(a);
-        } else {
-          const p = document.createElement('div');
-          p.className = 'list-item';
-          p.textContent = it.text || it.title || '';
-          div.appendChild(p);
+
+      const list = document.createElement('div');
+      list.className = 'list';
+
+      items.forEach((it, index) => {
+        const row = document.createElement('div');
+        row.className = 'list-item';
+        row.textContent = it.text || it.title || '';
+
+        if (index === 0 && highlightLabel) {
+          row.style.fontWeight = '600';
+          row.style.background = '#fef3c7';
+          row.style.borderRadius = '6px';
+          row.style.padding = '6px 8px';
+
+          const tag = document.createElement('span');
+          tag.className = 'tag';
+          tag.textContent = highlightLabel;
+          row.appendChild(tag);
         }
+
+        list.appendChild(row);
       });
-      container.appendChild(div);
+
+      container.appendChild(list);
     }
+
+    // ========== DASHBOARD CONTENT FROM DashboardContent SHEET ==========
 
     function loadDashboardContent() {
       const url = `${SCRIPT_URL}?action=getDashboardContent&examType=UPSC`;
@@ -813,13 +910,7 @@
 
           // Announcements
           if (p.announcements && Array.isArray(p.announcements.items) && p.announcements.items.length) {
-            const list = p.announcements.items.map(text => ({ text }));
-            renderList('announcements', list, false);
-
-            // badge ke liye simple id timestamp ki jagah first index use kar sakte ho
-            const latestId = String(Date.now());
-            const container = document.getElementById('announcements');
-            container.setAttribute('data-latest-id', latestId);
+            renderAnnouncements(p.announcements.items);
           } else {
             document.getElementById('announcements').innerHTML =
               '<div class="empty-state">No announcements yet. Admin will update here.</div>';
@@ -827,50 +918,37 @@
 
           // Daily targets
           if (p.dailyTargets && Array.isArray(p.dailyTargets.items)) {
-            const list = p.dailyTargets.items.map(text => ({ text }));
-            renderList('dailyTargets', list, false);
-          }
-
-          // Recent topics
-          if (p.recentTopics && Array.isArray(p.recentTopics.items)) {
-            const list = p.recentTopics.items.map(text => ({ text }));
-            renderList('recentTopics', list, false);
+            renderDailyTargets(p.dailyTargets.items);
           }
 
           // Mock tests
           if (p.mockTests && Array.isArray(p.mockTests.items)) {
-            const list = p.mockTests.items.map(text => ({ text }));
-            renderList('mockTestsList', list, false);
+            renderSectionList('mockTestsList', p.mockTests.items, 'NEW');
           }
 
           // Test series
           if (p.testSeries && Array.isArray(p.testSeries.items)) {
-            const list = p.testSeries.items.map(text => ({ text }));
-            renderList('testSeriesList', list, false);
+            renderSectionList('testSeriesList', p.testSeries.items, 'NEW');
           }
 
           // PYQs
           if (p.pyqPapers && Array.isArray(p.pyqPapers.items)) {
-            const list = p.pyqPapers.items.map(text => ({ text }));
-            renderList('pypList', list, false);
+            renderSectionList('pypList', p.pyqPapers.items, 'NEW');
           }
 
           // Books
           if (p.books && Array.isArray(p.books.items)) {
-            const list = p.books.items.map(text => ({ text }));
-            renderList('booksList', list, false);
+            renderSectionList('booksList', p.books.items, 'NEW');
           }
 
           // Current Affairs
           if (p.currentAffairs && Array.isArray(p.currentAffairs.items)) {
-            const list = p.currentAffairs.items.map(text => ({ text }));
-            renderList('currentAffairsList', list, false);
+            renderSectionList('currentAffairsList', p.currentAffairs.items, 'NEW');
           }
 
           // Notes & PDFs
           if (p.notesPdfs && Array.isArray(p.notesPdfs.items)) {
-            const list = p.notesPdfs.items.map(text => ({ text }));
-            renderList('notesList', list, false);
+            renderSectionList('notesList', p.notesPdfs.items, 'NEW');
           }
 
           // Syllabus
@@ -885,9 +963,10 @@
 
           // Quotes (Path Pradarshak)
           if (p.quotes && Array.isArray(p.quotes.items) && p.quotes.items.length) {
-            const list = p.quotes.items.map(text => ({ text }));
-            renderList('motivationalQuotes', list, false);
-            setDailyQuote(p.quotes.items[0] || '');
+            renderSectionList('motivationalQuotes', p.quotes.items, 'NEW');
+            const first = p.quotes.items[0];
+            const text = typeof first === 'string' ? first : (first.text || first.title || '');
+            setDailyQuote(text);
           } else {
             setDailyQuote();
           }
@@ -905,7 +984,7 @@
 
       const userId = localStorage.getItem('userId');
       const name   = localStorage.getItem('name') || '';
-      const exam   = localStorage.getItem('exam'); // sirf guard ke liye
+      const exam   = localStorage.getItem('exam');
 
       if (!userId || !exam) {
         alert('Session expired. Please login again.');
@@ -1022,7 +1101,8 @@
         localStorage.getItem('name') || 'Candidate';
 
       updateCountdown();
-      setInterval(updateCountdown, 60 * 60 * 1000);
+      // 1 minute me ek baar countdown refresh
+      setInterval(updateCountdown, 60 * 1000);
 
       setDailyQuote();
       loadTotals();
