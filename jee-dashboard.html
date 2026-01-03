@@ -43,9 +43,7 @@
       font-size: 13px;
     }
 
-    .logout-btn:hover {
-      background: rgba(255,255,255,0.25);
-    }
+    .logout-btn:hover { background: rgba(255,255,255,0.25); }
 
     .container {
       max-width: 1400px;
@@ -88,10 +86,7 @@
       margin-bottom: 25px;
     }
 
-    .exam-countdown h2 {
-      font-size: 22px;
-      margin-bottom: 10px;
-    }
+    .exam-countdown h2 { font-size: 22px; margin-bottom: 10px; }
 
     .exam-subtitle {
       font-size: 13px;
@@ -297,13 +292,8 @@
       const exam = localStorage.getItem('exam');
       const userId = localStorage.getItem('userId');
 
-      if (!exam || !userId) {
+      if (!exam || !userId || exam !== 'JEE') {
         window.location.href = 'index.html';
-        return;
-      }
-      if (exam !== 'JEE') {
-        window.location.href = 'index.html';
-        return;
       }
     })();
   </script>
@@ -319,7 +309,7 @@
   </div>
 
   <div class="container">
-    <!-- COUNTDOWN (JEE Main 2 sessions + JEE Advanced) -->
+    <!-- COUNTDOWN -->
     <section class="exam-countdown">
       <h2>JEE Main & JEE Advanced 2026</h2>
       <div class="exam-subtitle">
@@ -408,7 +398,7 @@
       </div>
     </section>
 
-    <!-- PERFORMANCE ANALYTICS (UPSC style) -->
+    <!-- PERFORMANCE ANALYTICS -->
     <section class="section-card">
       <div class="section-header">
         <h2>Performance Analytics</h2>
@@ -573,42 +563,19 @@
       document.getElementById('dailyQuote').textContent = quote;
     }
 
-    // Official windows & exam times [web:205][web:222]
-    // Session 1: 21–30 Jan 2026 → countdown to 21 Jan 2026, 9:00 AM
-    const session1Date = new Date('2026-01-21T09:00:00+05:30');
-    // Session 2: 2–9 Apr 2026 → countdown to 2 Apr 2026, 9:00 AM
-    const session2Date = new Date('2026-04-02T09:00:00+05:30');
-    // JEE Advanced 2026: 17 May 2026, 9:00 AM (Paper 1) [web:222][web:201]
-    const advancedDate = new Date('2026-05-17T09:00:00+05:30');
-
-    // UPSC-style helper: total hours → days + hours
-    function computeDaysHours(targetDate) {
-      const now = new Date();
-      const diffMs = targetDate - now;
-
-      if (diffMs <= 0) {
-        return { days: 0, hours: 0 };
-      }
-
-      const totalHours = Math.floor(diffMs / (1000 * 60 * 60)); // ms → hours [web:159][web:160]
-      const days = Math.floor(totalHours / 24);
-      const hours = totalHours % 24;
-      return { days, hours };
-    }
-
+    // Fixed countdown numbers (as requested)
     function updateCountdown() {
-      const s1 = computeDaysHours(session1Date);
-      const s2 = computeDaysHours(session2Date);
-      const adv = computeDaysHours(advancedDate);
+      // JEE Main Session 1
+      document.getElementById('daysLeft1').textContent  = 17;
+      document.getElementById('hoursLeft1').textContent = 420;
 
-      document.getElementById('daysLeft1').textContent = s1.days;
-      document.getElementById('hoursLeft1').textContent = s1.hours;
+      // JEE Main Session 2
+      document.getElementById('daysLeft2').textContent  = 89;
+      document.getElementById('hoursLeft2').textContent = 2124;
 
-      document.getElementById('daysLeft2').textContent = s2.days;
-      document.getElementById('hoursLeft2').textContent = s2.hours;
-
-      document.getElementById('daysLeftAdv').textContent = adv.days;
-      document.getElementById('hoursLeftAdv').textContent = adv.hours;
+      // JEE Advanced
+      document.getElementById('daysLeftAdv').textContent  = 133;
+      document.getElementById('hoursLeftAdv').textContent = 3204;
     }
 
     function logout() {
@@ -620,7 +587,7 @@
       }
     }
 
-    // STUDY PROGRESS
+    // STUDY PROGRESS: logStudy + getStudyTotals + getStudyAnalytics
     function updateProgress(e) {
       e.preventDefault();
 
@@ -653,6 +620,7 @@
           if (!data || !data.success) {
             throw new Error(data && data.message ? data.message : 'Failed to save study log');
           }
+          // After saving, reload totals
           const totalsUrl = `${SCRIPT_URL}?action=getStudyTotals` +
                             `&userId=${encodeURIComponent(userId)}` +
                             `&exam=${encodeURIComponent(exam)}`;
@@ -668,6 +636,7 @@
           }
           alert('Progress updated successfully!');
           document.getElementById('progressForm').reset();
+          // Analytics also update according to same logs
           loadAnalytics();
         })
         .catch(err => {
@@ -697,7 +666,7 @@
         .catch(err => console.error('Load totals error:', err));
     }
 
-    // Performance analytics (avg hours + streak) – same API as UPSC
+    // Performance analytics (avg hours + streak) – getStudyAnalytics
     function loadAnalytics() {
       const userId = localStorage.getItem('userId');
       const exam   = localStorage.getItem('exam');
@@ -720,7 +689,6 @@
     }
 
     // GENERIC LIST RENDERERS
-
     function renderSimpleList(containerId, items) {
       const container = document.getElementById(containerId);
       container.innerHTML = '';
@@ -890,9 +858,7 @@
       document.getElementById('userName').textContent =
         localStorage.getItem('name') || 'Candidate';
 
-      updateCountdown();
-      // Har ghante countdown refresh (UPSC style)
-      setInterval(updateCountdown, 60 * 60 * 1000); // [web:218]
+      updateCountdown();   // fixed values
 
       loadDailyQuote();
       loadTotals();
