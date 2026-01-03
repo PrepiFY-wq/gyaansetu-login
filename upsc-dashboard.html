@@ -340,7 +340,7 @@
   <script>
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyFiEVyWCStmdOxaSz2AAboplrOXAJn0XuW614KRzLihSL60qL8zy3GEgBVvm0DQPcmQg/exec';
 
-    // 24 May 2026, 9:00 AM IST [web:100]
+    // 24 May 2026, 9:00 AM IST
     const examDate = new Date('2026-05-24T09:00:00+05:30');
     // Countdown visible start: 3 Jan 2026, 8:00 AM IST
     const countdownStart = new Date('2026-01-03T08:00:00+05:30');
@@ -369,7 +369,6 @@
       <button class="logout-btn" onclick="logout()">Logout</button>
     </div>
   </div>
-
 
   <div class="container">
     <!-- COUNTDOWN -->
@@ -610,7 +609,7 @@
   </div>
 
   <script>
-    // ---------- Generic safe fetch helper (with basic retries) ----------
+    // ---------- Generic safe fetch helper ----------
     async function safeFetchJson(url, options = {}, retries = 1) {
       try {
         const res = await fetch(url, options);
@@ -675,7 +674,6 @@
         return;
       }
 
-      // Total days and total hours until exam [web:64][web:94]
       const totalHours = Math.floor(diffMs / (1000 * 60 * 60));
       const days       = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
@@ -689,23 +687,6 @@
         localStorage.removeItem('name');
         localStorage.removeItem('exam');
         window.location.href = 'index.html';
-      }
-    }
-
-    // Scroll to announcements + badge reset
-    function scrollToAnnouncements() {
-      const el = document.getElementById('announcements');
-      if (!el) return;
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-      const latest = el.getAttribute('data-latest-id');
-      if (latest) {
-        localStorage.setItem('upsc_last_seen_announcement_id', latest);
-        const badge = document.getElementById('announcementBadge');
-        if (badge) {
-          badge.style.display = 'none';
-          badge.textContent = '0';
-        }
       }
     }
 
@@ -805,7 +786,7 @@
         .catch(err => console.error('loadAnalytics error:', err));
     }
 
-    // ========== GENERIC LIST RENDER HELPERS (latest + recents) ==========
+    // ========== LIST RENDERS ==========
 
     function renderAnnouncements(items) {
       const container = document.getElementById('announcements');
@@ -815,7 +796,6 @@
         return;
       }
 
-      const lastSeen = localStorage.getItem('upsc_last_seen_announcement_id') || '';
       const list = document.createElement('div');
       list.className = 'list';
 
@@ -831,27 +811,10 @@
           row.style.padding = '6px 8px';
         }
 
-        if (it.id && it.id !== lastSeen && index === 0) {
-          const tag = document.createElement('span');
-          tag.className = 'tag';
-          tag.textContent = 'NEW';
-          row.appendChild(tag);
-        }
-
         list.appendChild(row);
       });
 
       container.appendChild(list);
-
-      if (items[0] && items[0].id) {
-        container.setAttribute('data-latest-id', items[0].id);
-
-        const badge = document.getElementById('announcementBadge');
-        if (items[0].id !== lastSeen && badge) {
-          badge.style.display = 'inline-block';
-          badge.textContent = '1';
-        }
-      }
     }
 
     function renderDailyTargets(items) {
@@ -922,7 +885,7 @@
       container.appendChild(list);
     }
 
-    // ========== DASHBOARD CONTENT FROM DashboardContent SHEET ==========
+    // ========== DASHBOARD CONTENT ==========
 
     function loadDashboardContent() {
       const url = `${SCRIPT_URL}?action=getDashboardContent&examType=UPSC`;
@@ -935,7 +898,6 @@
           }
           const p = data.payload;
 
-          // Announcements
           if (p.announcements && Array.isArray(p.announcements.items) && p.announcements.items.length) {
             renderAnnouncements(p.announcements.items);
           } else {
@@ -943,42 +905,34 @@
               '<div class="empty-state">No announcements yet. Admin will update here.</div>';
           }
 
-          // Daily targets
           if (p.dailyTargets && Array.isArray(p.dailyTargets.items)) {
             renderDailyTargets(p.dailyTargets.items);
           }
 
-          // Mock tests
           if (p.mockTests && Array.isArray(p.mockTests.items)) {
             renderSectionList('mockTestsList', p.mockTests.items, 'NEW');
           }
 
-          // Test series
           if (p.testSeries && Array.isArray(p.testSeries.items)) {
             renderSectionList('testSeriesList', p.testSeries.items, 'NEW');
           }
 
-          // PYQs
           if (p.pyqPapers && Array.isArray(p.pyqPapers.items)) {
             renderSectionList('pypList', p.pyqPapers.items, 'NEW');
           }
 
-          // Books
           if (p.books && Array.isArray(p.books.items)) {
             renderSectionList('booksList', p.books.items, 'NEW');
           }
 
-          // Current Affairs
           if (p.currentAffairs && Array.isArray(p.currentAffairs.items)) {
             renderSectionList('currentAffairsList', p.currentAffairs.items, 'NEW');
           }
 
-          // Notes & PDFs
           if (p.notesPdfs && Array.isArray(p.notesPdfs.items)) {
             renderSectionList('notesList', p.notesPdfs.items, 'NEW');
           }
 
-          // Syllabus
           if (p.syllabus) {
             const pre = p.syllabus.prelimsPercent || 0;
             const main = p.syllabus.mainsPercent || 0;
@@ -988,7 +942,6 @@
             document.getElementById('mainsBar').style.width   = main + '%';
           }
 
-          // Quotes (Path Pradarshak)
           if (p.quotes && Array.isArray(p.quotes.items) && p.quotes.items.length) {
             renderSectionList('motivationalQuotes', p.quotes.items, 'NEW');
             const first = p.quotes.items[0];
@@ -1126,9 +1079,8 @@
       document.getElementById('userName').textContent =
         localStorage.getItem('name') || 'Candidate';
 
-      // Countdown: har second, days + total hours
       updateCountdown();
-      setInterval(updateCountdown, 1000); // [web:59]
+      setInterval(updateCountdown, 1000);
 
       setDailyQuote();
       loadTotals();
@@ -1136,7 +1088,6 @@
       loadDashboardContent();
       loadAnswerSubmissions();
 
-      // Auto-refresh admin data har 5 minute me
       setInterval(loadDashboardContent, 5 * 60 * 1000);
       setInterval(loadTotals, 5 * 60 * 1000);
       setInterval(loadAnalytics, 5 * 60 * 1000);
