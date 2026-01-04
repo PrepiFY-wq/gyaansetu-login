@@ -925,7 +925,7 @@ function renderListWithLinks(containerId, items, emptyMessage, highlightLabel) {
 // ========== DASHBOARD CONTENT ==========
 
 function loadDashboardContent() {
-  const url = `${SCRIPT_URL}?action=getDashboardContent&examType=UPSC`;
+  const url = `${SCRIPT_URL}?action=getDashboardContent&examType=UPSC&_=${Date.now()}`;
 
   safeFetchJson(url)
     .then(data => {
@@ -934,7 +934,7 @@ function loadDashboardContent() {
       }
       const p = data.payload;
 
-      // Announcements (text only)
+      // Announcements
       if (p.announcements && Array.isArray(p.announcements.items) && p.announcements.items.length) {
         renderAnnouncements(p.announcements.items);
       } else {
@@ -942,7 +942,7 @@ function loadDashboardContent() {
           '<div class="empty-state">No announcements yet. Admin will update here.</div>';
       }
 
-      // Daily Targets (text only)
+      // Daily Targets
       if (p.dailyTargets && Array.isArray(p.dailyTargets.items)) {
         renderDailyTargets(p.dailyTargets.items);
       } else {
@@ -1010,10 +1010,20 @@ function loadDashboardContent() {
         );
       }
 
-      // Syllabus (Apps Script me p.syllabus build karna hoga)
+      // Syllabus – handle both new JSON and old title/items
       if (p.syllabus) {
-        const pre = p.syllabus.prelimsPercent || 0;
-        const main = p.syllabus.mainsPercent || 0;
+        let pre = 0, main = 0;
+
+        if (typeof p.syllabus.prelimsPercent === 'number') {
+          pre = p.syllabus.prelimsPercent || 0;
+          main = p.syllabus.mainsPercent || 0;
+        } else if (Array.isArray(p.syllabus.items) && p.syllabus.items.length) {
+          const txt = p.syllabus.items[0].text || '';
+          const nums = txt.match(/\d+/g) || [];
+          pre = nums[0] ? Number(nums[0]) : 0;
+          main = nums[1] ? Number(nums[1]) : 0;
+        }
+
         document.getElementById('prelimsPercent').textContent = pre + '% Complete';
         document.getElementById('mainsPercent').textContent   = main + '% Complete';
         document.getElementById('prelimsBar').style.width = pre + '%';
@@ -1117,7 +1127,6 @@ window.onload = function() {
   updateCountdown();
   setInterval(updateCountdown, 1000);
 
-  // Countdown ke niche quote – hamesha local se, backend se independent
   setDailyQuote();
 
   loadTotals();
