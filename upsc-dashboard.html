@@ -239,35 +239,6 @@ body {
   padding-right: 4px;
 }
 
-.list-item {
-  font-size: 13px;
-  color: #111827;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.list-title {
-  flex: 1 1 auto;
-}
-
-.list-actions a {
-  font-size: 12px;
-  padding: 3px 10px;
-  border-radius: 999px;
-  border: 1px solid #667eea;
-  color: #4338ca;
-  text-decoration: none;
-  white-space: nowrap;
-}
-
-.list-actions a:hover {
-  background: #667eea;
-  color: #fff;
-}
-
 .tag {
   display: inline-block;
   padding: 2px 8px;
@@ -300,16 +271,6 @@ body {
   width: 0%;
 }
 
-select {
-  background-color: #fff;
-}
-
-select:focus {
-  outline: none;
-  border-color: #667eea !important;
-  box-shadow: 0 0 0 3px rgba(102,126,234,0.15);
-}
-
 @media (max-width: 640px) {
   .header {
     padding: 16px 18px;
@@ -326,6 +287,15 @@ select:focus {
 <script>
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzyvzuU8GqKfyeJ4hmP0EAKYzm4gNndftUj7eVOJXze-Z_9rFDYPeUyJfvGWG3Tg87SGg/exec';
 const ANSWER_FORM_URL = 'https://forms.gle/EKGVgMSMFEErC5C19';
+
+// Drive folders (account B) – UPSC
+const UPSC_FOLDER_LINKS = {
+  // mockTests: '', // agar alag folder banaoge to yahan add karna
+  testSeries:     'https://drive.google.com/drive/folders/1bc2B2m6PzdUjbsJlZiRgq1gifccooCsx',
+  pyqPapers:      'https://drive.google.com/drive/folders/1ZZtz226dMcQyT2cSa7x5K37NbVVeGHud',
+  books:          'https://drive.google.com/drive/folders/1ieWI_ejkVy8RdkKSVgP6svARf9NUJW5W',
+  currentAffairs: 'https://drive.google.com/drive/folders/1rLH3T-CU4fkI5FxAHACcXjjA6nPLY1hW'
+};
 
 // 24 May 2026, 9:00 AM IST
 const examDate = new Date('2026-05-24T09:00:00+05:30');
@@ -501,7 +471,7 @@ const countdownStart = new Date('2026-01-03T08:00:00+05:30');
   <section class="section-card">
     <div class="section-header">
       <h2>Study Materials</h2>
-      <span>Books · Current Affairs · Notes & PDFs</span>
+      <span>Books · Current Affairs</span>
     </div>
 
     <h3 style="font-size: 15px; color:#4b5563; margin-bottom:8px;">Books</h3>
@@ -512,11 +482,6 @@ const countdownStart = new Date('2026-01-03T08:00:00+05:30');
     <h3 style="font-size: 15px; color:#4b5563; margin:20px 0 8px;">Current Affairs</h3>
     <div id="currentAffairsList">
       <div class="empty-state">Admin will upload current affairs soon.</div>
-    </div>
-
-    <h3 style="font-size: 15px; color:#4b5563; margin:20px 0 8px;">Notes & PDFs</h3>
-    <div id="notesList">
-      <div class="empty-state">Admin will upload notes & PDFs soon.</div>
     </div>
   </section>
 
@@ -599,38 +564,13 @@ async function safeFetchJson(url, options = {}, retries = 1) {
   }
 }
 
-// Local fallback quotes (UPSC/LBSNAA related)
+// Local fallback quotes
 const fallbackQuotes = [
   'UPSC CSE ek marathon hai, sprint nahi. Har din ki mehnat tumhe LBSNAA ke kareeb le jaati hai.',
   'LBSNAA tak ka safar ek-ek chapter, ek-ek mock test aur ek-ek disciplined din se banta hai.',
   'Jab tak tum khud par vishwas rakhoge, Dholpur House ki list me tumhara naam likha ja sakta hai.',
   'Apni preparation ko bojh nahi, zimmedari samjho. Officers isi soch se bante hain.',
-  'Aaj ka ek focused hour kal ki ek strong posting bana sakta hai.',
-  'Manzil LBSNAA hai, par asli jeet roz subah uthkar plan follow karne me hai.',
-  'Jab give up karne ka mann ho, sochna – interview room me apna naam sunne ka ehsaas kaisa hoga.',
-  'UPSC tumhara patience, discipline aur honesty test karta hai – sirf knowledge nahi.',
-  'Ek din LBSNAA ka parade ground tumhari aaj ki mehnat ka jawab dega.',
-  'Notes patle hote ja rahe hain, iska matlab tumhari samajh gehri ho rahi hai – lage raho.',
-  'Distractions jitne zyada hon, goal utna bada hota hai – focus ko apni superpower banao.',
-  'UPSC ke liye tum jitna sacrifice kar rahe ho, wahi kal desh ki strength banega.',
-  'Har mock test ek naya lesson hai, failure nahi. Copy se zyada dimaag update karo.',
-  'Jo aaj tumhe underestimate kar rahe hain, ek din tumhari posting ka board dekh kar yaad rakhenge.',
-  'Ek attempt fail ho sakta hai, lekin ek sincere effort kabhi barbaad nahi hota.',
-  'Kal ka IAS/IPS officer aaj raat bhi padh raha hoga – socho kya tum unme se ho?',
-  'Selection perfection se nahi, consistent average days se hota hai.',
-  'Har din thoda padhna, kabhi kabhi zyada padhne se zyada powerful hota hai.',
-  'Jis din tum struggle ko journey ka hissa maan loge, us din se stress kam aur growth zyada hogi.',
-  'Chup chap ki gayi mehnat hi ek din sabse zyada shor machati hai.',
-  'GS ke har chhote point me kal ki kisi file ka decision छupa hua hai.',
-  'Doston ki outing chhodkar padhai choose karna mushkil hai, par yahi tumhe alag banata hai.',
-  'Prelims gate hai, Mains journey hai, interview tumhari personality ka celebration hai.',
-  'Library ki ek seat se LBSNAA ki ek desk tak ka raasta sirf tumhari consistency banati hai.',
-  'Aaj ka timetable kal ke appointment order se zyada powerful document hai.',
-  'UPSC sirf yeh poochta hai: kya tum kal se aaj thode better ban gaye ho?',
-  'Jab tum revision kar rahe hote ho, shayad LBSNAA ka koi classroom tumhara intezar kar raha hota hai.',
-  'Negativity se door rehna bhi preparation ka part hai – apne aap ke sath positive raho.',
-  'Har low score ek message hai: “yeh tumhari limit nahi, bas tumhara current level hai”.',
-  'Jo aspirant aaj extra mehnat karta hai, kal wahi extra impact create karta hai.'
+  'Aaj ka ek focused hour kal ki ek strong posting bana sakta hai.'
 ];
 
 function getRandomFallbackQuote() {
@@ -654,7 +594,7 @@ function setDailyQuote() {
   localStorage.setItem('upsc_daily_quote_text', finalText);
 }
 
-// COUNTDOWN (days + total hours)
+// COUNTDOWN
 function updateCountdown() {
   const now = new Date();
 
@@ -688,13 +628,12 @@ function logout() {
   }
 }
 
-// Answer Writing: open Google Form
+// Answer Writing
 function openAnswerForm() {
   window.open(ANSWER_FORM_URL, '_blank');
 }
 
-// ========== STUDY PROGRESS ==========
-
+// STUDY PROGRESS
 function updateProgress(e) {
   e.preventDefault();
 
@@ -768,7 +707,6 @@ function loadTotals() {
     });
 }
 
-// Performance analytics (avg hours + streak)
 function loadAnalytics() {
   const userId = localStorage.getItem('userId');
   const exam   = localStorage.getItem('exam');
@@ -789,8 +727,7 @@ function loadAnalytics() {
     .catch(err => console.error('loadAnalytics error:', err));
 }
 
-// ========== LIST RENDERS ==========
-
+// Announcements
 function renderAnnouncements(items) {
   const container = document.getElementById('announcements');
   container.innerHTML = '';
@@ -807,7 +744,6 @@ function renderAnnouncements(items) {
     row.className = 'list-item';
 
     const titleSpan = document.createElement('span');
-    titleSpan.className = 'list-title';
     titleSpan.textContent = typeof it === 'string' ? it : (it.text || it.title || '');
 
     row.appendChild(titleSpan);
@@ -825,6 +761,7 @@ function renderAnnouncements(items) {
   container.appendChild(list);
 }
 
+// Daily Targets
 function renderDailyTargets(items) {
   const container = document.getElementById('dailyTargets');
   container.innerHTML = '';
@@ -841,9 +778,7 @@ function renderDailyTargets(items) {
     row.className = 'list-item';
 
     const titleSpan = document.createElement('span');
-    titleSpan.className = 'list-title';
     titleSpan.textContent = typeof raw === 'string' ? raw : (raw.text || raw.title || '');
-
     row.appendChild(titleSpan);
 
     if (index === 0) {
@@ -864,72 +799,29 @@ function renderDailyTargets(items) {
   container.appendChild(list);
 }
 
-// List renderer with link detection (for mock tests, series, PYQs, books, CA, notes)
-function renderListWithLinks(containerId, items, emptyMessage, highlightLabel) {
+// Folder View button renderer
+function renderFolderButton(containerId, folderUrl, emptyMessage) {
   const container = document.getElementById(containerId);
-  if (!container) return;
   container.innerHTML = '';
-  if (!items || !items.length) {
+  if (!folderUrl) {
     container.innerHTML = `<div class="empty-state">${emptyMessage || 'No data yet.'}</div>`;
     return;
   }
-
-  const div = document.createElement('div');
-  div.className = 'list';
-
-  items.forEach((raw, index) => {
-    const itemText = typeof raw === 'string'
-      ? raw
-      : (raw.text || raw.title || raw.content || raw.link || '');
-
-    const row = document.createElement('div');
-    row.className = 'list-item';
-
-    const titleSpan = document.createElement('span');
-    titleSpan.className = 'list-title';
-
-    let urlMatch = itemText.match(/https?:\/\/\S+/);
-    let link = urlMatch ? urlMatch[0] : null;
-    let titleOnly = link ? itemText.replace(link, '').trim().replace(/-\s*$/, '').trim() : itemText;
-
-    titleSpan.textContent = titleOnly || itemText;
-    row.appendChild(titleSpan);
-
-    if (link) {
-      const actions = document.createElement('span');
-      actions.className = 'list-actions';
-
-      const a = document.createElement('a');
-      a.href = link;
-      a.target = '_blank';
-      a.rel = 'noopener noreferrer';
-      a.textContent = 'View';
-
-      actions.appendChild(a);
-      row.appendChild(actions);
-    }
-
-    if (index === 0 && highlightLabel) {
-      const tag = document.createElement('span');
-      tag.className = 'tag';
-      tag.textContent = highlightLabel;
-      titleSpan.appendChild(tag);
-    }
-
-    div.appendChild(row);
-  });
-
-  container.appendChild(div);
+  const btn = document.createElement('button');
+  btn.className = 'btn';
+  btn.textContent = 'View';
+  btn.onclick = () => window.open(folderUrl, '_blank');
+  container.appendChild(btn);
 }
 
-// ========== DASHBOARD CONTENT ==========
-
+// Dashboard content (only text + syllabus + quotes)
 function loadDashboardContent() {
   const url = `${SCRIPT_URL}?action=getDashboardContent&examType=UPSC&_=${Date.now()}`;
 
   safeFetchJson(url)
     .then(data => {
       if (!data || !data.success || !data.payload) {
+        // even agar payload na aaye, folder buttons to static rahenge
         return;
       }
       const p = data.payload;
@@ -937,80 +829,14 @@ function loadDashboardContent() {
       // Announcements
       if (p.announcements && Array.isArray(p.announcements.items) && p.announcements.items.length) {
         renderAnnouncements(p.announcements.items);
-      } else {
-        document.getElementById('announcements').innerHTML =
-          '<div class="empty-state">No announcements yet. Admin will update here.</div>';
       }
 
       // Daily Targets
       if (p.dailyTargets && Array.isArray(p.dailyTargets.items)) {
         renderDailyTargets(p.dailyTargets.items);
-      } else {
-        document.getElementById('dailyTargets').innerHTML =
-          '<div class="empty-state">Admin will upload today\'s targets soon.</div>';
       }
 
-      // Mock Tests
-      if (p.mockTests && Array.isArray(p.mockTests.items)) {
-        renderListWithLinks(
-          'mockTestsList',
-          p.mockTests.items,
-          'Admin will create mock tests soon.',
-          'NEW'
-        );
-      }
-
-      // Test Series
-      if (p.testSeries && Array.isArray(p.testSeries.items)) {
-        renderListWithLinks(
-          'testSeriesList',
-          p.testSeries.items,
-          'Admin will upload test series soon.',
-          'NEW'
-        );
-      }
-
-      // PYQ Papers
-      if (p.pyqPapers && Array.isArray(p.pyqPapers.items)) {
-        renderListWithLinks(
-          'pypList',
-          p.pyqPapers.items,
-          'Admin will upload PYQ PDFs soon.',
-          'NEW'
-        );
-      }
-
-      // Books
-      if (p.books && Array.isArray(p.books.items)) {
-        renderListWithLinks(
-          'booksList',
-          p.books.items,
-          'Admin will upload books list soon.',
-          'NEW'
-        );
-      }
-
-      // Current Affairs
-      if (p.currentAffairs && Array.isArray(p.currentAffairs.items)) {
-        renderListWithLinks(
-          'currentAffairsList',
-          p.currentAffairs.items,
-          'Admin will upload current affairs soon.',
-          'NEW'
-        );
-      }
-
-      // Notes & PDFs
-      if (p.notesPdfs && Array.isArray(p.notesPdfs.items)) {
-        renderListWithLinks(
-          'notesList',
-          p.notesPdfs.items,
-          'Admin will upload notes & PDFs soon.',
-          'NEW'
-        );
-      }
-
-      // Syllabus – handle both new JSON and old title/items
+      // Syllabus
       if (p.syllabus) {
         let pre = 0, main = 0;
 
@@ -1030,26 +856,52 @@ function loadDashboardContent() {
         document.getElementById('mainsBar').style.width   = main + '%';
       }
 
-      // Quotes ONLY for "पथ प्रदर्शक" section
+      // Quotes for पथ प्रदर्शक
       if (p.quotes && Array.isArray(p.quotes.items) && p.quotes.items.length) {
-        renderListWithLinks(
-          'motivationalQuotes',
-          p.quotes.items,
-          'Admin will share motivational quotes soon.',
-          null
-        );
-      } else {
-        document.getElementById('motivationalQuotes').innerHTML =
-          '<div class="empty-state">Admin will share motivational quotes soon.</div>';
+        const container = document.getElementById('motivationalQuotes');
+        container.innerHTML = '';
+        const list = document.createElement('div');
+        list.className = 'list';
+        p.quotes.items.forEach(q => {
+          const row = document.createElement('div');
+          row.textContent = typeof q === 'string' ? q : (q.text || q.title || '');
+          list.appendChild(row);
+        });
+        container.appendChild(list);
       }
     })
     .catch(err => {
       console.error('loadDashboardContent error:', err);
     });
+
+  // Static folder buttons (always render)
+  // Mock tests ke liye agar future me folder banaoge, yahan add kar sakte ho
+  renderFolderButton(
+    'testSeriesList',
+    UPSC_FOLDER_LINKS.testSeries,
+    'Admin will upload test series soon.'
+  );
+
+  renderFolderButton(
+    'pypList',
+    UPSC_FOLDER_LINKS.pyqPapers,
+    'Admin will upload PYQ PDFs soon.'
+  );
+
+  renderFolderButton(
+    'booksList',
+    UPSC_FOLDER_LINKS.books,
+    'Admin will upload books list soon.'
+  );
+
+  renderFolderButton(
+    'currentAffairsList',
+    UPSC_FOLDER_LINKS.currentAffairs,
+    'Admin will upload current affairs soon.'
+  );
 }
 
-// ========== ANSWER WRITING BACKEND (status list) ==========
-
+// Answer submissions
 function loadAnswerSubmissions() {
   const userId = localStorage.getItem('userId');
   if (!userId) return;
@@ -1073,7 +925,6 @@ function loadAnswerSubmissions() {
 
       data.submissions.forEach(sub => {
         const row = document.createElement('div');
-        row.className = 'list-item';
         row.style.display = 'flex';
         row.style.justifyContent = 'space-between';
         row.style.alignItems = 'center';
@@ -1119,7 +970,7 @@ function loadAnswerSubmissions() {
     });
 }
 
-// ONLOAD + periodic auto-refresh
+// ONLOAD
 window.onload = function() {
   document.getElementById('userName').textContent =
     localStorage.getItem('name') || 'Candidate';
