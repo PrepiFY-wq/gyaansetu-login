@@ -601,7 +601,7 @@ async function safeFetchJson(url, options = {}, retries = 1) {
 
 // Local fallback quotes (UPSC/LBSNAA related)
 const fallbackQuotes = [
- 'UPSC CSE ek marathon hai, sprint nahi. Har din ki mehnat tumhe LBSNAA ke kareeb le jaati hai.',
+  'UPSC CSE ek marathon hai, sprint nahi. Har din ki mehnat tumhe LBSNAA ke kareeb le jaati hai.',
   'LBSNAA tak ka safar ek-ek chapter, ek-ek mock test aur ek-ek disciplined din se banta hai.',
   'Jab tak tum khud par vishwas rakhoge, Dholpur House ki list me tumhara naam likha ja sakta hai.',
   'Apni preparation ko bojh nahi, zimmedari samjho. Officers isi soch se bante hain.',
@@ -637,19 +637,17 @@ function getRandomFallbackQuote() {
   return fallbackQuotes[Math.floor(Math.random() * fallbackQuotes.length)];
 }
 
-function setDailyQuote(text) {
+function setDailyQuote() {
   const today = new Date().toISOString().slice(0, 10);
   const storedDate = localStorage.getItem('upsc_daily_quote_date');
   const storedQuote = localStorage.getItem('upsc_daily_quote_text');
 
-  // Agar aaj ka quote already set hai aur naya text nahi diya gaya, wahi dikhao
-  if (storedDate === today && storedQuote && !text) {
+  if (storedDate === today && storedQuote) {
     document.getElementById('dailyQuote').textContent = storedQuote;
     return;
   }
 
-  // Countdown wala quote hamesha local se hi aayega
-  let finalText = getRandomFallbackQuote();
+  const finalText = getRandomFallbackQuote();
   document.getElementById('dailyQuote').textContent = finalText;
 
   localStorage.setItem('upsc_daily_quote_date', today);
