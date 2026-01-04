@@ -599,13 +599,13 @@ async function safeFetchJson(url, options = {}, retries = 1) {
   }
 }
 
-// Local fallback quotes
+// Local fallback quotes (UPSC/LBSNAA related)
 const fallbackQuotes = [
-  'The future belongs to those who believe in the beauty of their dreams.',
-  'Success is not final, failure is not fatal: it is the courage to continue that counts.',
-  'Believe you can and you are halfway there.',
-  'Hardships often prepare ordinary people for an extraordinary destiny.',
-  'The only way to do great work is to love what you do.'
+  'UPSC CSE ek marathon hai, sprint nahi. Har din ka disciplined effort tumhe LBSNAA ke kareeb le jaata hai.',
+  'LBSNAA tak ka safar ek-ek page, ek-ek mock test aur ek-ek din ki mehnat se banta hai.',
+  'Jab tak tum khud par bharosa rakhoge, Dholpur House ki list me tumhara naam likha ja sakta hai.',
+  'Apni preparation ko duty samjho, result ko bonus. Isi soch se officer bante hain.',
+  'Aaj ki padhai kal ki posting decide karti hai. Consistency hi asli strategy hai.'
 ];
 
 function getRandomFallbackQuote() {
@@ -617,12 +617,14 @@ function setDailyQuote(text) {
   const storedDate = localStorage.getItem('upsc_daily_quote_date');
   const storedQuote = localStorage.getItem('upsc_daily_quote_text');
 
+  // Agar aaj ka quote already set hai aur naya text nahi diya gaya, wahi dikhao
   if (storedDate === today && storedQuote && !text) {
     document.getElementById('dailyQuote').textContent = storedQuote;
     return;
   }
 
-  let finalText = text || getRandomFallbackQuote();
+  // Countdown wala quote hamesha local se hi aayega
+  let finalText = getRandomFallbackQuote();
   document.getElementById('dailyQuote').textContent = finalText;
 
   localStorage.setItem('upsc_daily_quote_date', today);
@@ -905,7 +907,6 @@ function loadDashboardContent() {
   safeFetchJson(url)
     .then(data => {
       if (!data || !data.success || !data.payload) {
-        setDailyQuote();
         return;
       }
       const p = data.payload;
@@ -986,7 +987,7 @@ function loadDashboardContent() {
         );
       }
 
-      // Syllabus
+      // Syllabus (Apps Script me p.syllabus build karna hoga)
       if (p.syllabus) {
         const pre = p.syllabus.prelimsPercent || 0;
         const main = p.syllabus.mainsPercent || 0;
@@ -996,7 +997,7 @@ function loadDashboardContent() {
         document.getElementById('mainsBar').style.width   = main + '%';
       }
 
-      // Quotes (path pradarshak)
+      // Quotes ONLY for "पथ प्रदर्शक" section
       if (p.quotes && Array.isArray(p.quotes.items) && p.quotes.items.length) {
         renderListWithLinks(
           'motivationalQuotes',
@@ -1004,21 +1005,17 @@ function loadDashboardContent() {
           'Admin will share motivational quotes soon.',
           null
         );
-        const first = p.quotes.items[0];
-        const text = typeof first === 'string' ? first : (first.text || first.title || '');
-        setDailyQuote(text);
       } else {
-        setDailyQuote();
+        document.getElementById('motivationalQuotes').innerHTML =
+          '<div class="empty-state">Admin will share motivational quotes soon.</div>';
       }
     })
     .catch(err => {
       console.error('loadDashboardContent error:', err);
-      setDailyQuote();
     });
 }
 
 // ========== ANSWER WRITING BACKEND (status list) ==========
-// Apps Script ko getAnswerSubmissions action me user-wise submissions dene honge.
 
 function loadAnswerSubmissions() {
   const userId = localStorage.getItem('userId');
@@ -1097,7 +1094,9 @@ window.onload = function() {
   updateCountdown();
   setInterval(updateCountdown, 1000);
 
+  // Countdown ke niche quote – hamesha local se, backend se independent
   setDailyQuote();
+
   loadTotals();
   loadAnalytics();
   loadDashboardContent();
