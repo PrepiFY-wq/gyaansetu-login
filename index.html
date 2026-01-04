@@ -25,10 +25,20 @@ gap: 40px;
 align-items: stretch;
 }
 
-.hero-left, .hero-right { flex: 1; }
-.hero-right .card { height: 100%; }
+.hero-left,
+.hero-right {
+flex: 1;
+}
 
-h1 { font-size: 42px; margin-bottom: 10px; }
+.hero-right .card {
+height: 100%;
+}
+
+h1 {
+font-size: 42px;
+margin-bottom: 10px;
+}
+
 h1 .gyaan { color: #1e3a8a; }
 h1 .setu { color: #dc2626; }
 
@@ -115,13 +125,6 @@ background: #667eea;
 color: white;
 }
 
-.btn-success {
-background: #28a745;
-color: white;
-}
-
-.btn-success:hover { background: #218838; }
-
 .divider {
 text-align: center;
 margin: 30px 0;
@@ -129,7 +132,8 @@ color: #999;
 position: relative;
 }
 
-.divider::before, .divider::after {
+.divider::before,
+.divider::after {
 content: '';
 position: absolute;
 top: 50%;
@@ -157,11 +161,6 @@ border: 1px solid #c3e6cb;
 background: #f8d7da;
 color: #721c24;
 border: 1px solid #f5c6cb;
-}
-.message.info {
-background: #d1ecf1;
-color: #0c5460;
-border: 1px solid #bee5eb;
 }
 
 .modal {
@@ -227,70 +226,29 @@ margin-bottom: 20px;
 @media (max-width: 768px) {
 .hero { flex-direction: column; }
 .card { margin: 0 auto; }
-.form-row { grid-template-columns: 1fr; }
 }
 
-.step-section {
-margin-top: 20px;
-padding-top: 20px;
-border-top: 2px solid #e0e0e0;
-}
-
-.step-title {
-font-size: 18px;
-font-weight: bold;
-color: #667eea;
-margin-bottom: 15px;
-}
-
-.coupon-apply-section {
+/* Payment step block */
+#paymentStep {
+margin-top: 18px;
+padding-top: 15px;
+border-top: 1px solid #eee;
 display: none;
-margin-top: 15px;
-padding: 15px;
-background: #f8f9fa;
-border-radius: 10px;
 }
-
-.coupon-input-group {
-display: flex;
-gap: 10px;
+#paymentStep h3 {
+font-size: 18px;
+margin-bottom: 8px;
+}
+#paymentStep p {
+font-size: 14px;
 margin-bottom: 10px;
 }
-
-.coupon-input-group input { flex: 1; }
-
-.coupon-input-group button {
-padding: 12px 20px;
-white-space: nowrap;
-width: auto;
-}
-
-#paymentSection { display: none; }
-
 #qrImage {
-width: 100%;
-max-width: 250px;
+width: 220px;
 border-radius: 12px;
 display: block;
-margin: 15px auto;
-box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-}
-
-.fee-display {
-background: #e8f5e9;
-padding: 15px;
-border-radius: 10px;
 margin-bottom: 15px;
-text-align: center;
 }
-
-.fee-amount {
-font-size: 24px;
-font-weight: bold;
-color: #2e7d32;
-}
-
-#finalSubmitBtn { display: none; }
 </style>
 </head>
 <body>
@@ -299,19 +257,25 @@ color: #2e7d32;
 <h1><span class="gyaan">Gyaan</span><span class="setu">Setu</span></h1>
 <p class="tagline">Empowering minds, building futures</p>
 
-<h2 style="color:#fff; margin: 20px 0 10px; font-size:20px;">Our Aim</h2>
+<h2 style="color:#fff; margin: 20px 0 10px; font-size:20px;">
+Our Aim
+</h2>
 <p style="color:#f3f4ff; line-height:1.6; margin-bottom:25px;">
 To guide serious aspirants of UPSC, JEE, NEET and RPSC with structured plans,
 disciplined tracking and the right mentorship bridge between effort and success.
 </p>
 
-<h3 style="color:#ffeaa7; margin-bottom:8px; font-size:18px;">Today's Motivation</h3>
+<h3 style="color:#ffeaa7; margin-bottom:8px; font-size:18px;">
+Today’s Motivation
+</h3>
 <p id="dailyQuote" style="color:#e5e7ff; line-height:1.6; font-style:italic;"></p>
 </div>
 
 <div class="hero-right">
 <div class="card">
-<p class="tagline">Login to access your personalised dashboard</p>
+<p class="tagline">
+Login to access your personalised dashboard
+</p>
 
 <div id="messageBox" class="message"></div>
 
@@ -349,27 +313,25 @@ disciplined tracking and the right mentorship bridge between effort and success.
 <span class="close" onclick="closeRegistrationModal()">&times;</span>
 </div>
 <div class="modal-body">
-<div id="regMessage" class="message"></div>
-
-<form id="registrationForm">
+<form id="registrationForm" onsubmit="handleRegistration(event)">
 <div class="form-row">
 <div class="form-group">
-<label for="regName">Full Name *</label>
+<label for="regName">Full Name</label>
 <input type="text" id="regName" required>
 </div>
 <div class="form-group">
-<label for="regEmail">Email *</label>
+<label for="regEmail">Email</label>
 <input type="email" id="regEmail" required>
 </div>
 </div>
 
 <div class="form-row">
 <div class="form-group">
-<label for="regContact">Contact Number *</label>
+<label for="regContact">Contact Number</label>
 <input type="tel" id="regContact" required>
 </div>
 <div class="form-group">
-<label for="regExam">Preparing For *</label>
+<label for="regExam">Preparing For</label>
 <select id="regExam" required>
 <option value="">Select exam</option>
 <option value="UPSC CSE">UPSC CSE</option>
@@ -381,51 +343,40 @@ disciplined tracking and the right mentorship bridge between effort and success.
 </div>
 
 <div class="form-group">
-<label for="regAddress">Address *</label>
+<label for="regAddress">Address</label>
 <textarea id="regAddress" rows="3" required></textarea>
 </div>
 
-<!-- Coupon Selection -->
+<!-- Do you have coupon? -->
 <div class="form-group">
 <label>Do you have a coupon?</label>
 <div style="display:flex; gap:12px; align-items:center; font-size:14px;">
-<label><input type="radio" name="hasCoupon" value="no" checked onchange="toggleCouponSection()"> No</label>
-<label><input type="radio" name="hasCoupon" value="yes" onchange="toggleCouponSection()"> Yes</label>
+<label><input type="radio" name="hasCoupon" value="no" checked> No</label>
+<label><input type="radio" name="hasCoupon" value="yes"> Yes</label>
 </div>
 </div>
 
-<!-- Coupon Apply Section -->
-<div class="coupon-apply-section" id="couponApplySection">
-<div class="coupon-input-group">
+<!-- Coupon code (shown only when Yes) -->
+<div class="form-group" id="couponGroup" style="display:none;">
+<label for="regCoupon">Coupon Code</label>
 <input type="text" id="regCoupon" placeholder="Enter coupon code">
-<button type="button" class="btn btn-success" onclick="applyCoupon()">Apply Coupon</button>
-</div>
-<div id="couponStatus" style="font-size:14px; margin-top:5px;"></div>
 </div>
 
-<button type="button" class="btn btn-primary" onclick="proceedToPayment()">Proceed to Payment</button>
+<button type="submit" class="btn btn-primary">Submit Registration</button>
 
-<!-- Payment Section -->
-<div class="step-section" id="paymentSection">
-<div class="step-title">💳 Payment Details</div>
-<div class="fee-display">
-<div style="font-size:14px; color:#666; margin-bottom:5px;">Registration Fee</div>
-<div class="fee-amount" id="feeAmount">₹100</div>
-</div>
-
-<p style="text-align:center; color:#666; margin-bottom:15px;">
-Scan the QR code below and make payment
-</p>
-
+<!-- Payment step (Step 2) -->
+<div id="paymentStep">
+<h3>Step 2: Pay Registration Fee</h3>
+<p id="feeText"></p>
 <img id="qrImage" src="" alt="QR Code">
 
 <div class="form-group">
-<label for="paymentScreenshot">Upload Payment Screenshot *</label>
+<label for="paymentScreenshot">Upload Payment Screenshot</label>
 <input type="file" id="paymentScreenshot" accept="image/*">
 </div>
 
-<button type="button" class="btn btn-success" id="finalSubmitBtn" onclick="finalSubmitRegistration()">
-Submit Registration
+<button type="button" class="btn btn-primary" onclick="uploadPaymentScreenshot()">
+Upload screenshot & finish
 </button>
 </div>
 </form>
@@ -460,5 +411,288 @@ Submit Registration
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyFiEVyWCStmdOxaSz2AAboplrOXAJn0XuW614KRzLihSL60qL8zy3GEgBVvm0DQPcmQg/exec';
 
 const QR_DEFAULT = {
-  A: 'https://drive.google.com/uc?export=view&id=1ErZc2zV8HNTals3qbI4EELxOoDR7pNgH',
-  B: 'https://drive.google.com/uc?export=view&id=1D4r
+A: 'https://drive.google.com/uc?export=view&id=1ErZc2zV8HNTals3qbI4EELxOoDR7pNgH',
+B: 'https://drive.google.com/uc?export=view&id=1D4r9J9F6U6fpiuSd3xFnTl_ylw6Vlxqu'
+};
+
+let currentUserIdForPayment = null;
+
+const quotes = [
+'Success is the sum of small efforts repeated day in and day out.',
+'Discipline today is freedom tomorrow.',
+'Your only competition is who you were yesterday.',
+'Every hour you study now saves days of regret later.',
+'Consistency beats talent when talent is inconsistent.'
+];
+
+function setDailyQuote() {
+const today = new Date();
+const index = today.getDate() % quotes.length;
+const el = document.getElementById('dailyQuote');
+if (el) el.textContent = quotes[index];
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+setDailyQuote();
+
+// coupon radio toggle
+const radios = document.getElementsByName('hasCoupon');
+const group = document.getElementById('couponGroup');
+radios.forEach(r => {
+r.addEventListener('change', () => {
+if (r.value === 'yes' && r.checked) {
+group.style.display = 'block';
+} else if (r.value === 'no' && r.checked) {
+group.style.display = 'none';
+document.getElementById('regCoupon').value = '';
+}
+});
+});
+});
+
+function showMessage(text, type) {
+const msgBox = document.getElementById('messageBox');
+msgBox.textContent = text;
+msgBox.className = `message ${type}`;
+msgBox.style.display = 'block';
+setTimeout(() => msgBox.style.display = 'none', 5000);
+}
+
+function openRegistrationForm() {
+document.getElementById('registrationModal').style.display = 'block';
+}
+function closeRegistrationModal() {
+document.getElementById('registrationModal').style.display = 'none';
+document.getElementById('paymentStep').style.display = 'none';
+currentUserIdForPayment = null;
+document.getElementById('registrationForm')
+.querySelectorAll('input,select,textarea,button[type="submit"]')
+.forEach(el => el.disabled = false);
+}
+function openAdminLogin() {
+document.getElementById('adminLoginModal').style.display = 'block';
+}
+function closeAdminLogin() {
+document.getElementById('adminLoginModal').style.display = 'none';
+}
+
+window.onclick = function(event) {
+const regModal = document.getElementById('registrationModal');
+const adminModal = document.getElementById('adminLoginModal');
+if (event.target === regModal) regModal.style.display = 'none';
+if (event.target === adminModal) adminModal.style.display = 'none';
+};
+
+// ========== REGISTRATION (Step 1) ==========
+
+function handleRegistration(event) {
+event.preventDefault();
+
+const name = document.getElementById('regName').value.trim();
+const email = document.getElementById('regEmail').value.trim();
+const contact = document.getElementById('regContact').value.trim();
+const exam = document.getElementById('regExam').value;
+const address = document.getElementById('regAddress').value.trim();
+const hasCoupon = [...document.getElementsByName('hasCoupon')]
+.find(r => r.checked)?.value || 'no';
+const coupon = (document.getElementById('regCoupon').value || '').trim();
+
+if (!name || !email || !contact || !exam || !address) {
+showMessage('Please fill all required details.', 'error');
+return;
+}
+
+if (hasCoupon === 'yes' && !coupon) {
+showMessage('Please enter your coupon code.', 'error');
+return;
+}
+
+showMessage('Checking details & coupon...', 'success');
+
+const url = `${SCRIPT_URL}?action=registerWithPayment` +
+`&name=${encodeURIComponent(name)}` +
+`&email=${encodeURIComponent(email)}` +
+`&contact=${encodeURIComponent(contact)}` +
+`&exam=${encodeURIComponent(exam)}` +
+`&address=${encodeURIComponent(address)}` +
+`&hasCoupon=${encodeURIComponent(hasCoupon)}` +
+`&coupon=${encodeURIComponent(coupon)}`;
+
+fetch(url)
+.then(response => response.json())
+.then(data => {
+if (!data.success) {
+// agar backend ne couponRequired + couponInvalid bheja ho
+if (data.couponRequired && data.couponInvalid) {
+showMessage('Invalid or expired coupon code.', 'error');
+} else {
+showMessage(data.message || 'Registration failed. Please try again.', 'error');
+}
+return;
+}
+
+currentUserIdForPayment = data.userId;
+
+const qrUrl = data.qrImageUrl ||
+(data.qrType === 'B' ? QR_DEFAULT.B : QR_DEFAULT.A);
+document.getElementById('feeText').textContent =
+data.feeText || 'Pay the registration fee using this QR code.';
+document.getElementById('qrImage').src = qrUrl;
+
+document.getElementById('registrationForm')
+.querySelectorAll('input,select,textarea,button[type="submit"]')
+.forEach(el => el.disabled = true);
+
+document.getElementById('paymentStep').style.display = 'block';
+document.getElementById('paymentScreenshot').disabled = false;
+
+showMessage('Step 1 saved. Ab QR se payment karke screenshot upload karo.', 'success');
+})
+.catch(error => {
+showMessage('Error submitting registration. Please try again.', 'error');
+console.error('Error:', error);
+});
+}
+
+// ========== REGISTRATION (Step 2) ==========
+
+function uploadPaymentScreenshot() {
+if (!currentUserIdForPayment) {
+showMessage('User not found, please register again.', 'error');
+return;
+}
+
+const fileInput = document.getElementById('paymentScreenshot');
+if (!fileInput.files || !fileInput.files[0]) {
+showMessage('Payment screenshot select karo.', 'error');
+return;
+}
+
+const formData = new FormData();
+formData.append('action', 'uploadPaymentProof');
+formData.append('userId', currentUserIdForPayment);
+formData.append('file', fileInput.files[0]);
+
+showMessage('Uploading screenshot, please wait...', 'success');
+
+fetch(SCRIPT_URL, {
+method: 'POST',
+body: formData
+})
+.then(r => r.json())
+.then(data => {
+if (!data.success) {
+showMessage(data.message || 'Upload failed. Try again.', 'error');
+return;
+}
+
+showMessage('Registration submitted. Payment verification ke baad email aayegi.', 'success');
+
+document.getElementById('registrationForm').reset();
+document.getElementById('paymentScreenshot').value = '';
+document.getElementById('paymentStep').style.display = 'none';
+document.getElementById('registrationForm')
+.querySelectorAll('input,select,textarea,button[type="submit"]')
+.forEach(el => el.disabled = false);
+
+currentUserIdForPayment = null;
+closeRegistrationModal();
+})
+.catch(err => {
+console.error(err);
+showMessage('Error uploading screenshot. Please try again.', 'error');
+});
+}
+
+// ========== STUDENT LOGIN ==========
+
+function handleLogin(event) {
+event.preventDefault();
+
+const userId = document.getElementById('userId').value.trim();
+const password = document.getElementById('password').value.trim();
+
+showMessage('Verifying credentials...', 'success');
+
+const url = `${SCRIPT_URL}?action=login` +
+`&userId=${encodeURIComponent(userId)}` +
+`&password=${encodeURIComponent(password)}`;
+
+fetch(url)
+.then(response => response.json())
+.then(data => {
+if (data.success) {
+const user = data.user;
+
+localStorage.setItem('userId', user.userId);
+localStorage.setItem('name', user.name);
+localStorage.setItem('exam', user.preparingFor);
+
+showMessage('Login successful! Redirecting...', 'success');
+
+setTimeout(() => {
+switch (user.preparingFor) {
+case 'UPSC CSE':
+window.location.href = 'upsc-dashboard.html';
+break;
+case 'JEE':
+window.location.href = 'jee-dashboard.html';
+break;
+case 'NEET':
+window.location.href = 'neet-dashboard.html';
+break;
+case 'RPSC':
+window.location.href = 'rpsc-dashboard.html';
+break;
+default:
+showMessage('Unknown exam type in your profile.', 'error');
+}
+}, 1500);
+} else {
+showMessage(data.message || 'Invalid credentials.', 'error');
+}
+})
+.catch(error => {
+showMessage('Error during login. Please try again.', 'error');
+console.error('Error:', error);
+});
+}
+
+// ========== ADMIN LOGIN ==========
+
+function handleAdminLogin(event) {
+event.preventDefault();
+
+const email = document.getElementById('adminEmail').value.trim();
+const password = document.getElementById('adminPassword').value.trim();
+
+showMessage('Verifying admin credentials...', 'success');
+
+const url = `${SCRIPT_URL}?action=adminLogin` +
+`&email=${encodeURIComponent(email)}` +
+`&password=${encodeURIComponent(password)}`;
+
+fetch(url)
+.then(response => response.json())
+.then(data => {
+if (data.success) {
+localStorage.setItem('isAdmin', 'true');
+localStorage.setItem('adminEmail', data.admin.email);
+
+showMessage('Admin login successful! Redirecting...', 'success');
+
+setTimeout(() => {
+window.location.href = 'admin.html';
+}, 1500);
+} else {
+showMessage(data.message || 'Admin login failed.', 'error');
+}
+})
+.catch(error => {
+showMessage('Error during admin login. Please try again.', 'error');
+console.error('Error:', error);
+});
+}
+</script>
+</body>
+</html>
