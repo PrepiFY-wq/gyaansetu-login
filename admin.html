@@ -670,6 +670,7 @@
               <!-- ================= JEE TAB ================= -->
               <div class="tab-pane fade" id="jee-pane" role="tabpanel">
                 <div class="row g-3">
+
                   <!-- JEE Announcements (NO upload) -->
                   <div class="col-md-6">
                     <div class="card h-100">
@@ -1950,7 +1951,7 @@
       });
   }
 
-  // FILE UPLOAD
+  // FILE UPLOAD (Dashboard PDFs / images)
   function uploadAndAppendLink(examType, sectionKey) {
     const prefix = prefixForExam(examType);
     const fileInputId = prefix + sectionKey + 'file';
@@ -1958,7 +1959,7 @@
     const msgId   = prefix + sectionKey + 'msg';
 
     const fileInput = document.getElementById(fileInputId);
-    const file = fileInput?.files?.[0];
+    const file = fileInput && fileInput.files && fileInput.files[0];
     if (!file) {
       alert('Pehele file choose karo');
       return;
@@ -1968,7 +1969,7 @@
     formData.append('action', 'uploadDashboardFile');
     formData.append('examType', examType);
     formData.append('sectionKey', sectionKey);
-    formData.append('file', file);
+    formData.append('file', file); // key exact "file"
 
     const msgEl = document.getElementById(msgId);
     if (msgEl) {
@@ -1987,11 +1988,11 @@
         }
 
         const textarea = document.getElementById(itemsId);
-        const current = textarea.value.trim();
-        const title = res.name || file.name;
-        const line = title + ' - ' + res.link;
+        const current = (textarea.value || '').trim();
+        const title = res.name || file.name || 'File';
+        const line = `${title} - ${res.link}`;
 
-        textarea.value = current ? (current + '\n' + line) : line;
+        textarea.value = current ? current + '\n' + line : line;
         fileInput.value = '';
 
         if (msgEl) {
