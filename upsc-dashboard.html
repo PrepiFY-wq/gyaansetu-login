@@ -601,11 +601,36 @@ async function safeFetchJson(url, options = {}, retries = 1) {
 
 // Local fallback quotes (UPSC/LBSNAA related)
 const fallbackQuotes = [
-  'UPSC CSE ek marathon hai, sprint nahi. Har din ka disciplined effort tumhe LBSNAA ke kareeb le jaata hai.',
-  'LBSNAA tak ka safar ek-ek page, ek-ek mock test aur ek-ek din ki mehnat se banta hai.',
-  'Jab tak tum khud par bharosa rakhoge, Dholpur House ki list me tumhara naam likha ja sakta hai.',
-  'Apni preparation ko duty samjho, result ko bonus. Isi soch se officer bante hain.',
-  'Aaj ki padhai kal ki posting decide karti hai. Consistency hi asli strategy hai.'
+ 'UPSC CSE ek marathon hai, sprint nahi. Har din ki mehnat tumhe LBSNAA ke kareeb le jaati hai.',
+  'LBSNAA tak ka safar ek-ek chapter, ek-ek mock test aur ek-ek disciplined din se banta hai.',
+  'Jab tak tum khud par vishwas rakhoge, Dholpur House ki list me tumhara naam likha ja sakta hai.',
+  'Apni preparation ko bojh nahi, zimmedari samjho. Officers isi soch se bante hain.',
+  'Aaj ka ek focused hour kal ki ek strong posting bana sakta hai.',
+  'Manzil LBSNAA hai, par asli jeet roz subah uthkar plan follow karne me hai.',
+  'Jab give up karne ka mann ho, sochna – interview room me apna naam sunne ka ehsaas kaisa hoga.',
+  'UPSC tumhara patience, discipline aur honesty test karta hai – sirf knowledge nahi.',
+  'Ek din LBSNAA ka parade ground tumhari aaj ki mehnat ka jawab dega.',
+  'Notes patle hote ja rahe hain, iska matlab tumhari samajh gehri ho rahi hai – lage raho.',
+  'Distractions jitne zyada hon, goal utna bada hota hai – focus ko apni superpower banao.',
+  'UPSC ke liye tum jitna sacrifice kar rahe ho, wahi kal desh ki strength banega.',
+  'Har mock test ek naya lesson hai, failure nahi. Copy se zyada dimaag update karo.',
+  'Jo aaj tumhe underestimate kar rahe hain, ek din tumhari posting ka board dekh kar yaad rakhenge.',
+  'Ek attempt fail ho sakta hai, lekin ek sincere effort kabhi barbaad nahi hota.',
+  'Kal ka IAS/IPS officer aaj raat bhi padh raha hoga – socho kya tum unme se ho?',
+  'Selection perfection se nahi, consistent average days se hota hai.',
+  'Har din thoda padhna, kabhi kabhi zyada padhne se zyada powerful hota hai.',
+  'Jis din tum struggle ko journey ka hissa maan loge, us din se stress kam aur growth zyada hogi.',
+  'Chup chap ki gayi mehnat hi ek din sabse zyada shor machati hai.',
+  'GS ke har chhote point me kal ki kisi file ka decision छupa hua hai.',
+  'Doston ki outing chhodkar padhai choose karna mushkil hai, par yahi tumhe alag banata hai.',
+  'Prelims gate hai, Mains journey hai, interview tumhari personality ka celebration hai.',
+  'Library ki ek seat se LBSNAA ki ek desk tak ka raasta sirf tumhari consistency banati hai.',
+  'Aaj ka timetable kal ke appointment order se zyada powerful document hai.',
+  'UPSC sirf yeh poochta hai: kya tum kal se aaj thode better ban gaye ho?',
+  'Jab tum revision kar rahe hote ho, shayad LBSNAA ka koi classroom tumhara intezar kar raha hota hai.',
+  'Negativity se door rehna bhi preparation ka part hai – apne aap ke sath positive raho.',
+  'Har low score ek message hai: “yeh tumhari limit nahi, bas tumhara current level hai”.',
+  'Jo aspirant aaj extra mehnat karta hai, kal wahi extra impact create karta hai.'
 ];
 
 function getRandomFallbackQuote() {
