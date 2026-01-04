@@ -1951,75 +1951,90 @@
       });
   }
 
-  // FILE UPLOAD (Dashboard PDFs / images)
+// FILE UPLOAD Dashboard PDFs images (JSON base64 – stable & error-free)
 function uploadAndAppendLink(examType, sectionKey) {
   const prefix = prefixForExam(examType);
-  const fileInputId = prefix + sectionKey + 'file';
+  const fileId = prefix + sectionKey + 'file';
   const itemsId = prefix + sectionKey + 'items';
-  const msgId   = prefix + sectionKey + 'msg';
+  const msgId = prefix + sectionKey + 'msg';
 
-  const fileInput = document.getElementById(fileInputId);
-  const file = fileInput && fileInput.files && fileInput.files[0];
+  const fileInput = document.getElementById(fileId);
+  const textarea = document.getElementById(itemsId);
+  const msgEl = document.getElementById(msgId);
 
-  // YAHAN DEBUG LINE ADD KARO
-  console.log('DEBUG uploadAndAppendLink', {
-    examType,
-    sectionKey,
-    fileInputId,
-    fileInput,
-    file
-  });
-
-  if (!file) {
+  if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
     alert('Pehele file choose karo');
     return;
   }
 
-  const formData = new FormData();
-  formData.append('action', 'uploadDashboardFile');
-  formData.append('examType', examType);
-  formData.append('sectionKey', sectionKey);
-  formData.append('file', file); // key exact "file"
+  const file = fileInput.files[0];
 
-  const msgEl = document.getElementById(msgId);
   if (msgEl) {
     msgEl.textContent = 'Uploading...';
     msgEl.className = 'text-muted small';
   }
 
-  fetch(SCRIPTURL, {
-    method: 'POST',
-    body: formData
-  })
-    .then(r => r.json())
-    .then(res => {
-      if (!res.success || !res.link) {
-        throw new Error(res.message || 'Upload failed');
-      }
+  const reader = new FileReader();
+  
+  reader.onload = function (e) {
+    const result = e.target.result;              // data:...;base64,XXXX
+    const base64 = result.split(',')[1] || '';   // sirf XXXX part
 
-      const textarea = document.getElementById(itemsId);
-      const current = (textarea.value || '').trim();
-      const title = res.name || file.name || 'File';
-      const line = `${title} - ${res.link}`;
+    const payload = {
+      action: 'uploadDashboardFileJson',
+      examType: examType,
+      sectionKey: sectionKey,
+      fileName: file.name,
+      mimeType: file.type || 'application/octet-stream',
+      data: base64
+    };
 
-      textarea.value = current ? current + '\n' + line : line;
-      fileInput.value = '';
-
-      if (msgEl) {
-        msgEl.textContent = 'File uploaded, link added';
-        msgEl.className = 'text-success small';
-        setTimeout(() => { msgEl.textContent = ''; }, 2000);
-      }
+    fetch(SCRIPTURL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
     })
-    .catch(err => {
-      console.error('uploadAndAppendLink error', err);
-      alert('Error uploading file');
-      if (msgEl) {
-        msgEl.textContent = 'Upload error';
-        msgEl.className = 'text-danger small';
-      }
-    });
+      .then(r => r.json())
+      .then(res => {
+        if (!res.success || !res.link) {
+          throw new Error(res.message || 'Upload failed');
+        }
+
+        const current = (textarea.value || '').trim();
+        const title = res.name || file.name || 'File';
+        const line = `${title} - ${res.link}`;
+
+        textarea.value = current ? current + '\n' + line : line;
+        fileInput.value = '';
+
+        if (msgEl) {
+          msgEl.textContent = 'File uploaded, link added';
+          msgEl.className = 'text-success small';
+          setTimeout(() => { msgEl.textContent = ''; }, 2000);
+        }
+      })
+      .catch(err => {
+        console.error('uploadAndAppendLink JSON error', err);
+        alert('Error uploading file: ' + err.message);
+        if (msgEl) {
+          msgEl.textContent = 'Upload error';
+          msgEl.className = 'text-danger small';
+        }
+      });
+  };
+
+  reader.onerror = function (e) {
+    console.error('FileReader error', e);
+    alert('Unable to read file');
+    if (msgEl) {
+      msgEl.textContent = 'Upload error';
+      msgEl.className = 'text-danger small';
+    }
+  };
+
+  reader.readAsDataURL(file);
 }
+
 
 
   // ANSWER COPIES
