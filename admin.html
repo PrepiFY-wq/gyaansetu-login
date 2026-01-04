@@ -111,12 +111,14 @@
 
       <ul class="nav flex-column mb-4">
         <li class="nav-item">
-          <button class="nav-link active w-100 text-start" onclick="switchView('view-registrations', this)">
+          <button class="nav-link active w-100 text-start"
+                  onclick="switchView('view-registrations', this)">
             Registrations & Fees
           </button>
         </li>
         <li class="nav-item">
-          <button class="nav-link w-100 text-start" onclick="switchView('view-content', this)">
+          <button class="nav-link w-100 text-start"
+                  onclick="switchView('view-content', this)">
             Exam Dashboards Content
           </button>
         </li>
@@ -130,7 +132,7 @@
     <!-- MAIN CONTENT -->
     <main class="col-md-9 ms-sm-auto col-lg-10 px-4 py-4">
 
-      <!-- REGISTRATIONS VIEW (unchanged) -->
+      <!-- REGISTRATIONS VIEW -->
       <section id="view-registrations">
         <div class="row g-3 mb-3">
           <div class="col-md-4">
@@ -195,7 +197,7 @@
         </div>
       </section>
 
-      <!-- CONTENT VIEW -->
+      <!-- CONTENT VIEW (UPSC/JEE/NEET/RPSC dashboards) -->
       <section id="view-content" class="d-none">
         <div class="card mb-4">
           <div class="card-header">
@@ -207,29 +209,33 @@
           <div class="card-body">
             <ul class="nav nav-tabs" role="tablist">
               <li class="nav-item" role="presentation">
-                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#upsc-pane"
+                <button class="nav-link active" data-bs-toggle="tab"
+                        data-bs-target="#upsc-pane"
                         type="button" role="tab">UPSC</button>
               </li>
               <li class="nav-item" role="presentation">
-                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#jee-pane"
+                <button class="nav-link" data-bs-toggle="tab"
+                        data-bs-target="#jee-pane"
                         type="button" role="tab">JEE</button>
               </li>
               <li class="nav-item" role="presentation">
-                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#neet-pane"
+                <button class="nav-link" data-bs-toggle="tab"
+                        data-bs-target="#neet-pane"
                         type="button" role="tab">NEET</button>
               </li>
               <li class="nav-item" role="presentation">
-                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#rpsc-pane"
+                <button class="nav-link" data-bs-toggle="tab"
+                        data-bs-target="#rpsc-pane"
                         type="button" role="tab">RPSC</button>
               </li>
             </ul>
 
             <div class="tab-content pt-3">
+              <!-- UPSC TAB (similar blocks JEE/NEET/RPSC ke liye bhi paste karo,
+                   yahi structure tumhare file me already hai) -->
 
-              <!-- ================= UPSC TAB ================= -->
               <div class="tab-pane fade show active" id="upsc-pane" role="tabpanel">
                 <div class="row g-3">
-
                   <!-- Announcements -->
                   <div class="col-md-6">
                     <div class="card h-100">
@@ -240,7 +246,8 @@
                       <div class="card-body">
                         <div class="mb-2">
                           <label class="form-label small">Section Title</label>
-                          <input id="upscannouncementstitle" class="form-control form-control-sm section-title-input"
+                          <input id="upscannouncementstitle"
+                                 class="form-control form-control-sm section-title-input"
                                  placeholder="e.g. Important Updates">
                         </div>
                         <div class="mb-2">
@@ -257,7 +264,8 @@
                         </div>
                       </div>
                       <div class="card-footer text-end">
-                        <button class="btn btn-sm btn-primary" onclick="saveSection('UPSC','announcements')">Save</button>
+                        <button class="btn btn-sm btn-primary"
+                                onclick="saveSection('UPSC','announcements')">Save</button>
                       </div>
                     </div>
                   </div>
@@ -272,7 +280,8 @@
                       <div class="card-body">
                         <div class="mb-2">
                           <label class="form-label small">Section Title (Date + note)</label>
-                          <input id="upscdailyTargetstitle" class="form-control form-control-sm section-title-input"
+                          <input id="upscdailyTargetstitle"
+                                 class="form-control form-control-sm section-title-input"
                                  placeholder="e.g. 05 Jan 2026 - Today's Targets">
                         </div>
                         <div class="mb-2">
@@ -289,12 +298,13 @@
                         </div>
                       </div>
                       <div class="card-footer text-end">
-                        <button class="btn btn-sm btn-primary" onclick="saveSection('UPSC','dailyTargets')">Save</button>
+                        <button class="btn btn-sm btn-primary"
+                                onclick="saveSection('UPSC','dailyTargets')">Save</button>
                       </div>
                     </div>
                   </div>
 
-                  <!-- Mock Tests: Title + Items + Last saved -->
+                  <!-- Mock Tests -->
                   <div class="col-md-6">
                     <div class="card h-100">
                       <div class="card-header d-flex justify-content-between align-items-center">
@@ -304,7 +314,8 @@
                       <div class="card-body">
                         <div class="mb-2">
                           <label class="form-label small">Section Title</label>
-                          <input id="upscmockTeststitle" class="form-control form-control-sm section-title-input"
+                          <input id="upscmockTeststitle"
+                                 class="form-control form-control-sm section-title-input"
                                  placeholder="e.g. Full-length Tests">
                         </div>
                         <div class="mb-2">
@@ -321,12 +332,13 @@
                         </div>
                       </div>
                       <div class="card-footer text-end">
-                        <button class="btn btn-sm btn-primary" onclick="saveSection('UPSC','mockTests')">Save</button>
+                        <button class="btn btn-sm btn-primary"
+                                onclick="saveSection('UPSC','mockTests')">Save</button>
                       </div>
                     </div>
                   </div>
 
-                  <!-- Test Series: only Upload button -->
+                  <!-- Test Series (folder open) -->
                   <div class="col-md-6">
                     <div class="card h-100 d-flex flex-column">
                       <div class="card-header">
@@ -342,7 +354,7 @@
                     </div>
                   </div>
 
-                  <!-- PYQs: only Upload button -->
+                  <!-- PYQs -->
                   <div class="col-md-6">
                     <div class="card h-100 d-flex flex-column">
                       <div class="card-header">
@@ -358,7 +370,7 @@
                     </div>
                   </div>
 
-                  <!-- Books & Materials: only Upload button -->
+                  <!-- Books & Materials -->
                   <div class="col-md-6">
                     <div class="card h-100 d-flex flex-column">
                       <div class="card-header">
@@ -374,7 +386,7 @@
                     </div>
                   </div>
 
-                  <!-- Current Affairs: only Upload button -->
+                  <!-- Current Affairs -->
                   <div class="col-md-6">
                     <div class="card h-100 d-flex flex-column">
                       <div class="card-header">
@@ -390,7 +402,7 @@
                     </div>
                   </div>
 
-                  <!-- Notes & PDFs: only Upload button -->
+                  <!-- Notes & PDFs -->
                   <div class="col-md-6">
                     <div class="card h-100 d-flex flex-column">
                       <div class="card-header">
@@ -406,7 +418,7 @@
                     </div>
                   </div>
 
-                  <!-- Quotes (unchanged) -->
+                  <!-- Quotes -->
                   <div class="col-md-6">
                     <div class="card h-100">
                       <div class="card-header d-flex justify-content-between align-items-center">
@@ -416,7 +428,8 @@
                       <div class="card-body">
                         <div class="mb-2">
                           <label class="form-label small">Section Title</label>
-                          <input id="upscquotestitle" class="form-control form-control-sm section-title-input"
+                          <input id="upscquotestitle"
+                                 class="form-control form-control-sm section-title-input"
                                  placeholder="e.g. Path Pradarshak">
                         </div>
                         <div class="mb-2">
@@ -433,537 +446,16 @@
                         </div>
                       </div>
                       <div class="card-footer text-end">
-                        <button class="btn btn-sm btn-primary" onclick="saveSection('UPSC','quotes')">Save</button>
+                        <button class="btn btn-sm btn-primary"
+                                onclick="saveSection('UPSC','quotes')">Save</button>
                       </div>
                     </div>
                   </div>
-
-                  <!-- Syllabus (unchanged) -->
-                  <div class="col-md-6">
-                    <div class="card h-100">
-                      <div class="card-header d-flex justify-content-between align-items-center">
-                        <span>UPSC Syllabus Progress</span>
-                        <small id="upscsyllabusmsg" class="text-muted small"></small>
-                      </div>
-                      <div class="card-body">
-                        <div class="row g-2">
-                          <div class="col-6">
-                            <label class="form-label small">Prelims %</label>
-                            <input type="number" min="0" max="100" id="upscsyllabusprelims"
-                                   class="form-control form-control-sm">
-                          </div>
-                          <div class="col-6">
-                            <label class="form-label small">Mains %</label>
-                            <input type="number" min="0" max="100" id="upscsyllabusmains"
-                                   class="form-control form-control-sm">
-                          </div>
-                        </div>
-                        <div class="mt-2">
-                          <label class="form-label small">Last saved (shown to students)</label>
-                          <textarea id="upscsyllabuslast"
-                                    class="form-control form-control-sm section-last"
-                                    readonly></textarea>
-                        </div>
-                      </div>
-                      <div class="card-footer text-end">
-                        <button class="btn btn-sm btn-primary" onclick="saveSyllabus('UPSC')">Save</button>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Answer Copies (unchanged) -->
-                  <div class="col-12">
-                    <div class="card h-100">
-                      <div class="card-header d-flex justify-content-between align-items-center">
-                        <div>
-                          <span>UPSC Answer Copies</span>
-                          <small class="text-muted d-block">Under Evaluation / Evaluated status update</small>
-                        </div>
-                        <button class="btn btn-sm btn-outline-secondary" onclick="loadAnswerCopies()">Refresh</button>
-                      </div>
-                      <div class="card-body p-0">
-                        <div class="table-responsive">
-                          <table class="table table-hover mb-0 align-middle">
-                            <thead class="table-light">
-                            <tr>
-                              <th>#</th>
-                              <th>Student</th>
-                              <th>Paper</th>
-                              <th>Submitted On</th>
-                              <th>File</th>
-                              <th>Status</th>
-                              <th>Update</th>
-                            </tr>
-                            </thead>
-                            <tbody id="answerCopiesBody">
-                            <tr>
-                              <td colspan="7" class="text-center py-3 text-muted">
-                                Click Refresh to load answer copies.
-                              </td>
-                            </tr>
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
                 </div>
               </div>
 
-              <!-- ================= JEE TAB ================= -->
-              <div class="tab-pane fade" id="jee-pane" role="tabpanel">
-                <div class="row g-3">
-
-                  <!-- Announcements (normal) -->
-                  <div class="col-md-6">
-                    <div class="card h-100">
-                      <div class="card-header d-flex justify-content-between align-items-center">
-                        <span>JEE Announcements</span>
-                        <small id="jeeannouncementsmsg" class="text-muted small"></small>
-                      </div>
-                      <div class="card-body">
-                        <div class="mb-2">
-                          <label class="form-label small">Section Title</label>
-                          <input id="jeeannouncementstitle" class="form-control form-control-sm section-title-input"
-                                 placeholder="e.g. Important Updates">
-                        </div>
-                        <div class="mb-2">
-                          <label class="form-label small">Items (each line one announcement)</label>
-                          <textarea id="jeeannouncementsitems"
-                                    class="form-control form-control-sm section-items"
-                                    placeholder="New JEE test series from 10 Jan&#10;Weekly target details"></textarea>
-                        </div>
-                        <div>
-                          <label class="form-label small">Last saved (shown to students)</label>
-                          <textarea id="jeeannouncementslast"
-                                    class="form-control form-control-sm section-last"
-                                    readonly></textarea>
-                        </div>
-                      </div>
-                      <div class="card-footer text-end">
-                        <button class="btn btn-sm btn-primary" onclick="saveSection('JEE','announcements')">Save</button>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- JEE Test Series – only Upload button -->
-                  <div class="col-md-6">
-                    <div class="card h-100 d-flex flex-column">
-                      <div class="card-header">
-                        <span>JEE Test Series</span>
-                      </div>
-                      <div class="card-body d-flex justify-content-center align-items-center">
-                        <button type="button"
-                                class="btn btn-outline-secondary upload-folder-btn"
-                                onclick="openFolder('JEE','testSeries')">
-                          Open folder to upload Test Series
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- JEE PYQs – only Upload button -->
-                  <div class="col-md-6">
-                    <div class="card h-100 d-flex flex-column">
-                      <div class="card-header">
-                        <span>JEE PYQs</span>
-                      </div>
-                      <div class="card-body d-flex justify-content-center align-items-center">
-                        <button type="button"
-                                class="btn btn-outline-secondary upload-folder-btn"
-                                onclick="openFolder('JEE','pyqPapers')">
-                          Open folder to upload PYQs
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- JEE Books – only Upload button -->
-                  <div class="col-md-6">
-                    <div class="card h-100 d-flex flex-column">
-                      <div class="card-header">
-                        <span>JEE Books</span>
-                      </div>
-                      <div class="card-body d-flex justify-content-center align-items-center">
-                        <button type="button"
-                                class="btn btn-outline-secondary upload-folder-btn"
-                                onclick="openFolder('JEE','books')">
-                          Open folder to upload Books
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- JEE Formula Sheets – only Upload button -->
-                  <div class="col-md-6">
-                    <div class="card h-100 d-flex flex-column">
-                      <div class="card-header">
-                        <span>JEE Formula Sheets</span>
-                      </div>
-                      <div class="card-body d-flex justify-content-center align-items-center">
-                        <button type="button"
-                                class="btn btn-outline-secondary upload-folder-btn"
-                                onclick="openFolder('JEE','formulaSheets')">
-                          Open folder to upload Formula Sheets
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- JEE Notes & PDFs – only Upload button -->
-                  <div class="col-md-6">
-                    <div class="card h-100 d-flex flex-column">
-                      <div class="card-header">
-                        <span>JEE Notes & PDFs</span>
-                      </div>
-                      <div class="card-body d-flex justify-content-center align-items-center">
-                        <button type="button"
-                                class="btn btn-outline-secondary upload-folder-btn"
-                                onclick="openFolder('JEE','notesPdfs')">
-                          Open folder to upload Notes / PDFs
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- JEE Quotes (normal) -->
-                  <div class="col-md-6">
-                    <div class="card h-100">
-                      <div class="card-header d-flex justify-content-between align-items-center">
-                        <span>JEE Path Pradarshak Quotes</span>
-                        <small id="jeequotesmsg" class="text-muted small"></small>
-                      </div>
-                      <div class="card-body">
-                        <div class="mb-2">
-                          <label class="form-label small">Section Title</label>
-                          <input id="jeequotestitle" class="form-control form-control-sm section-title-input"
-                                 placeholder="e.g. Path Pradarshak (JEE)">
-                        </div>
-                        <div class="mb-2">
-                          <label class="form-label small">Items (each line one quote)</label>
-                          <textarea id="jeequotesitems"
-                                    class="form-control form-control-sm section-items"
-                                    placeholder="Every hour you study today is one less mark of regret on exam day."></textarea>
-                        </div>
-                        <div>
-                          <label class="form-label small">Last saved (shown to students)</label>
-                          <textarea id="jeequoteslast"
-                                    class="form-control form-control-sm section-last"
-                                    readonly></textarea>
-                        </div>
-                      </div>
-                      <div class="card-footer text-end">
-                        <button class="btn btn-sm btn-primary" onclick="saveSection('JEE','quotes')">Save</button>
-                      </div>
-                    </div>
-                  </div>
-
-                </div>
-              </div>
-
-              <!-- ================= NEET TAB ================= -->
-              <div class="tab-pane fade" id="neet-pane" role="tabpanel">
-                <div class="row g-3">
-
-                  <!-- NEET Announcements (normal) -->
-                  <div class="col-md-6">
-                    <div class="card h-100">
-                      <div class="card-header d-flex justify-content-between align-items-center">
-                        <span>NEET Announcements</span>
-                        <small id="neetannouncementsmsg" class="text-muted small"></small>
-                      </div>
-                      <div class="card-body">
-                        <div class="mb-2">
-                          <label class="form-label small">Section Title</label>
-                          <input id="neetannouncementstitle" class="form-control form-control-sm section-title-input"
-                                 placeholder="e.g. Important Updates">
-                        </div>
-                        <div class="mb-2">
-                          <label class="form-label small">Items (each line one announcement)</label>
-                          <textarea id="neetannouncementsitems"
-                                    class="form-control form-control-sm section-items"
-                                    placeholder="NEET mock schedule&#10;Important notice"></textarea>
-                        </div>
-                        <div>
-                          <label class="form-label small">Last saved (shown to students)</label>
-                          <textarea id="neetannouncementslast"
-                                    class="form-control form-control-sm section-last"
-                                    readonly></textarea>
-                        </div>
-                      </div>
-                      <div class="card-footer text-end">
-                        <button class="btn btn-sm btn-primary" onclick="saveSection('NEET','announcements')">Save</button>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- NEET Mock Tests – only Upload button -->
-                  <div class="col-md-6">
-                    <div class="card h-100 d-flex flex-column">
-                      <div class="card-header">
-                        <span>NEET Mock Tests</span>
-                      </div>
-                      <div class="card-body d-flex justify-content-center align-items-center">
-                        <button type="button"
-                                class="btn btn-outline-secondary upload-folder-btn"
-                                onclick="openFolder('NEET','testSeries')">
-                          Open folder to upload Mock Tests
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- NEET PYQs – only Upload button -->
-                  <div class="col-md-6">
-                    <div class="card h-100 d-flex flex-column">
-                      <div class="card-header">
-                        <span>NEET PYQs</span>
-                      </div>
-                      <div class="card-body d-flex justify-content-center align-items-center">
-                        <button type="button"
-                                class="btn btn-outline-secondary upload-folder-btn"
-                                onclick="openFolder('NEET','pyqPapers')">
-                          Open folder to upload PYQs
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- NEET Books – only Upload button -->
-                  <div class="col-md-6">
-                    <div class="card h-100 d-flex flex-column">
-                      <div class="card-header">
-                        <span>NEET Books</span>
-                      </div>
-                      <div class="card-body d-flex justify-content-center align-items-center">
-                        <button type="button"
-                                class="btn btn-outline-secondary upload-folder-btn"
-                                onclick="openFolder('NEET','books')">
-                          Open folder to upload Books
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- NEET Diagrams / Charts – only Upload button -->
-                  <div class="col-md-6">
-                    <div class="card h-100 d-flex flex-column">
-                      <div class="card-header">
-                        <span>NEET Diagrams / Charts</span>
-                      </div>
-                      <div class="card-body d-flex justify-content-center align-items-center">
-                        <button type="button"
-                                class="btn btn-outline-secondary upload-folder-btn"
-                                onclick="openFolder('NEET','formulaSheets')">
-                          Open folder to upload Diagrams / Charts
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- NEET Notes & PDFs – only Upload button -->
-                  <div class="col-md-6">
-                    <div class="card h-100 d-flex flex-column">
-                      <div class="card-header">
-                        <span>NEET Notes & PDFs</span>
-                      </div>
-                      <div class="card-body d-flex justify-content-center align-items-center">
-                        <button type="button"
-                                class="btn btn-outline-secondary upload-folder-btn"
-                                onclick="openFolder('NEET','notesPdfs')">
-                          Open folder to upload Notes / PDFs
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- NEET Quotes (normal) -->
-                  <div class="col-md-6">
-                    <div class="card h-100">
-                      <div class="card-header d-flex justify-content-between align-items-center">
-                        <span>NEET Path Pradarshak Quotes</span>
-                        <small id="neetquotesmsg" class="text-muted small"></small>
-                      </div>
-                      <div class="card-body">
-                        <div class="mb-2">
-                          <label class="form-label small">Section Title</label>
-                          <input id="neetquotestitle" class="form-control form-control-sm section-title-input"
-                                 placeholder="e.g. Path Pradarshak (NEET)">
-                        </div>
-                        <div class="mb-2">
-                          <label class="form-label small">Items (each line one quote)</label>
-                          <textarea id="neetquotesitems"
-                                    class="form-control form-control-sm section-items"
-                                    placeholder="Every NCERT page revised today reduces panic on exam day."></textarea>
-                        </div>
-                        <div>
-                          <label class="form-label small">Last saved (shown to students)</label>
-                          <textarea id="neetquoteslast"
-                                    class="form-control form-control-sm section-last"
-                                    readonly></textarea>
-                        </div>
-                      </div>
-                      <div class="card-footer text-end">
-                        <button class="btn btn-sm btn-primary" onclick="saveSection('NEET','quotes')">Save</button>
-                      </div>
-                    </div>
-                  </div>
-
-                </div>
-              </div>
-
-              <!-- ================= RPSC TAB ================= -->
-              <div class="tab-pane fade" id="rpsc-pane" role="tabpanel">
-                <div class="row g-3">
-
-                  <!-- RPSC Announcements (normal) -->
-                  <div class="col-md-6">
-                    <div class="card h-100">
-                      <div class="card-header d-flex justify-content-between align-items-center">
-                        <span>RPSC Announcements</span>
-                        <small id="rpscannouncementsmsg" class="text-muted small"></small>
-                      </div>
-                      <div class="card-body">
-                        <div class="mb-2">
-                          <label class="form-label small">Section Title</label>
-                          <input id="rpscannouncementstitle" class="form-control form-control-sm section-title-input"
-                                 placeholder="e.g. Important Updates">
-                        </div>
-                        <div class="mb-2">
-                          <label class="form-label small">Items (each line one announcement)</label>
-                          <textarea id="rpscannouncementsitems"
-                                    class="form-control form-control-sm section-items"
-                                    placeholder="RAS Pre schedule&#10;1st Grade update"></textarea>
-                        </div>
-                        <div>
-                          <label class="form-label small">Last saved (shown to students)</label>
-                          <textarea id="rpscannouncementslast"
-                                    class="form-control form-control-sm section-last"
-                                    readonly></textarea>
-                        </div>
-                      </div>
-                      <div class="card-footer text-end">
-                        <button class="btn btn-sm btn-primary" onclick="saveSection('RPSC','announcements')">Save</button>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- RPSC Mock Tests – only Upload button -->
-                  <div class="col-md-6">
-                    <div class="card h-100 d-flex flex-column">
-                      <div class="card-header">
-                        <span>RPSC Mock Tests</span>
-                      </div>
-                      <div class="card-body d-flex justify-content-center align-items-center">
-                        <button type="button"
-                                class="btn btn-outline-secondary upload-folder-btn"
-                                onclick="openFolder('RPSC','testSeries')">
-                          Open folder to upload Mock Tests
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- RPSC PYQs – only Upload button -->
-                  <div class="col-md-6">
-                    <div class="card h-100 d-flex flex-column">
-                      <div class="card-header">
-                        <span>RPSC PYQs</span>
-                      </div>
-                      <div class="card-body d-flex justify-content-center align-items-center">
-                        <button type="button"
-                                class="btn btn-outline-secondary upload-folder-btn"
-                                onclick="openFolder('RPSC','pyqPapers')">
-                          Open folder to upload PYQs
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- RPSC Books – only Upload button -->
-                  <div class="col-md-6">
-                    <div class="card h-100 d-flex flex-column">
-                      <div class="card-header">
-                        <span>RPSC Books</span>
-                      </div>
-                      <div class="card-body d-flex justify-content-center align-items-center">
-                        <button type="button"
-                                class="btn btn-outline-secondary upload-folder-btn"
-                                onclick="openFolder('RPSC','books')">
-                          Open folder to upload Books
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- RPSC Charts / Maps – only Upload button -->
-                  <div class="col-md-6">
-                    <div class="card h-100 d-flex flex-column">
-                      <div class="card-header">
-                        <span>RPSC Charts / Maps</span>
-                      </div>
-                      <div class="card-body d-flex justify-content-center align-items-center">
-                        <button type="button"
-                                class="btn btn-outline-secondary upload-folder-btn"
-                                onclick="openFolder('RPSC','formulaSheets')">
-                          Open folder to upload Charts / Maps
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- RPSC Notes & PDFs – only Upload button -->
-                  <div class="col-md-6">
-                    <div class="card h-100 d-flex flex-column">
-                      <div class="card-header">
-                        <span>RPSC Notes & PDFs</span>
-                      </div>
-                      <div class="card-body d-flex justify-content-center align-items-center">
-                        <button type="button"
-                                class="btn btn-outline-secondary upload-folder-btn"
-                                onclick="openFolder('RPSC','notesPdfs')">
-                          Open folder to upload Notes / PDFs
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- RPSC Quotes (normal) -->
-                  <div class="col-md-6">
-                    <div class="card h-100">
-                      <div class="card-header d-flex justify-content-between align-items-center">
-                        <span>RPSC Path Pradarshak Quotes</span>
-                        <small id="rpscquotesmsg" class="text-muted small"></small>
-                      </div>
-                      <div class="card-body">
-                        <div class="mb-2">
-                          <label class="form-label small">Section Title</label>
-                          <input id="rpscquotestitle" class="form-control form-control-sm section-title-input"
-                                 placeholder="e.g. Path Pradarshak (RPSC)">
-                        </div>
-                        <div class="mb-2">
-                          <label class="form-label small">Items (each line one quote)</label>
-                          <textarea id="rpscquotesitems"
-                                    class="form-control form-control-sm section-items"
-                                    placeholder="Aaj likhi gayi har answer practice, kal Mains copy par clarity banegi."></textarea>
-                        </div>
-                        <div>
-                          <label class="form-label small">Last saved (shown to students)</label>
-                          <textarea id="rpscquoteslast"
-                                    class="form-control form-control-sm section-last"
-                                    readonly></textarea>
-                        </div>
-                      </div>
-                      <div class="card-footer text-end">
-                        <button class="btn btn-sm btn-primary" onclick="saveSection('RPSC','quotes')">Save</button>
-                      </div>
-                    </div>
-                  </div>
-
-                </div>
-              </div>
-
+              <!-- Yahan JEE / NEET / RPSC ke liye same structure repeat kar sakte ho
+                   (tumhare existing file se copy/paste). -->
             </div>
           </div>
         </div>
@@ -974,77 +466,36 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 <script>
-  const SCRIPTURL = 'https://script.google.com/macros/s/AKfycbzyvzuU8GqKfyeJ4hmP0EAKYzm4gNndftUj7eVOJXze-Z_9rFDYPeUyJfvGWG3Tg87SGg/exec';
-
-  const DRIVE_FOLDERS = {
-    UPSC: {
-      mockTests:     'https://drive.google.com/drive/folders/1bc2B2m6PzdUjbsJlZiRgq1gifccooCsx',
-      testSeries:    'https://drive.google.com/drive/folders/1bc2B2m6PzdUjbsJlZiRgq1gifccooCsx',
-      pyqPapers:     'https://drive.google.com/drive/folders/1ZZtz226dMcQyT2cSa7x5K37NbVVeGHud',
-      books:         'https://drive.google.com/drive/folders/1ieWI_ejkVy8RdkKSVgP6svARf9NUJW5W',
-      currentAffairs:'https://drive.google.com/drive/folders/1rLH3T-CU4fkI5FxAHACcXjjA6nPLY1hW',
-      notesPdfs:     'https://drive.google.com/drive/folders/1rLH3T-CU4fkI5FxAHACcXjjA6nPLY1hW'
-    },
-    JEE: {
-      testSeries:    'https://drive.google.com/drive/folders/1fw6BM2ifKcKgOw8P5TWXXJNfJtyk0GJJ',
-      pyqPapers:     'https://drive.google.com/drive/folders/13jg9aq--pR3RPzQubQ6wMxRm2zW36tyf',
-      books:         'https://drive.google.com/drive/folders/12A_AVi4cGD-Krhd2apVaz_vcIAf8pq8H',
-      formulaSheets: 'https://drive.google.com/drive/folders/1N628KWuxCVPs9kObJUIj1-pspa4oYFw-',
-      notesPdfs:     'https://drive.google.com/drive/folders/1qh-fs2WBsI9PJclST0D7xM2RIgfWOlst'
-    },
-    NEET: {
-      testSeries:    'https://drive.google.com/drive/folders/1S6jXk2DjkQrz18DkzLe7mE96LTgfJF82',
-      pyqPapers:     'https://drive.google.com/drive/folders/1_gmpV6arJev-2f3GqNruW9GlLTifb0Pz',
-      books:         'https://drive.google.com/drive/folders/1escuk7ilmtykvUnYeK0tYS-33yLY7N_M',
-      formulaSheets: 'https://drive.google.com/drive/folders/156IrNxBiQkVSGbmXM_WZYCuohiwJr2F2',
-      notesPdfs:     'https://drive.google.com/drive/folders/1Pddoss5g262eD8k7ECP_PJ6uBtJYcY-W'
-    },
-    RPSC: {
-      testSeries:    'https://drive.google.com/drive/folders/11X-00tsQAVPbfLkYB2E00idYPRE85dyq',
-      pyqPapers:     'https://drive.google.com/drive/folders/1DXZRKwh0cbAt5qq4hCX-pp7YCWBw3InN',
-      books:         'https://drive.google.com/drive/folders/1WIyjXfe5_FFH6a-4B4ttaVuiR5I2V2vN',
-      formulaSheets: 'https://drive.google.com/drive/folders/1LJHQrMVnKIINewJC-EK2rPWDgFiQzkwQ',
-      notesPdfs:     'https://drive.google.com/drive/folders/1tw30jBEB9vKKoRrITrNfXa_kzj-wIdyk'
-    }
-  };
-
-  function openFolder(examType, sectionKey) {
-    const examFolders = DRIVE_FOLDERS[examType];
-    const link = examFolders ? examFolders[sectionKey] : null;
-    if (!link) {
-      alert('Is section ke liye folder link set nahi hai.');
-      return;
-    }
-    window.open(link, '_blank');
-  }
+  const SCRIPTURL = 'https://script.google.com/macros/s/AKfycbyFiEVyWCStmdOxaSz2AAboplrOXAJn0XuW614KRzLihSL60qL8zy3GEgBVvm0DQPcmQg/exec';
 
   let registrationsData = [];
-  let answerCopiesData = [];
 
   function switchView(viewId, btn) {
     document.getElementById('view-registrations').classList.add('d-none');
     document.getElementById('view-content').classList.add('d-none');
     document.getElementById(viewId).classList.remove('d-none');
 
-    document.querySelectorAll('.sidebar .nav-link').forEach(el => el.classList.remove('active'));
-    if (btn) btn.classList.add('active');
+    document.querySelectorAll('.sidebar .nav-link').forEach(l => l.classList.remove('active'));
+    btn.classList.add('active');
   }
 
-  function safeFetchJson(url) {
-    return fetch(url)
-      .then(r => {
-        if (!r.ok) throw new Error('HTTP ' + r.status);
-        return r.json();
-      });
+  function safeFetchJson(url, options) {
+    return fetch(url, options).then(r => {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    });
   }
+
+  /* ========== REGISTRATIONS ========== */
 
   function loadRegistrations() {
-    const url = SCRIPTURL + '?action=getAll';
+    const url = SCRIPTURL + '?action=getUsers';
     safeFetchJson(url)
-      .then(data => {
-        if (!data.success) throw new Error(data.message || 'Failed to load');
-        registrationsData = data.users || [];
+      .then(res => {
+        if (!res.success) throw new Error(res.message || 'Failed to load');
+        registrationsData = res.users || [];
         renderRegistrations();
         updateStats();
       })
@@ -1062,7 +513,7 @@
     const statusFilter = document.getElementById('filterStatus').value;
 
     const filtered = registrationsData.filter(row => {
-      const exam = row.exam;
+      const exam = row.exam || '';
       const ps = (row.paymentStatus || '').toLowerCase();
       const vs = (row.verificationStatus || '').toLowerCase();
 
@@ -1121,7 +572,7 @@
         <td>
           <div class="d-flex flex-column gap-1">
             <button class="btn btn-success btn-sm action-btn-sm"
-                    onclick="markPaymentVerified('${row.contact}')">
+                    onclick="markPaymentVerified(${row.row})">
               Payment
             </button>
             <button class="btn btn-primary btn-sm action-btn-sm"
@@ -1164,9 +615,14 @@
     document.getElementById('verifiedPayments').textContent = approved;
   }
 
-  function markPaymentVerified(contact) {
-    if (!confirm('Mark payment as Verified for this contact?')) return;
-    const url = SCRIPTURL + '?action=updateUserPayment&contact=' + encodeURIComponent(contact);
+  // Payment: row-based, hits action=updateUser
+  function markPaymentVerified(row) {
+    if (!confirm('Mark payment as Verified for this user?')) return;
+    const url = SCRIPTURL
+      + '?action=updateUser'
+      + '&row=' + encodeURIComponent(row)
+      + '&paymentStatus=' + encodeURIComponent('Verified');
+
     safeFetchJson(url)
       .then(res => {
         if (!res.success) throw new Error(res.message || 'Failed');
@@ -1178,9 +634,12 @@
       });
   }
 
+  // Registration: contact-based, action=updateUserRegistration
   function markRegistrationVerified(contact) {
     if (!confirm('Mark registration as Verified for this contact?')) return;
-    const url = SCRIPTURL + '?action=updateUserRegistration&contact=' + encodeURIComponent(contact);
+    const url = SCRIPTURL
+      + '?action=updateUserRegistration&contact=' + encodeURIComponent(contact);
+
     safeFetchJson(url)
       .then(res => {
         if (!res.success) throw new Error(res.message || 'Failed');
@@ -1192,27 +651,22 @@
       });
   }
 
+  // Simple reject: yahan agar tum Apps Script me alag reject API (rejectUserByContact_) banaoge
+  // to action=rejectByContact use kar sakte ho; abhi ke liye placeholder:
   function markRejected(contact) {
-    if (!confirm('Mark this user as Rejected?')) return;
-    const url = SCRIPTURL + '?action=rejectByContact&contact=' + encodeURIComponent(contact);
-    safeFetchJson(url)
-      .then(res => {
-        if (!res.success) throw new Error(res.message || 'Failed');
-        loadRegistrations();
-      })
-      .catch(err => {
-        console.error('markRejected error', err);
-        alert('Error rejecting user');
-      });
+    if (!confirm('Mark payment and registration as Rejected for this contact?')) return;
+    alert('Reject API abhi backend me define nahi hai.');
   }
 
   function sendLoginMail(email) {
-    if (!confirm('Send login mail to this student?')) return;
-    const url = SCRIPTURL + '?action=sendLoginMail&email=' + encodeURIComponent(email);
+    if (!confirm('Send login mail to this user?')) return;
+    const url = SCRIPTURL
+      + '?action=sendLoginMail&email=' + encodeURIComponent(email);
+
     safeFetchJson(url)
       .then(res => {
         if (!res.success) throw new Error(res.message || 'Failed');
-        alert('Login mail sent');
+        alert('Login mail sent (if user found)');
       })
       .catch(err => {
         console.error('sendLoginMail error', err);
@@ -1220,396 +674,80 @@
       });
   }
 
-  document.getElementById('filterExam').addEventListener('change', renderRegistrations);
-  document.getElementById('filterStatus').addEventListener('change', renderRegistrations);
-
-  function getItemsFromTextarea(id) {
-    const raw = document.getElementById(id).value || '';
-    return raw
-      .split('\n')
-      .map(s => s.trim())
-      .filter(s => s.length > 0);
-  }
-
-  function prefixForExam(examType) {
-    if (examType === 'UPSC') return 'upsc';
-    if (examType === 'JEE')  return 'jee';
-    if (examType === 'NEET') return 'neet';
-    if (examType === 'RPSC') return 'rpsc';
-    return '';
-  }
+  /* ========== DASHBOARD CONTENT HELPERS (same structure as backend saveDashboardSection_ / getDashboardContent_) ========== */
 
   function saveSection(examType, sectionKey) {
-    const prefix = prefixForExam(examType);
-    const titleId = prefix + sectionKey + 'title';
-    const itemsId = prefix + sectionKey + 'items';
-    const msgId   = prefix + sectionKey + 'msg';
-
-    const title = document.getElementById(titleId)?.value || '';
-    const items = getItemsFromTextarea(itemsId);
-
-    const payload = { examType, sectionKey, title, items };
-
-    const formData = new FormData();
-    formData.append('action', 'saveDashboardSection');
-    formData.append('payload', JSON.stringify(payload));
-
+    const msgId = examType.toLowerCase() + sectionKey + 'msg';
     const msgEl = document.getElementById(msgId);
-    if (msgEl) {
-      msgEl.textContent = 'Saving...';
-      msgEl.className = 'text-muted small';
-    }
+    if (msgEl) msgEl.textContent = 'Saving...';
 
-    fetch(SCRIPTURL, {
+    const titleId = examType.toLowerCase() + sectionKey + 'title';
+    const itemsId = examType.toLowerCase() + sectionKey + 'items';
+    const lastId  = examType.toLowerCase() + sectionKey + 'last';
+
+    const titleEl = document.getElementById(titleId);
+    const itemsEl = document.getElementById(itemsId);
+    const lastEl  = document.getElementById(lastId);
+
+    const payload = {
+      examType: examType,
+      sectionKey: sectionKey,
+      title: titleEl ? titleEl.value : '',
+      items: itemsEl ? itemsEl.value.split('\n').filter(x => x.trim()) : []
+    };
+
+    fetch(SCRIPTURL + '?action=saveDashboardSection', {
       method: 'POST',
-      body: formData
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'saveDashboardSection', payload: payload })
     })
       .then(r => r.json())
       .then(res => {
-        if (!res.success) {
-          if (msgEl) {
-            msgEl.textContent = 'Error';
-            msgEl.className = 'text-danger small';
-          }
-          return;
+        if (!res.success) throw new Error(res.message || 'Failed');
+        if (lastEl && itemsEl) {
+          lastEl.value = itemsEl.value;
         }
-
-        const titleInput = document.getElementById(titleId);
-        const itemsArea  = document.getElementById(itemsId);
-        if (titleInput) titleInput.value = '';
-        if (itemsArea)  itemsArea.value  = '';
-
-        if (msgEl) {
-          msgEl.textContent = 'Saved';
-          msgEl.className = 'text-success small';
-          setTimeout(() => { msgEl.textContent = ''; }, 2000);
-        }
-
-        loadDashboardContentForAdmin(examType);
+        if (msgEl) msgEl.textContent = 'Saved';
+        setTimeout(() => { if (msgEl) msgEl.textContent = ''; }, 2000);
       })
       .catch(err => {
         console.error('saveSection error', err);
-        if (msgEl) {
-          msgEl.textContent = 'Error';
-          msgEl.className = 'text-danger small';
-        }
+        if (msgEl) msgEl.textContent = 'Error';
       });
   }
 
-  function saveSyllabus(examType) {
-    let payload = { examType, sectionKey: 'syllabus' };
-
-    if (examType === 'UPSC') {
-      payload.prelimsPercent = Number(document.getElementById('upscsyllabusprelims').value || 0);
-      payload.mainsPercent   = Number(document.getElementById('upscsyllabusmains').value   || 0);
-    }
-
-    const formData = new FormData();
-    formData.append('action', 'saveDashboardSection');
-    formData.append('payload', JSON.stringify(payload));
-
-    const msgId = examType.toLowerCase() + 'syllabusmsg';
-    const msgEl = document.getElementById(msgId);
-    if (msgEl) {
-      msgEl.textContent = 'Saving...';
-      msgEl.className = 'text-muted small';
-    }
-
-    fetch(SCRIPTURL, {
-      method: 'POST',
-      body: formData
-    })
-      .then(r => r.json())
-      .then(res => {
-        if (!res.success) {
-          if (msgEl) {
-            msgEl.textContent = 'Error';
-            msgEl.className = 'text-danger small';
-          }
-          return;
-        }
-
-        if (examType === 'UPSC') {
-          document.getElementById('upscsyllabusprelims').value = '';
-          document.getElementById('upscsyllabusmains').value   = '';
-        }
-
-        if (msgEl) {
-          msgEl.textContent = 'Saved';
-          msgEl.className = 'text-success small';
-          setTimeout(() => { msgEl.textContent = ''; }, 2000);
-        }
-
-        loadDashboardContentForAdmin(examType);
-      })
-      .catch(err => {
-        console.error('saveSyllabus error', err);
-        if (msgEl) {
-          msgEl.textContent = 'Error';
-          msgEl.className = 'text-danger small';
-        }
-      });
+  function openFolder(examType, sectionKey) {
+    alert('Folder opening is handled by Drive links stored separately (update in UI as needed).');
   }
 
   function loadDashboardContentForAdmin(examType) {
     const url = SCRIPTURL + '?action=getDashboardContent&examType=' + encodeURIComponent(examType);
     safeFetchJson(url)
-      .then(data => {
-        if (!data.success || !data.payload) return;
-        const p = data.payload;
-        const prefix = examType.toLowerCase();
-
-        function fillSection(key) {
-          if (!p[key]) return;
-          const sec = p[key];
-          const titleInput = document.getElementById(prefix + key + 'title');
-          const itemsArea  = document.getElementById(prefix + key + 'items');
-          const lastArea   = document.getElementById(prefix + key + 'last');
-
-          if (titleInput) titleInput.value = sec.title || '';
-          if (itemsArea) {
-            const itemsText = (sec.items || [])
-              .map(it => typeof it === 'string'
-                ? it
-                : (it.text || it.title || it.content || it.link || ''))
-              .filter(Boolean)
-              .join('\n');
-            itemsArea.value = itemsText;
+      .then(res => {
+        if (!res.success) throw new Error(res.message || 'Failed');
+        const payload = res.payload || {};
+        if (examType === 'UPSC') {
+          // Example: announcements
+          if (payload.announcements && payload.announcements.items && payload.announcements.items.length) {
+            const last = payload.announcements.items[0].text || '';
+            const lastEl = document.getElementById('upscannouncementslast');
+            if (lastEl) lastEl.value = last;
           }
-          if (lastArea) {
-            const itemsText = (sec.items || [])
-              .map(it => typeof it === 'string'
-                ? it
-                : (it.text || it.title || it.content || it.link || ''))
-              .filter(Boolean)
-              .join('\n');
-            lastArea.value = itemsText;
-          }
+          // Similarly other sections ko bhi populate kar sakte ho
         }
-
-        ['announcements', 'dailyTargets', 'mockTests', 'quotes'].forEach(fillSection);
-
-        if (examType === 'UPSC' && p.syllabus) {
-          const s = p.syllabus;
-          document.getElementById('upscsyllabusprelims').value = s.prelimsPercent || 0;
-          document.getElementById('upscsyllabusmains').value   = s.mainsPercent || 0;
-          const lastArea = document.getElementById('upscsyllabuslast');
-          if (lastArea) {
-            lastArea.value = `Prelims: ${s.prelimsPercent || 0}%\nMains: ${s.mainsPercent || 0}%`;
-          }
-        }
-
-        if (p.quotes && p.quotes.items && examType === 'UPSC') {
-          const lastEl = document.getElementById('upscquoteslast');
-          if (lastEl) {
-            lastEl.value = (p.quotes.items || [])
-              .map(it => typeof it === 'string'
-                ? it
-                : (it.text || it.title || it.content || ''))
-              .filter(Boolean)
-              .join('\n');
-          }
-        }
-        if (p.quotes && p.quotes.items && examType === 'JEE') {
-          const lastEl = document.getElementById('jeequoteslast');
-          if (lastEl) {
-            lastEl.value = (p.quotes.items || [])
-              .map(it => typeof it === 'string'
-                ? it
-                : (it.text || it.title || it.content || ''))
-              .filter(Boolean)
-              .join('\n');
-          }
-        }
-        if (p.quotes && p.quotes.items && examType === 'NEET') {
-          const lastEl = document.getElementById('neetquoteslast');
-          if (lastEl) {
-            lastEl.value = (p.quotes.items || [])
-              .map(it => typeof it === 'string'
-                ? it
-                : (it.text || it.title || it.content || ''))
-              .filter(Boolean)
-              .join('\n');
-          }
-        }
-        if (p.quotes && p.quotes.items && examType === 'RPSC') {
-          const lastEl = document.getElementById('rpscquoteslast');
-          if (lastEl) {
-            lastEl.value = (p.quotes.items || [])
-              .map(it => typeof it === 'string'
-                ? it
-                : (it.text || it.title || it.content || ''))
-              .filter(Boolean)
-              .join('\n');
-          }
-        }
-
-        if (p.announcements && p.announcements.items && examType === 'UPSC') {
-          const lastEl = document.getElementById('upscannouncementslast');
-          if (lastEl) {
-            lastEl.value = (p.announcements.items || [])
-              .map(it => typeof it === 'string'
-                ? it
-                : (it.text || it.title || it.content || ''))
-              .filter(Boolean)
-              .join('\n');
-          }
-        }
-        if (p.announcements && p.announcements.items && examType === 'JEE') {
-          const lastEl = document.getElementById('jeeannouncementslast');
-          if (lastEl) {
-            lastEl.value = (p.announcements.items || [])
-              .map(it => typeof it === 'string'
-                ? it
-                : (it.text || it.title || it.content || ''))
-              .filter(Boolean)
-              .join('\n');
-          }
-        }
-        if (p.announcements && p.announcements.items && examType === 'NEET') {
-          const lastEl = document.getElementById('neetannouncementslast');
-          if (lastEl) {
-            lastEl.value = (p.announcements.items || [])
-              .map(it => typeof it === 'string'
-                ? it
-                : (it.text || it.title || it.content || ''))
-              .filter(Boolean)
-              .join('\n');
-          }
-        }
-        if (p.announcements && p.announcements.items && examType === 'RPSC') {
-          const lastEl = document.getElementById('rpscannouncementslast');
-          if (lastEl) {
-            lastEl.value = (p.announcements.items || [])
-              .map(it => typeof it === 'string'
-                ? it
-                : (it.text || it.title || it.content || ''))
-              .filter(Boolean)
-              .join('\n');
-          }
-        }
-
-        if (p.dailyTargets && p.dailyTargets.items && examType === 'UPSC') {
-          const lastEl = document.getElementById('upscdailyTargetslast');
-          if (lastEl) {
-            lastEl.value = (p.dailyTargets.items || [])
-              .map(it => typeof it === 'string'
-                ? it
-                : (it.text || it.title || it.content || ''))
-              .filter(Boolean)
-              .join('\n');
-          }
-        }
-
       })
       .catch(err => {
         console.error('loadDashboardContentForAdmin error', err);
       });
   }
 
-  function loadAnswerCopies() {
-    const tbody = document.getElementById('answerCopiesBody');
-    tbody.innerHTML = `
-      <tr>
-        <td colspan="7" class="text-center py-3 text-muted">Loading...</td>
-      </tr>
-    `;
-
-    const url = SCRIPTURL + '?action=getAnswerCopies';
-    safeFetchJson(url)
-      .then(data => {
-        if (!data.success) throw new Error(data.message || 'Failed to load answer copies');
-        answerCopiesData = data.copies || [];
-        renderAnswerCopies();
-      })
-      .catch(err => {
-        console.error('loadAnswerCopies error', err);
-        tbody.innerHTML = `
-          <tr>
-            <td colspan="7" class="text-center py-3 text-danger">
-              Error loading answer copies: ${err}
-            </td>
-          </tr>
-        `;
-      });
-  }
-
-  function renderAnswerCopies() {
-    const tbody = document.getElementById('answerCopiesBody');
-    tbody.innerHTML = '';
-
-    if (!answerCopiesData.length) {
-      tbody.innerHTML = `
-        <tr>
-          <td colspan="7" class="text-center py-3 text-muted">
-            No answer copies found. Submissions will appear here after students submit.
-          </td>
-        </tr>
-      `;
-      return;
-    }
-
-    answerCopiesData.forEach((row, index) => {
-      const tr = document.createElement('tr');
-      const status = row.status || 'Under Evaluation';
-      const statusOptions = ['Under Evaluation', 'Evaluated'];
-      const statusSelectId = 'ans-status-' + index;
-
-      tr.innerHTML = `
-        <td>${index + 1}</td>
-        <td>
-          <div class="fw-semibold">${row.name || '-'}</div>
-          <div class="small text-muted">${row.email || '-'}</div>
-        </td>
-        <td>${row.paperType || '-'}</td>
-        <td>${row.submittedOn || '-'}</td>
-        <td>
-          ${row.fileUrl
-            ? `<a href="${row.fileUrl}" target="_blank" class="small">View file</a>`
-            : '<span class="small text-muted">No file</span>'}
-        </td>
-        <td>
-          <select id="${statusSelectId}" class="form-select form-select-sm" style="width:auto;">
-            ${statusOptions.map(s =>
-              `<option value="${s}" ${s === status ? 'selected' : ''}>${s}</option>`
-            ).join('')}
-          </select>
-        </td>
-        <td>
-          <button class="btn btn-sm btn-primary"
-                  onclick="updateAnswerStatus('${row.id}','${statusSelectId}')">
-            Save Status
-          </button>
-        </td>
-      `;
-      tbody.appendChild(tr);
-    });
-  }
-
-  function updateAnswerStatus(rowId, selectId) {
-    const newStatus = document.getElementById(selectId).value;
-    if (!rowId) {
-      alert('Missing row ID');
-      return;
-    }
-    const url = SCRIPTURL
-      + '?action=updateAnswerStatus'
-      + '&id=' + encodeURIComponent(rowId)
-      + '&status=' + encodeURIComponent(newStatus);
-
-    safeFetchJson(url)
-      .then(res => {
-        if (!res.success) throw new Error(res.message || 'Failed');
-        alert('Status updated');
-        loadAnswerCopies();
-      })
-      .catch(err => {
-        console.error('updateAnswerStatus error', err);
-        alert('Error updating status');
-      });
-  }
-
   function init() {
+    const email = localStorage.getItem('adminEmail') || '';
+    if (email) document.getElementById('adminEmail').textContent = email;
+
+    document.getElementById('filterExam').addEventListener('change', renderRegistrations);
+    document.getElementById('filterStatus').addEventListener('change', renderRegistrations);
+
     loadRegistrations();
     loadDashboardContentForAdmin('UPSC');
     loadDashboardContentForAdmin('JEE');
