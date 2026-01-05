@@ -15,7 +15,24 @@ body {
   align-items: center;
   justify-content: center;
   padding: 20px;
+  position: relative;
 }
+
+/* TOP CENTER HEADING */
+.top-heading {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 56px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: 700;
+  color: #ffffff;
+  text-shadow: 0 4px 10px rgba(0,0,0,0.4);
+  letter-spacing: 2px;
+}
+.top-heading .gyaan { color: #1e3a8a; }
+.top-heading .setu { color: #dc2626; }
 
 .hero {
   max-width: 1100px;
@@ -23,6 +40,7 @@ body {
   display: flex;
   gap: 40px;
   align-items: stretch;
+  margin-top: 80px; /* upar heading ke liye space */
 }
 
 .hero-left,
@@ -224,15 +242,19 @@ input:focus, select:focus, textarea:focus {
 }
 
 @media (max-width: 768px) {
-  .hero { flex-direction: column; }
+  .hero { flex-direction: column; margin-top: 100px; }
   .card { margin: 0 auto; }
 }
 </style>
 </head>
 <body>
+
+<h1 class="top-heading">
+  <span class="gyaan">Gyaan</span><span class="setu">Setu</span>
+</h1>
+
 <div class="hero">
   <div class="hero-left">
-    <h1><span class="gyaan">Gyaan</span><span class="setu">Setu</span></h1>
     <p class="tagline">Empowering minds, building futures</p>
 
     <h2 style="color:#fff; margin: 20px 0 10px; font-size:20px;">
@@ -247,6 +269,11 @@ input:focus, select:focus, textarea:focus {
       Today’s Motivation
     </h3>
     <p id="dailyQuote" style="color:#e5e7ff; line-height:1.6; font-style:italic;"></p>
+
+    <p style="color:#ffffff; margin-top:20px; font-size:22px; font-weight:700; line-height:1.5;">
+      पढ़ लो चाहे कहीं से,<br>
+      मंज़िल का रास्ता मिलेगा यहीं से।
+    </p>
   </div>
 
   <div class="hero-right">
