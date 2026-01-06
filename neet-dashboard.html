@@ -176,11 +176,26 @@
       font-weight: 600;
       background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
       color: white;
+      text-decoration: none;
+      display: inline-block;
     }
 
     .btn:hover {
       box-shadow: 0 8px 18px rgba(236,72,153,0.35);
       transform: translateY(-1px);
+    }
+
+    /* Telegram style button */
+    .btn-telegram {
+      background: linear-gradient(135deg, #0088cc 0%, #005fa3 100%);
+      padding: 12px 20px;
+      font-size: 15px;
+      text-align: center;
+      width: 100%;
+    }
+
+    .btn-telegram:hover {
+      box-shadow: 0 8px 18px rgba(0,136,204,0.35);
     }
 
     /* Totals cards */
@@ -244,6 +259,76 @@
       background: #fee2e2;
       color: #b91c1c;
       margin-left: 6px;
+    }
+
+    /* Community & Help */
+    .community-help-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 18px;
+    }
+
+    .community-box {
+      background: linear-gradient(135deg, #0088cc 0%, #005fa3 100%);
+      color: white;
+      padding: 22px;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(0,136,204,0.2);
+    }
+
+    .community-box h3 {
+      font-size: 16px;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+
+    .community-box p {
+      font-size: 13px;
+      opacity: 0.9;
+      margin-bottom: 12px;
+      line-height: 1.5;
+    }
+
+    .help-box {
+      background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
+      color: white;
+      padding: 22px;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(236,72,153,0.25);
+    }
+
+    .help-box h3 {
+      font-size: 16px;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+
+    .help-box p {
+      font-size: 13px;
+      opacity: 0.9;
+      margin-bottom: 8px;
+      line-height: 1.5;
+    }
+
+    .help-box .email {
+      font-size: 14px;
+      font-weight: 600;
+      margin-top: 10px;
+      padding: 10px 12px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 8px;
+      word-break: break-all;
+    }
+
+    .help-box .email a {
+      color: white;
+      text-decoration: none;
+    }
+
+    .help-box .email a:hover {
+      text-decoration: underline;
     }
 
     @media (max-width: 640px) {
@@ -426,6 +511,40 @@
       </div>
       <div id="motivationalQuotes">
         <div class="empty-state">Admin will share motivational quotes soon.</div>
+      </div>
+    </section>
+
+    <!-- COMMUNITY & HELP -->
+    <section class="section-card">
+      <div class="section-header">
+        <h2>Community & Help</h2>
+        <span>Discussions · Interaction · Support</span>
+      </div>
+      <div class="community-help-grid">
+        <div class="community-box">
+          <h3>Join for discussions and interaction</h3>
+          <p>
+            NEET aspirants ke liye dedicated group jahan doubts, strategy aur test discussion daily ho sakta hai.
+          </p>
+          <a
+            href="https://t.me/+IjZVPQ9AIu1jMDU9"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn btn-telegram"
+          >
+            Join NEET Telegram Group
+          </a>
+        </div>
+        <div class="help-box">
+          <h3>Contact for queries</h3>
+          <p>
+            Dashboard, content ya kisi bhi feature se related query ke liye email se contact karein.
+          </p>
+          <div class="email">
+            Mail us at
+            <a href="mailto:gyaansetu2026@gmail.com">gyaansetu2026@gmail.com</a>
+          </div>
+        </div>
       </div>
     </section>
   </div>
