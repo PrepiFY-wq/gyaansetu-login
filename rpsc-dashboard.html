@@ -185,11 +185,25 @@
       font-weight: 600;
       background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
       color: white;
+      text-decoration: none;
+      display: inline-block;
     }
 
     .btn:hover {
       box-shadow: 0 8px 18px rgba(59,130,246,0.35);
       transform: translateY(-1px);
+    }
+
+    .btn-telegram {
+      background: linear-gradient(135deg, #0088cc 0%, #005fa3 100%);
+      padding: 14px 24px;
+      font-size: 15px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .btn-telegram:hover {
+      box-shadow: 0 8px 18px rgba(0,136,204,0.35);
     }
 
     /* Totals cards */
@@ -243,6 +257,15 @@
     .list-item {
       font-size: 13px;
       color: #111827;
+      padding: 8px;
+      background: #f9fafb;
+      border-radius: 6px;
+      border-left: 3px solid #3b82f6;
+    }
+
+    .list-item.new {
+      background: #e0edff;
+      font-weight: 600;
     }
 
     .tag {
@@ -250,9 +273,121 @@
       padding: 2px 8px;
       border-radius: 999px;
       font-size: 11px;
-      background: #e0edff;
-      color: #1d4ed8;
+      background: #fca5a5;
+      color: #7f1d1d;
       margin-left: 6px;
+      font-weight: 600;
+    }
+
+    .material-section {
+      margin-bottom: 20px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .material-section:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .material-section h3 {
+      font-size: 15px;
+      color: #4b5563;
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+
+    .btn-folder {
+      display: inline-block;
+      padding: 10px 20px;
+      background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+      color: white;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-folder:hover {
+      box-shadow: 0 8px 18px rgba(59,130,246,0.35);
+      transform: translateY(-1px);
+    }
+
+    /* Community & Help Section */
+    .community-help-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .community-box {
+      background: linear-gradient(135deg, #0088cc 0%, #005fa3 100%);
+      color: white;
+      padding: 25px;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(0,136,204,0.2);
+    }
+
+    .community-box h3 {
+      font-size: 16px;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+
+    .community-box p {
+      font-size: 13px;
+      opacity: 0.9;
+      margin-bottom: 15px;
+      line-height: 1.5;
+    }
+
+    .community-box .btn-telegram {
+      margin-top: 10px;
+    }
+
+    .help-box {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: white;
+      padding: 25px;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(16,185,129,0.2);
+    }
+
+    .help-box h3 {
+      font-size: 16px;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+
+    .help-box p {
+      font-size: 13px;
+      opacity: 0.9;
+      margin-bottom: 8px;
+      line-height: 1.5;
+    }
+
+    .help-box .email {
+      font-size: 14px;
+      font-weight: 600;
+      margin-top: 10px;
+      padding: 12px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 8px;
+      word-break: break-all;
+    }
+
+    .help-box .email a {
+      color: white;
+      text-decoration: none;
+    }
+
+    .help-box .email a:hover {
+      text-decoration: underline;
     }
 
     @media (max-width: 640px) {
@@ -265,6 +400,14 @@
       .container {
         padding: 0 14px;
       }
+      .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+      .community-help-grid {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 
@@ -273,12 +416,22 @@
 
     // RPSC folder links (Drive – account B)
     const RPSC_FOLDER_LINKS = {
-      mockTests: 'https://drive.google.com/drive/folders/11X-00tsQAVPbfLkYB2E00idYPRE85dyq',
-      pyqPapers: 'https://drive.google.com/drive/folders/1DXZRKwh0cbAt5qq4hCX-pp7YCWBw3InN',
-      books:     'https://drive.google.com/drive/folders/1WIyjXfe5_FFH6a-4B4ttaVuiR5I2V2vN',
-      charts:    'https://drive.google.com/drive/folders/1LJHQrMVnKIINewJC-EK2rPWDgFiQzkwQ',
-      notesPdfs: 'https://drive.google.com/drive/folders/1tw30jBEB9vKKoRrITrNfXa_kzj-wIdyk'
+      testSeries:  'https://drive.google.com/drive/folders/11X-00tsQAVPbfLkYB2E00idYPRE85dyq?usp=sharing',
+      pyqPapers:   'https://drive.google.com/drive/folders/1DXZRKwh0cbAt5qq4hCX-pp7YCWBw3InN?usp=sharing',
+      books:       'https://drive.google.com/drive/folders/1WIyjXfe5_FFH6a-4B4ttaVuiR5I2V2vN?usp=sharing',
+      chartsMaps:  'https://drive.google.com/drive/folders/1LJHQrMVnKIINewJC-EK2rPWDgFiQzkwQ?usp=sharing',
+      notesPdfs:   'https://drive.google.com/drive/folders/1tw30jBEB9vKKoRrITrNfXa_kzj-wIdyk?usp=sharing',
+      otherState:  'https://drive.google.com/drive/folders/1OcmyTEx74vik5fNQJqGgEIm_ClRZB3QD?usp=sharing'
     };
+
+    // RPSC-focused quotes
+    const rpscQuotes = [
+      'Aaj likhi gayi har answer practice, kal Mains copy par clarity banegi.',
+      'Classroom me khade hone ka sapna, aaj ke disciplined self-study se poora hoga.',
+      'Rajasthan GK ka ek-ek page aapko interview panel ke sawalon se bachata hai.',
+      'Jo candidate roj thoda likhta hai, wahi paper me pura likh paata hai.',
+      'Ek extra mock test aaj, merit list me ek extra step upar kal.'
+    ];
 
     // Access guard: only logged-in RPSC users
     (function guardAccess() {
@@ -289,6 +442,246 @@
         window.location.href = 'index.html';
       }
     })();
+
+    function loadDailyQuote() {
+      const todayKey = new Date().toISOString().slice(0, 10);
+      const stored = localStorage.getItem('rpscQuote');
+      let quote;
+
+      if (stored) {
+        try {
+          const parsed = JSON.parse(stored);
+          if (parsed.date === todayKey) {
+            quote = parsed.text;
+          }
+        } catch (e) {}
+      }
+
+      if (!quote) {
+        quote = rpscQuotes[Math.floor(Math.random() * rpscQuotes.length)];
+        localStorage.setItem('rpscQuote', JSON.stringify({ date: todayKey, text: quote }));
+      }
+
+      document.getElementById('dailyQuote').textContent = quote;
+    }
+
+    // Countdown (placeholder fixed values – aage jaake dynamic date se nikal sakte ho)
+    function updateCountdown() {
+      document.getElementById('daysRas').textContent = 168;
+      document.getElementById('daysG1').textContent = 148;
+      document.getElementById('daysG2').textContent = 190;
+    }
+
+    function logout() {
+      if (confirm('Logout from GyaanSetu?')) {
+        localStorage.removeItem('userId');
+        localStorage.removeItem('name');
+        localStorage.removeItem('exam');
+        window.location.href = 'index.html';
+      }
+    }
+
+    // STUDY PROGRESS
+    function updateProgress(e) {
+      e.preventDefault();
+
+      const userId = localStorage.getItem('userId');
+      const exam = localStorage.getItem('exam');
+
+      if (!userId || !exam) {
+        alert('Session expired. Please login again.');
+        window.location.href = 'index.html';
+        return;
+      }
+
+      const hours = parseFloat(document.getElementById('studyHours').value) || 0;
+      const topics = parseInt(document.getElementById('topicsCovered').value || '0', 10);
+      const mocks = parseInt(document.getElementById('mockTests').value || '0', 10);
+
+      const url = `${SCRIPT_URL}?action=logStudy`
+        + `&userId=${encodeURIComponent(userId)}`
+        + `&exam=${encodeURIComponent(exam)}`
+        + `&hours=${encodeURIComponent(hours)}`
+        + `&topics=${encodeURIComponent(topics)}`
+        + `&mocks=${encodeURIComponent(mocks)}`;
+
+      fetch(url)
+        .then(r => r.json())
+        .then(data => {
+          if (!data.success) {
+            throw new Error(data.message || 'Failed to save study log');
+          }
+          const totalsUrl = `${SCRIPT_URL}?action=getStudyTotals`
+            + `&userId=${encodeURIComponent(userId)}`
+            + `&exam=${encodeURIComponent(exam)}`;
+          return fetch(totalsUrl).then(r => r.json());
+        })
+        .then(totals => {
+          if (totals && totals.success) {
+            document.getElementById('totalHours').textContent = totals.totalHours || 0;
+            document.getElementById('totalTopics').textContent = totals.totalTopics || 0;
+            document.getElementById('totalTests').textContent = totals.totalMocks || 0;
+          }
+          alert('Progress updated successfully!');
+          document.getElementById('progressForm').reset();
+        })
+        .catch(err => {
+          console.error('Update progress error:', err);
+          alert('Error updating progress. Please try again.');
+        });
+    }
+
+    function loadTotals() {
+      const userId = localStorage.getItem('userId');
+      const exam = localStorage.getItem('exam');
+      if (!userId || !exam) return;
+
+      const totalsUrl = `${SCRIPT_URL}?action=getStudyTotals`
+        + `&userId=${encodeURIComponent(userId)}`
+        + `&exam=${encodeURIComponent(exam)}`;
+
+      fetch(totalsUrl)
+        .then(r => r.json())
+        .then(totals => {
+          if (totals && totals.success) {
+            document.getElementById('totalHours').textContent = totals.totalHours || 0;
+            document.getElementById('totalTopics').textContent = totals.totalTopics || 0;
+            document.getElementById('totalTests').textContent = totals.totalMocks || 0;
+          }
+        })
+        .catch(err => console.error('Load totals error:', err));
+    }
+
+    // Announcements
+    function renderAnnouncements(items) {
+      const container = document.getElementById('announcements');
+      container.innerHTML = '';
+      if (!items || !items.length) {
+        container.innerHTML = '<div class="empty-state">No announcements yet. Admin will update here.</div>';
+        return;
+      }
+
+      const list = document.createElement('div');
+      list.className = 'list';
+      items.forEach((it, index) => {
+        const row = document.createElement('div');
+        row.className = 'list-item';
+        if (index === 0) {
+          row.classList.add('new');
+        }
+        row.textContent = typeof it === 'string' ? it : (it.text || it.title || '');
+        if (index === 0) {
+          const tag = document.createElement('span');
+          tag.className = 'tag';
+          tag.textContent = 'NEW';
+          row.appendChild(tag);
+        }
+        list.appendChild(row);
+      });
+      container.appendChild(list);
+    }
+
+    // Folder View button renderer
+    function renderFolderButton(containerId, folderUrl, emptyMessage) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = '';
+      if (!folderUrl) {
+        container.innerHTML = `<div class="empty-state">${emptyMessage || 'No data yet.'}</div>`;
+        return;
+      }
+      const btn = document.createElement('button');
+      btn.className = 'btn-folder';
+      btn.textContent = 'View Folder';
+      btn.onclick = () => window.open(folderUrl, '_blank');
+      container.appendChild(btn);
+    }
+
+    // Motivational quotes from backend
+    function renderQuotesList(containerId, items) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = '';
+      if (!items || !items.length) {
+        container.innerHTML = '<div class="empty-state">Admin will share motivational quotes soon.</div>';
+        return;
+      }
+      const list = document.createElement('div');
+      list.className = 'list';
+      items.forEach(q => {
+        const row = document.createElement('div');
+        row.className = 'list-item';
+        row.textContent = typeof q === 'string' ? q : (q.text || q.title || '');
+        list.appendChild(row);
+      });
+      container.appendChild(list);
+    }
+
+    // Dashboard content (only announcements + quotes from backend)
+    function loadRpscDashboardContent() {
+      const url = `${SCRIPT_URL}?action=getDashboardContent&examType=RPSC`;
+
+      fetch(url)
+        .then(r => r.json())
+        .then(data => {
+          if (!data || !data.success || !data.payload) return;
+          const p = data.payload;
+
+          if (p.announcements && Array.isArray(p.announcements.items)) {
+            renderAnnouncements(p.announcements.items);
+          }
+
+          if (p.quotes && Array.isArray(p.quotes.items) && p.quotes.items.length) {
+            renderQuotesList('motivationalQuotes', p.quotes.items);
+          }
+        })
+        .catch(err => console.error('loadRpscDashboardContent error:', err));
+
+      // Static folder buttons – always visible
+      renderFolderButton(
+        'testSeriesList',
+        RPSC_FOLDER_LINKS.testSeries,
+        'Admin will upload mock tests soon.'
+      );
+
+      renderFolderButton(
+        'pypList',
+        RPSC_FOLDER_LINKS.pyqPapers,
+        'Admin will upload PYQ PDFs soon.'
+      );
+
+      renderFolderButton(
+        'booksList',
+        RPSC_FOLDER_LINKS.books,
+        'Admin will upload books list soon.'
+      );
+
+      renderFolderButton(
+        'formulaList',
+        RPSC_FOLDER_LINKS.chartsMaps,
+        'Admin will upload charts & maps soon.'
+      );
+
+      renderFolderButton(
+        'notesList',
+        RPSC_FOLDER_LINKS.notesPdfs,
+        'Admin will upload notes & PDFs soon.'
+      );
+
+      renderFolderButton(
+        'otherStateList',
+        RPSC_FOLDER_LINKS.otherState,
+        'Admin will upload other state exams material soon.'
+      );
+    }
+
+    window.onload = function() {
+      document.getElementById('userName').textContent =
+        localStorage.getItem('name') || 'Candidate';
+
+      updateCountdown();
+      loadDailyQuote();
+      loadTotals();
+      loadRpscDashboardContent();
+    };
   </script>
 </head>
 <body>
@@ -400,14 +793,18 @@
         <span>Mock Tests · Previous Year Questions</span>
       </div>
 
-      <h3 style="font-size: 15px; color:#4b5563; margin-bottom:8px;">Mock Tests</h3>
-      <div id="testSeriesList">
-        <div class="empty-state">Admin will upload mock tests soon.</div>
+      <div class="material-section">
+        <h3>Mock Tests (RPSC Focused)</h3>
+        <div id="testSeriesList">
+          <div class="empty-state">Admin will upload mock tests soon.</div>
+        </div>
       </div>
 
-      <h3 style="font-size: 15px; color:#4b5563; margin:20px 0 8px;">Previous Year Questions (PYQs)</h3>
-      <div id="pypList">
-        <div class="empty-state">Admin will upload PYQ PDFs soon.</div>
+      <div class="material-section">
+        <h3>Previous Year Questions (PYQs)</h3>
+        <div id="pypList">
+          <div class="empty-state">Admin will upload PYQ PDFs soon.</div>
+        </div>
       </div>
     </section>
 
@@ -418,19 +815,32 @@
         <span>Standard books · Rajasthan specific notes</span>
       </div>
 
-      <h3 style="font-size: 15px; color:#4b5563; margin-bottom:8px;">Books</h3>
-      <div id="booksList">
-        <div class="empty-state">Admin will upload books list soon.</div>
+      <div class="material-section">
+        <h3>Books</h3>
+        <div id="booksList">
+          <div class="empty-state">Admin will upload books list soon.</div>
+        </div>
       </div>
 
-      <h3 style="font-size: 15px; color:#4b5563; margin:20px 0 8px;">Important Charts / Maps</h3>
-      <div id="formulaList">
-        <div class="empty-state">Admin will upload charts & maps soon.</div>
+      <div class="material-section">
+        <h3>Important Charts / Maps</h3>
+        <div id="formulaList">
+          <div class="empty-state">Admin will upload charts & maps soon.</div>
+        </div>
       </div>
 
-      <h3 style="font-size: 15px; color:#4b5563; margin:20px 0 8px;">Notes & PDFs</h3>
-      <div id="notesList">
-        <div class="empty-state">Admin will upload notes & PDFs soon.</div>
+      <div class="material-section">
+        <h3>Notes & PDFs</h3>
+        <div id="notesList">
+          <div class="empty-state">Admin will upload notes & PDFs soon.</div>
+        </div>
+      </div>
+
+      <div class="material-section">
+        <h3>Other State Exams (For Practice)</h3>
+        <div id="otherStateList">
+          <div class="empty-state">Admin will upload other state exams material soon.</div>
+        </div>
       </div>
     </section>
 
@@ -444,252 +854,39 @@
         <div class="empty-state">Admin will share motivational quotes soon.</div>
       </div>
     </section>
+
+    <!-- COMMUNITY & HELP -->
+    <section class="section-card">
+      <div class="section-header">
+        <h2>Community & Help</h2>
+        <span>Telegram group · Support</span>
+      </div>
+      <div class="community-help-grid">
+        <div class="community-box">
+          <h3>Join GyaanSetu RPSC Community</h3>
+          <p>
+            Doubt poochne, answer writing review, aur daily motivation ke liye
+            official Telegram group join karein.
+          </p>
+          <a
+            href="https://t.me/your_rpsc_group_link"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn btn-telegram"
+          >
+            Join Telegram Group
+          </a>
+        </div>
+        <div class="help-box">
+          <h3>Need Help?</h3>
+          <p>Login, dashboard ya content se related koi bhi issue ho to mail karein.</p>
+          <p>Response time usually 24 hours ke andar.</p>
+          <div class="email">
+            <a href="mailto:support@gyaansetu.in">support@gyaansetu.in</a>
+          </div>
+        </div>
+      </div>
+    </section>
   </div>
-
-  <script>
-    // RPSC-focused quotes
-    const rpscQuotes = [
-      'Aaj likhi gayi har answer practice, kal Mains copy par clarity banegi.',
-      'Classroom me khade hone ka sapna, aaj ke disciplined self-study se poora hoga.',
-      'Rajasthan GK ka ek-ek page aapko interview panel ke sawalon se bachata hai.',
-      'Jo candidate roj thoda likhta hai, wahi paper me pura likh paata hai.',
-      'Ek extra mock test aaj, merit list me ek extra step upar kal.'
-    ];
-
-    function loadDailyQuote() {
-      const todayKey = new Date().toISOString().slice(0, 10);
-      const stored = localStorage.getItem('rpscQuote');
-      let quote;
-
-      if (stored) {
-        try {
-          const parsed = JSON.parse(stored);
-          if (parsed.date === todayKey) {
-            quote = parsed.text;
-          }
-        } catch (e) {}
-      }
-
-      if (!quote) {
-        quote = rpscQuotes[Math.floor(Math.random() * rpscQuotes.length)];
-        localStorage.setItem('rpscQuote', JSON.stringify({ date: todayKey, text: quote }));
-      }
-
-      document.getElementById('dailyQuote').textContent = quote;
-    }
-
-    // Fixed countdown numbers (example)
-    function updateCountdown() {
-      document.getElementById('daysRas').textContent = 168;
-      document.getElementById('daysG1').textContent  = 148;
-      document.getElementById('daysG2').textContent  = 190;
-    }
-
-    function logout() {
-      if (confirm('Logout from GyaanSetu?')) {
-        localStorage.removeItem('userId');
-        localStorage.removeItem('name');
-        localStorage.removeItem('exam');
-        window.location.href = 'index.html';
-      }
-    }
-
-    // STUDY PROGRESS
-    function updateProgress(e) {
-      e.preventDefault();
-
-      const userId = localStorage.getItem('userId');
-      const exam   = localStorage.getItem('exam');
-
-      if (!userId || !exam) {
-        alert('Session expired. Please login again.');
-        window.location.href = 'index.html';
-        return;
-      }
-
-      const hours  = parseFloat(document.getElementById('studyHours').value) || 0;
-      const topics = parseInt(document.getElementById('topicsCovered').value || '0', 10);
-      const mocks  = parseInt(document.getElementById('mockTests').value || '0', 10);
-
-      const url = `${SCRIPT_URL}?action=logStudy`
-                + `&userId=${encodeURIComponent(userId)}`
-                + `&exam=${encodeURIComponent(exam)}`
-                + `&hours=${encodeURIComponent(hours)}`
-                + `&topics=${encodeURIComponent(topics)}`
-                + `&mocks=${encodeURIComponent(mocks)}`;
-
-      fetch(url)
-        .then(r => r.json())
-        .then(data => {
-          if (!data.success) {
-            throw new Error(data.message || 'Failed to save study log');
-          }
-          const totalsUrl = `${SCRIPT_URL}?action=getStudyTotals`
-                          + `&userId=${encodeURIComponent(userId)}`
-                          + `&exam=${encodeURIComponent(exam)}`;
-          return fetch(totalsUrl).then(r => r.json());
-        })
-        .then(totals => {
-          if (totals && totals.success) {
-            document.getElementById('totalHours').textContent  = totals.totalHours || 0;
-            document.getElementById('totalTopics').textContent = totals.totalTopics || 0;
-            document.getElementById('totalTests').textContent  = totals.totalMocks || 0;
-          }
-          alert('Progress updated successfully!');
-          document.getElementById('progressForm').reset();
-        })
-        .catch(err => {
-          console.error('Update progress error:', err);
-          alert('Error updating progress. Please try again.');
-        });
-    }
-
-    function loadTotals() {
-      const userId = localStorage.getItem('userId');
-      const exam   = localStorage.getItem('exam');
-      if (!userId || !exam) return;
-
-      const totalsUrl = `${SCRIPT_URL}?action=getStudyTotals`
-                      + `&userId=${encodeURIComponent(userId)}`
-                      + `&exam=${encodeURIComponent(exam)}`;
-
-      fetch(totalsUrl)
-        .then(r => r.json())
-        .then(totals => {
-          if (totals && totals.success) {
-            document.getElementById('totalHours').textContent  = totals.totalHours || 0;
-            document.getElementById('totalTopics').textContent = totals.totalTopics || 0;
-            document.getElementById('totalTests').textContent  = totals.totalMocks || 0;
-          }
-        })
-        .catch(err => console.error('Load totals error:', err));
-    }
-
-    // Announcements
-    function renderAnnouncements(items) {
-      const container = document.getElementById('announcements');
-      container.innerHTML = '';
-      if (!items || !items.length) {
-        container.innerHTML = '<div class="empty-state">No announcements yet. Admin will update here.</div>';
-        return;
-      }
-
-      const list = document.createElement('div');
-      list.className = 'list';
-      items.forEach((it, index) => {
-        const row = document.createElement('div');
-        row.className = 'list-item';
-        row.textContent = typeof it === 'string' ? it : (it.text || it.title || '');
-        if (index === 0) {
-          row.style.fontWeight = '600';
-          row.style.background = '#e0edff';
-          row.style.borderRadius = '6px';
-          row.style.padding = '6px 8px';
-          const tag = document.createElement('span');
-          tag.className = 'tag';
-          tag.textContent = 'NEW';
-          row.appendChild(tag);
-        }
-        list.appendChild(row);
-      });
-      container.appendChild(list);
-    }
-
-    // Folder View button renderer
-    function renderFolderButton(containerId, folderUrl, emptyMessage) {
-      const container = document.getElementById(containerId);
-      container.innerHTML = '';
-      if (!folderUrl) {
-        container.innerHTML = `<div class="empty-state">${emptyMessage || 'No data yet.'}</div>`;
-        return;
-      }
-      const btn = document.createElement('button');
-      btn.className = 'btn';
-      btn.textContent = 'View';
-      btn.onclick = () => window.open(folderUrl, '_blank');
-      container.appendChild(btn);
-    }
-
-    // Motivational quotes from backend
-    function renderQuotesList(containerId, items) {
-      const container = document.getElementById(containerId);
-      container.innerHTML = '';
-      if (!items || !items.length) {
-        container.innerHTML = '<div class="empty-state">Admin will share motivational quotes soon.</div>';
-        return;
-      }
-      const list = document.createElement('div');
-      list.className = 'list';
-      items.forEach(q => {
-        const row = document.createElement('div');
-        row.className = 'list-item';
-        row.textContent = typeof q === 'string' ? q : (q.text || q.title || '');
-        list.appendChild(row);
-      });
-      container.appendChild(list);
-    }
-
-    // Dashboard content (only announcements + quotes from backend)
-    function loadRpscDashboardContent() {
-      const url = `${SCRIPT_URL}?action=getDashboardContent&examType=RPSC`;
-
-      fetch(url)
-        .then(r => r.json())
-        .then(data => {
-          if (!data || !data.success || !data.payload) return;
-          const p = data.payload;
-
-          if (p.announcements && Array.isArray(p.announcements.items)) {
-            renderAnnouncements(p.announcements.items);
-          }
-
-          if (p.quotes && Array.isArray(p.quotes.items) && p.quotes.items.length) {
-            renderQuotesList('motivationalQuotes', p.quotes.items);
-          }
-        })
-        .catch(err => console.error('loadRpscDashboardContent error:', err));
-
-      // Static folder buttons – always visible
-      renderFolderButton(
-        'testSeriesList',
-        RPSC_FOLDER_LINKS.mockTests,
-        'Admin will upload mock tests soon.'
-      );
-
-      renderFolderButton(
-        'pypList',
-        RPSC_FOLDER_LINKS.pyqPapers,
-        'Admin will upload PYQ PDFs soon.'
-      );
-
-      renderFolderButton(
-        'booksList',
-        RPSC_FOLDER_LINKS.books,
-        'Admin will upload books list soon.'
-      );
-
-      renderFolderButton(
-        'formulaList',
-        RPSC_FOLDER_LINKS.charts,
-        'Admin will upload charts & maps soon.'
-      );
-
-      renderFolderButton(
-        'notesList',
-        RPSC_FOLDER_LINKS.notesPdfs,
-        'Admin will upload notes & PDFs soon.'
-      );
-    }
-
-    window.onload = function() {
-      document.getElementById('userName').textContent =
-        localStorage.getItem('name') || 'Candidate';
-
-      updateCountdown();
-      loadDailyQuote();
-      loadTotals();
-      loadRpscDashboardContent();
-    };
-  </script>
 </body>
 </html>
