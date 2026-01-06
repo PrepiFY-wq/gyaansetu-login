@@ -1345,41 +1345,47 @@
       });
   }
 
-  function openFolder(examType, sectionKey) {
-    alert('Folder opening is handled by Drive links stored separately (update in UI as needed).');
+  function openFolder(examType, folderKey) {
+    const map = {
+      // ================= UPSC =================
+      'UPSC_testSeries':     'https://drive.google.com/drive/folders/1bc2B2m6PzdUjbsJlZiRgq1gifccooCsx?usp=sharing',
+      'UPSC_pyqPapers':      'https://drive.google.com/drive/folders/1ZZtz226dMcQyT2cSa7x5K37NbVVeGHud?usp=sharing',
+      'UPSC_books':          'https://drive.google.com/drive/folders/1ieWI_ejkVy8RdkKSVgP6svARf9NUJW5W?usp=sharing',
+      'UPSC_currentAffairs': 'https://drive.google.com/drive/folders/1rLH3T-CU4fkI5FxAHACcXjjA6nPLY1hW?usp=sharing',
+      'UPSC_notesPdfs':      'https://drive.google.com/drive/folders/1Jy8L1JIX0c0Svda5BEoY01R1TBSn7cu_?usp=sharing',
+
+      // ================= JEE =================
+      'JEE_testSeries':      'https://drive.google.com/drive/folders/1fw6BM2ifKcKgOw8P5TWXXJNfJtyk0GJJ?usp=sharing',
+      'JEE_pyqPapers':       'https://drive.google.com/drive/folders/13jg9aq--pR3RPzQubQ6wMxRm2zW36tyf?usp=sharing',
+      'JEE_books':           'https://drive.google.com/drive/folders/12A_AVi4cGD-Krhd2apVaz_vcIAf8pq8H?usp=sharing',
+      'JEE_formulaSheets':   'https://drive.google.com/drive/folders/1N628KWuxCVPs9kObJUIj1-pspa4oYFw-?usp=sharing',
+      'JEE_notesPdfs':       'https://drive.google.com/drive/folders/1qh-fs2WBsI9PJclST0D7xM2RIgfWOlst?usp=sharing',
+
+      // ================= NEET =================
+      'NEET_testSeries':     'https://drive.google.com/drive/folders/1S6jXk2DjkQrz18DkzLe7mE96LTgfJF82?usp=sharing',
+      'NEET_pyqPapers':      'https://drive.google.com/drive/folders/1_gmpV6arJev-2f3GqNruW9GlLTifb0Pz?usp=sharing',
+      'NEET_books':          'https://drive.google.com/drive/folders/1escuk7ilmtykvUnYeK0tYS-33yLY7N_M?usp=sharing',
+      'NEET_notesPdfs':      'https://drive.google.com/drive/folders/1Pddoss5g262eD8k7ECP_PJ6uBtJYcY-W?usp=sharing',
+      'NEET_diagramsCharts': 'https://drive.google.com/drive/folders/156IrNxBiQkVSGbmXM_WZYCuohiwJr2F2?usp=sharing',
+
+      // ================= RPSC =================
+      'RPSC_testSeries':     'https://drive.google.com/drive/folders/11X-00tsQAVPbfLkYB2E00idYPRE85dyq?usp=sharing',
+      'RPSC_pyqPapers':      'https://drive.google.com/drive/folders/1DXZRKwh0cbAt5qq4hCX-pp7YCWBw3InN?usp=sharing',
+      'RPSC_notesPdfs':      'https://drive.google.com/drive/folders/1tw30jBEB9vKKoRrITrNfXa_kzj-wIdyk?usp=sharing',
+      'RPSC_chartsMaps':     'https://drive.google.com/drive/folders/1LJHQrMVnKIINewJC-EK2rPWDgFiQzkwQ?usp=sharing',
+      'RPSC_books':          'https://drive.google.com/drive/folders/1WIyjXfe5_FFH6a-4B4ttaVuiR5I2V2vN?usp=sharing',
+      'RPSC_otherState':     'https://drive.google.com/drive/folders/1OcmyTEx74vik5fNQJqGgEIm_ClRZB3QD?usp=sharing'
+    };
+
+    const key = examType + '_' + folderKey;
+    const url = map[key];
+
+    if (url) {
+      window.open(url, '_blank');
+    } else {
+      alert('Folder link not configured for: ' + key);
+    }
   }
-
-function loadDashboardContentForAdmin(examType) {
-  const url = SCRIPTURL + '?action=getDashboardContent&examType=' + encodeURIComponent(examType);
-  safeFetchJson(url)
-    .then(res => {
-      if (!res.success) throw new Error(res.message || 'Failed');
-      const payload = res.payload || {};
-
-      // helper: examPrefix = 'upsc' / 'jee' / 'neet' / 'rpsc'
-      function fillLast(examPrefix, sectionKey) {
-        const sec = payload[sectionKey];
-        if (sec && sec.items && sec.items.length) {
-          const lastText = sec.items[0].text || '';
-          const lastEl = document.getElementById(
-            examPrefix + sectionKey + 'last'
-          );
-          if (lastEl) lastEl.value = lastText;
-        }
-      }
-
-      const prefix = examType.toLowerCase(); // upsc, jee, neet, rpsc
-
-      fillLast(prefix, 'announcements');
-      fillLast(prefix, 'dailyTargets');
-      fillLast(prefix, 'mockTests');
-      fillLast(prefix, 'quotes');
-    })
-    .catch(err => {
-      console.error('loadDashboardContentForAdmin error', err);
-    });
-}
-
 
   function init() {
     const email = localStorage.getItem('adminEmail') || '';
