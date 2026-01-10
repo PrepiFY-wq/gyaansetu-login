@@ -1112,63 +1112,115 @@
   /* ========== REGISTRATIONS ========== */
 
   function loadRegistrations() {
-    const url = SCRIPTURL + '?action=getUsers';
-    safeFetchJson(url)
-      .then(res => {
-        if (!res.success) throw new Error(res.message || 'Failed to load');
-        registrationsData = res.users || [];
-        renderRegistrations();
-        updateStats();
-      })
-      .catch(err => {
-        console.error('loadRegistrations error', err);
-        alert('Error loading registrations');
-      });
-  }
+  const url = SCRIPTURL + '?action=getUsers';
+  safeFetchJson(url)
+    .then(res => {
+      if (!res.success) throw new Error(res.message || 'Failed to load');
+      registrationsData = res.users || [];
+      renderRegistrations();
+      updateStats();
+    })
+    .catch(err => {
+      console.error('loadRegistrations error', err);
+      // yahan alert hata do, taaki har refresh pe error popup na aaye
+      // alert('Error loading registrations');
+    });
+}
 
   function renderRegistrations() {
-    const tbody = document.getElementById('registrationsBody');
-    tbody.innerHTML = '';
+  const tbody = document.getElementById('registrationsBody');
+  tbody.innerHTML = '';
 
-    const examFilter = document.getElementById('filterExam').value;
-    const statusFilter = document.getElementById('filterStatus').value;
+  // agar data hi nahi hai
+  if (!registrationsData || !registrationsData.length) {
+    const tr = document.createElement('tr');
+    tr.innerHTML = '<td colspan="6" class="text-center text-muted">No registrations</td>';
+    tbody.appendChild(tr);
+    return;
+  }
 
-    const filtered = registrationsData.filter(row => {
-      const exam = row.exam || '';
-      const ps = (row.paymentStatus || '').toLowerCase();
-      const vs = (row.verificationStatus || '').toLowerCase();
+  const examFilter = document.getElementById('filterExam').value;
+  const statusFilter = document.getElementById('filterStatus').value;
 
-      if (examFilter && exam !== examFilter) return false;
+  const filtered = registrationsData.filter(row => {
+    const exam = row.exam || '';
+    const ps = (row.paymentStatus || '').toLowerCase();
+    const vs = (row.verificationStatus || '').toLowerCase();
 
-      if (statusFilter === 'pending') {
-        const isPending = (ps !== 'verified' || vs !== 'verified') &&
-          (ps !== 'rejected' && vs !== 'rejected');
-        return isPending;
-      }
-      if (statusFilter === 'approved') {
-        return ps === 'verified' && vs === 'verified';
-      }
-      if (statusFilter === 'rejected') {
-        return ps === 'rejected' && vs === 'rejected';
-      }
-      return true;
-    });
+    if (examFilter && exam !== examFilter) return false;
 
-    filtered.forEach((row, index) => {
-      const tr = document.createElement('tr');
-      const statusPay = (row.paymentStatus || '').toLowerCase();
-      const statusVer = (row.verificationStatus || '').toLowerCase();
+    if (statusFilter === 'pending') {
+      const isPending =
+        (ps !== 'verified' || vs !== 'verified') &&
+        (ps !== 'rejected' && vs !== 'rejected');
+      return isPending;
+    }
 
-      let statusClass = 'status-pending';
-      let statusLabel = 'Pending';
+    if (statusFilter === 'approved') {
+      return ps === 'verified' && vs === 'verified';
+    }
 
-      if (statusPay === 'verified' && statusVer === 'verified') {
-        statusClass = 'status-verified';
-        statusLabel = 'Approved';
-      } else if (statusPay === 'rejected' && statusVer === 'rejected') {
-        statusClass = 'status-rejected';
-        statusLabel = 'Rejected';
-      }
+    if (statusFilter === 'rejected') {
+      return ps === 'rejected' || vs === 'rejected';
+    }
+
+    return true;
+  });
+
+  filtered.forEach((row, index) => {
+    const tr = document.createElement('tr');
+    const statusPay = (row.paymentStatus || '').toLowerCase();
+    const statusVer = (row.verificationStatus || '').toLowerCase();
+
+    let statusClass = 'status-pending';
+    let statusLabel = 'Pending';
+
+    if (statusPay === 'verified' && statusVer === 'verified') {
+      statusClass = 'status-verified';
+      statusLabel = 'Approved';
+    } else if (statusPay === 'rejected' || statusVer === 'rejected') {
+      statusClass = 'status-rejected';
+      statusLabel = 'Rejected';
+    }
+
+    const bothVerified = statusPay === 'verified' && statusVer === 'verified';
+
+    tr.innerHTML = `
+      <td>${index + 1}</td>
+      <td>
+        <div class="fw-semibold">${row.name}</div>
+        <div class="small text-muted">${row.email}</div>
+        <div class="small text-muted">${row.contact}</div>
+      </td>
+      <td>
+        <div class="small">Exam: <span class="fw-semibold">${row.exam}</span></div>
+        <div class="small text-muted">User ID: ${row.userId}</div>
+      </td>
+      <td>
+        <div class="small">Payment: <span class="fw-semibold">${row.paymentStatus}</span></div>
+        <div class="small text-muted">Verification: ${row.verificationStatus}</div>
+      </td>
+      <td>
+        <span class="status-pill ${statusClass}">${statusLabel}</span>
+      </td>
+      <td>
+        <div class="d-flex flex-column gap-1">
+          <button class="btn btn-success btn-sm action-btn-sm"
+                  onclick="markPaymentVerified(${row.row})">Payment</button>
+          <button class="btn btn-primary btn-sm action-btn-sm"
+                  onclick="markRegistrationVerified('${row.contact}')">Registration</button>
+          <button class="btn btn-outline-secondary btn-sm action-btn-sm"
+                  onclick="sendLoginMail('${row.email}')"
+                  ${bothVerified ? '' : 'disabled'}>Send Login Mail</button>
+          <button class="btn btn-outline-danger btn-sm action-btn-sm"
+                  onclick="markRejected('${row.contact}')">Reject</button>
+        </div>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
 
       const bothVerified = statusPay === 'verified' && statusVer === 'verified';
 
@@ -1298,45 +1350,53 @@
   /* ========== DASHBOARD CONTENT HELPERS (same structure as backend saveDashboardSection_ / getDashboardContent_) ========== */
 
   function saveSection(examType, sectionKey) {
-    const msgId = examType.toLowerCase() + sectionKey + 'msg';
-    const msgEl = document.getElementById(msgId);
-    if (msgEl) msgEl.textContent = 'Saving...';
+  const msgId = examType.toLowerCase() + sectionKey + 'msg';
+  const msgEl = document.getElementById(msgId);
+  if (msgEl) msgEl.textContent = 'Saving...';
 
-    const titleId = examType.toLowerCase() + sectionKey + 'title';
-    const itemsId = examType.toLowerCase() + sectionKey + 'items';
-    const lastId  = examType.toLowerCase() + sectionKey + 'last';
+  const titleId = examType.toLowerCase() + sectionKey + 'title';
+  const itemsId = examType.toLowerCase() + sectionKey + 'items';
+  const lastId  = examType.toLowerCase() + sectionKey + 'last';
 
-    const titleEl = document.getElementById(titleId);
-    const itemsEl = document.getElementById(itemsId);
-    const lastEl  = document.getElementById(lastId);
+  const titleEl = document.getElementById(titleId);
+  const itemsEl = document.getElementById(itemsId);
+  const lastEl  = document.getElementById(lastId);
 
-    const payload = {
-      examType: examType,
-      sectionKey: sectionKey,
-      title: titleEl ? titleEl.value : '',
-      items: itemsEl ? itemsEl.value.split('\n').filter(x => x.trim()) : []
-    };
-
-    fetch(SCRIPTURL + '?action=saveDashboardSection', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'saveDashboardSection', payload: payload })
-    })
-      .then(r => r.json())
-      .then(res => {
-        if (!res.success) throw new Error(res.message || 'Failed');
-        if (lastEl && itemsEl) {
-          lastEl.value = itemsEl.value;
-        }
-        if (msgEl) msgEl.textContent = 'Saved';
-        setTimeout(() => { if (msgEl) msgEl.textContent = ''; }, 2000);
-      })
-      .catch(err => {
-        console.error('saveSection error', err);
-        if (msgEl) msgEl.textContent = 'Error';
-      });
+  // frontend validation – blank na jaaye
+  if (!itemsEl || !itemsEl.value.trim()) {
+    if (msgEl) msgEl.textContent = 'Please add at least one line';
+    return;
   }
 
+  const payload = {
+    examType: examType,
+    sectionKey: sectionKey,
+    title: titleEl ? titleEl.value : '',
+    items: itemsEl.value
+      .split('\n')
+      .map(x => x.trim())
+      .filter(x => x)
+  };
+
+  fetch(SCRIPTURL + '?action=saveDashboardSection', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'saveDashboardSection', payload: payload })
+  })
+    .then(r => r.json())
+    .then(res => {
+      if (!res.success) throw new Error(res.message || 'Failed');
+      if (lastEl && itemsEl) {
+        lastEl.value = itemsEl.value;
+      }
+      if (msgEl) msgEl.textContent = 'Saved';
+      setTimeout(() => { if (msgEl) msgEl.textContent = ''; }, 2000);
+    })
+    .catch(err => {
+      console.error('saveSection error', err);
+      if (msgEl) msgEl.textContent = err.message || 'Error';
+    });
+}
   function openFolder(examType, folderKey) {
     const map = {
       // ================= UPSC =================
@@ -1379,19 +1439,22 @@
     }
   }
 
-  function init() {
-    const email = localStorage.getItem('adminEmail') || '';
-    if (email) document.getElementById('adminEmail').textContent = email;
+function init() {
+  const email = localStorage.getItem('adminEmail') || '';
+  if (email) document.getElementById('adminEmail').textContent = email;
 
-    document.getElementById('filterExam').addEventListener('change', renderRegistrations);
-    document.getElementById('filterStatus').addEventListener('change', renderRegistrations);
+  document.getElementById('filterExam').addEventListener('change', renderRegistrations);
+  document.getElementById('filterStatus').addEventListener('change', renderRegistrations);
 
-    loadRegistrations();
-    loadDashboardContentForAdmin('UPSC');
-    loadDashboardContentForAdmin('JEE');
-    loadDashboardContentForAdmin('NEET');
-    loadDashboardContentForAdmin('RPSC');
-  }
+  loadRegistrations();
+  loadDashboardContentForAdmin('UPSC');
+  loadDashboardContentForAdmin('JEE');
+  loadDashboardContentForAdmin('NEET');
+  loadDashboardContentForAdmin('RPSC');
+
+  // auto refresh 30 sec me
+  setInterval(loadRegistrations, 30000);
+}
 
   init();
 </script>
