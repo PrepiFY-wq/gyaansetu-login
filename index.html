@@ -9,13 +9,42 @@
 
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 20px;
   position: relative;
+  color: #ffffff;
+  background:
+    linear-gradient(135deg, rgba(0,0,0,0.7), rgba(15,23,42,0.9)),
+    radial-gradient(circle at top left, #1d4ed8 0, transparent 55%),
+    radial-gradient(circle at bottom right, #f97316 0, transparent 55%),
+    linear-gradient(135deg, #020617 0%, #0f172a 40%, #111827 100%);
+  background-attachment: fixed;
+}
+
+/* Optional hero background panel for officer image (you can set background-image with your own officer wallpaper here) */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url('OFFICER-WALLPAPER.jpg'); /* yahan apna IAS/IPS officer wallpaper ka path daal do */
+  background-size: cover;
+  background-position: center;
+  opacity: 0.18;
+  pointer-events: none;
+  z-index: -2;
+}
+
+/* Dark overlay to keep text readable */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at top, rgba(15,23,42,0.7), transparent 60%);
+  pointer-events: none;
+  z-index: -1;
 }
 
 /* TOP CENTER HEADING */
@@ -28,11 +57,11 @@ body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   font-weight: 700;
   color: #ffffff;
-  text-shadow: 0 4px 10px rgba(0,0,0,0.4);
+  text-shadow: 0 4px 18px rgba(0,0,0,0.7);
   letter-spacing: 2px;
 }
-.top-heading .gyaan { color: #1e3a8a; }
-.top-heading .setu { color: #dc2626; }
+.top-heading .gyaan { color: #bfdbfe; }
+.top-heading .setu { color: #f97316; }
 
 .hero {
   max-width: 1100px;
@@ -68,17 +97,19 @@ h1 .setu { color: #dc2626; }
 }
 
 .card {
-  background: white;
+  background: rgba(15,23,42,0.96);
   padding: 40px;
   border-radius: 20px;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  box-shadow: 0 24px 80px rgba(0,0,0,0.7);
   max-width: 500px;
   width: 100%;
   margin-left: auto;
+  border: 1px solid rgba(148,163,184,0.45);
+  backdrop-filter: blur(16px);
 }
 
 .card .tagline {
-  color: #666;
+  color: #cbd5f5;
   text-align: center;
   margin-bottom: 20px;
   font-size: 14px;
@@ -89,7 +120,7 @@ h1 .setu { color: #dc2626; }
 label {
   display: block;
   margin-bottom: 8px;
-  color: #333;
+  color: #e5e7eb;
   font-weight: 600;
   font-size: 14px;
 }
@@ -97,17 +128,24 @@ label {
 input, select, textarea {
   width: 100%;
   padding: 12px 15px;
-  border: 2px solid #e0e0e0;
+  border: 2px solid #1e293b;
   border-radius: 10px;
   font-size: 14px;
   transition: all 0.3s;
   font-family: inherit;
+  background-color: rgba(15,23,42,0.9);
+  color: #e5e7eb;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #64748b;
 }
 
 input:focus, select:focus, textarea:focus {
   outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
+  border-color: #60a5fa;
+  box-shadow: 0 0 0 3px rgba(96,165,250,0.25);
 }
 
 .btn {
@@ -123,30 +161,30 @@ input:focus, select:focus, textarea:focus {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #1d4ed8 0%, #7c2d12 100%);
   color: white;
 }
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 20px rgba(102,126,234,0.3);
+  box-shadow: 0 14px 30px rgba(30,64,175,0.7);
 }
 
 .btn-secondary {
-  background: #f5f5f5;
-  color: #667eea;
-  border: 2px solid #667eea;
+  background: rgba(15,23,42,0.9);
+  color: #bfdbfe;
+  border: 2px solid #60a5fa;
 }
 
 .btn-secondary:hover {
-  background: #667eea;
-  color: white;
+  background: #1e293b;
+  color: #e5e7eb;
 }
 
 .divider {
   text-align: center;
   margin: 30px 0;
-  color: #999;
+  color: #9ca3af;
   position: relative;
 }
 
@@ -157,7 +195,7 @@ input:focus, select:focus, textarea:focus {
   top: 50%;
   width: 40%;
   height: 1px;
-  background: #e0e0e0;
+  background: #374151;
 }
 
 .divider::before { left: 0; }
@@ -187,19 +225,20 @@ input:focus, select:focus, textarea:focus {
   z-index: 1000;
   left: 0; top: 0;
   width: 100%; height: 100%;
-  background-color: rgba(0,0,0,0.6);
+  background-color: rgba(15,23,42,0.85);
   overflow-y: auto;
 }
 
 .modal-content {
-  background: white;
+  background: #020617;
   margin: 3% auto;
   padding: 0;
   width: 90%;
   max-width: 600px;
   border-radius: 20px;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.9);
   animation: slideDown 0.4s ease;
+  border: 1px solid #1e293b;
 }
 
 @keyframes slideDown {
@@ -208,7 +247,7 @@ input:focus, select:focus, textarea:focus {
 }
 
 .modal-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #1d4ed8 0%, #7c2d12 100%);
   color: white;
   padding: 25px 30px;
   border-radius: 20px 20px 0 0;
@@ -232,7 +271,7 @@ input:focus, select:focus, textarea:focus {
 
 .close:hover { transform: rotate(90deg); }
 
-.modal-body { padding: 30px; }
+.modal-body { padding: 30px; color: #e5e7eb; }
 
 .form-row {
   display: grid;
@@ -257,15 +296,15 @@ input:focus, select:focus, textarea:focus {
   <div class="hero-left">
     <p class="tagline">Empowering minds, building futures</p>
 
-    <h2 style="color:#fff; margin: 20px 0 10px; font-size:20px;">
+    <h2 style="color:#e5e7ff; margin: 20px 0 10px; font-size:20px;">
       Our Aim
     </h2>
-    <p style="color:#f3f4ff; line-height:1.6; margin-bottom:25px;">
-      To guide serious aspirants of UPSC, JEE, NEET and RPSC with structured plans,
+    <p style="color:#e5e7ff; line-height:1.6; margin-bottom:25px;">
+      To guide serious aspirants of UPSC and RPSC with structured plans,
       disciplined tracking and the right mentorship bridge between effort and success.
     </p>
 
-    <h3 style="color:#ffeaa7; margin-bottom:8px; font-size:18px;">
+    <h3 style="color:#fde68a; margin-bottom:8px; font-size:18px;">
       Today’s Motivation
     </h3>
     <p id="dailyQuote" style="color:#e5e7ff; line-height:1.6; font-style:italic;"></p>
@@ -340,8 +379,6 @@ input:focus, select:focus, textarea:focus {
             <select id="regExam" required>
               <option value="">Select exam</option>
               <option value="UPSC CSE">UPSC CSE</option>
-              <option value="JEE">JEE</option>
-              <option value="NEET">NEET</option>
               <option value="RPSC">RPSC</option>
             </select>
           </div>
@@ -506,12 +543,6 @@ function handleLogin(event) {
             case 'UPSC CSE':
               window.location.href = 'upsc-dashboard.html';
               break;
-            case 'JEE':
-              window.location.href = 'jee-dashboard.html';
-              break;
-            case 'NEET':
-              window.location.href = 'neet-dashboard.html';
-              break;
             case 'RPSC':
               window.location.href = 'rpsc-dashboard.html';
               break;
@@ -567,5 +598,3 @@ function handleAdminLogin(event) {
 </script>
 </body>
 </html>
-
-
