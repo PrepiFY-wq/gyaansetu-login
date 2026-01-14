@@ -167,53 +167,9 @@
 <body>
 <div class="container-fluid">
   <div class="row">
-    <!-- SIDEBAR -->
-    <nav class="col-md-3 col-lg-2 d-md-block sidebar p-3">
-      <div class="d-flex align-items-center mb-4">
-        <span class="brand">GyaanSetu Admin</span>
-      </div>
-
-      <div class="mb-3">
-        <small class="text-gray-400 text-uppercase">Sections</small>
-      </div>
-
-      <!-- Sidebar items will be toggled based on email -->
-      <ul class="nav flex-column mb-4">
-        <!-- For prepify: Registration -->
-        <li class="nav-item admin-only-prepify">
-          <button class="nav-link w-100 text-start"
-                  id="nav-registration"
-                  onclick="openFolderSection('registration', this)">
-            Registrations & Fees
-          </button>
-        </li>
-
-        <!-- For prepify: UPSC -->
-        <li class="nav-item admin-only-prepify">
-          <button class="nav-link w-100 text-start"
-                  id="nav-upsc"
-                  onclick="openFolderSection('upsc', this)">
-            UPSC Dashboard
-          </button>
-        </li>
-
-        <!-- For other admins: RPSC -->
-        <li class="nav-item admin-only-rpsc">
-          <button class="nav-link w-100 text-start"
-                  id="nav-rpsc"
-                  onclick="openFolderSection('rpsc', this)">
-            RPSC Dashboard
-          </button>
-        </li>
-      </ul>
-
-      <div class="mt-auto small text-gray-500">
-        Logged in as <span id="adminEmail">admin@gyaansetu</span>
-      </div>
-    </nav>
 
     <!-- MAIN CONTENT -->
-    <main class="col-md-9 ms-sm-auto col-lg-10 px-4 py-4">
+    <main class="col-12 px-4 py-4">
 
       <!-- Big folder home view -->
       <section id="home-folders">
