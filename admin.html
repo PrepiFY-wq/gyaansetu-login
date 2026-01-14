@@ -195,10 +195,10 @@
         <h4 class="mb-3">Admin Sections</h4>
         <div class="folder-grid">
 
-          <!-- prepify: Registration -->
+          <!-- Registration -->
           <div class="folder-card admin-only-prepify"
                style="background: linear-gradient(135deg,#6366f1,#3b82f6);"
-               onclick="openFolderSection('registration')">
+               onclick="openFolderSection('registration', this)">
             <div>
               <div class="folder-badge">
                 <span class="folder-icon">🧾</span>
@@ -213,10 +213,10 @@
             <div class="folder-accent-2"></div>
           </div>
 
-          <!-- prepify: UPSC -->
+          <!-- UPSC -->
           <div class="folder-card admin-only-prepify"
                style="background: linear-gradient(135deg,#ec4899,#f97316);"
-               onclick="openFolderSection('upsc')">
+               onclick="openFolderSection('upsc', this)">
             <div>
               <div class="folder-badge">
                 <span class="folder-icon">📚</span>
@@ -231,10 +231,10 @@
             <div class="folder-accent-2"></div>
           </div>
 
-          <!-- others: RPSC -->
+          <!-- RPSC -->
           <div class="folder-card admin-only-rpsc"
                style="background: linear-gradient(135deg,#22c55e,#16a34a);"
-               onclick="openFolderSection('rpsc')">
+               onclick="openFolderSection('rpsc', this)">
             <div>
               <div class="folder-badge">
                 <span class="folder-icon">🏛️</span>
@@ -336,9 +336,9 @@
           </div>
           <div class="card-body">
             <div class="tab-content pt-3">
-              <!-- ================= UPSC TAB (single) ================= -->
               <div class="tab-pane fade show active" id="upsc-pane" role="tabpanel">
                 <div class="row g-3">
+
                   <!-- UPSC Announcements -->
                   <div class="col-md-6">
                     <div class="card h-100">
@@ -555,14 +555,14 @@
                     </div>
                   </div>
 
-                </div> <!-- row -->
-              </div> <!-- upsc-pane -->
-            </div> <!-- tab-content -->
-          </div> <!-- card-body -->
-        </div> <!-- card -->
+                </div><!-- row -->
+              </div><!-- upsc-pane -->
+            </div><!-- tab-content -->
+          </div><!-- card-body -->
+        </div><!-- card -->
       </section>
 
-      <!-- RPSC CONTENT VIEW (for other admins) -->
+      <!-- RPSC CONTENT VIEW -->
       <section id="view-rpsc" class="d-none">
         <div class="d-flex justify-content-between align-items-center mb-3">
           <h4 class="mb-0">RPSC Dashboard Content</h4>
@@ -578,9 +578,9 @@
           </div>
           <div class="card-body">
             <div class="tab-content pt-3">
-              <!-- ================= RPSC TAB ================= -->
               <div class="tab-pane fade show active" id="rpsc-pane" role="tabpanel">
                 <div class="row g-3">
+
                   <!-- RPSC Announcements -->
                   <div class="col-md-6">
                     <div class="card h-100">
@@ -781,11 +781,11 @@
                     </div>
                   </div>
 
-                </div> <!-- row -->
-              </div> <!-- rpsc-pane -->
-            </div> <!-- tab-content -->
-          </div> <!-- card-body -->
-        </div> <!-- card -->
+                </div><!-- row -->
+              </div><!-- rpsc-pane -->
+            </div><!-- tab-content -->
+          </div><!-- card-body -->
+        </div><!-- card -->
       </section>
 
     </main>
@@ -795,7 +795,8 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-  const SCRIPTURL = 'https://script.google.com/macros/s/AKfycbyFiEVyWCStmdOxaSz2AAboplrOXAJn0XuW614KRzLihSL60qL8zy3GEgBVvm0DQPcmQg/exec';
+  // === IMPORTANT: yahan apna actual Apps Script Web App URL ( /exec ) dalna ===
+  const SCRIPTURL = 'https://script.google.com/macros/s/AKfycXXXXXXXXXXXX/exec';
 
   let registrationsData = [];
 
@@ -805,7 +806,6 @@
     document.getElementById('view-registrations').classList.add('d-none');
     document.getElementById('view-upsc').classList.add('d-none');
     document.getElementById('view-rpsc').classList.add('d-none');
-    document.querySelectorAll('.sidebar .nav-link').forEach(l => l.classList.remove('active'));
   }
 
   function showHome() {
@@ -817,13 +817,12 @@
     hideAllViews();
     if (section === 'registration') {
       document.getElementById('view-registrations').classList.remove('d-none');
-      if (btn) btn.classList.add('active');
     } else if (section === 'upsc') {
       document.getElementById('view-upsc').classList.remove('d-none');
-      if (btn) btn.classList.add('active');
+      loadDashboardContentForAdmin('UPSC');
     } else if (section === 'rpsc') {
       document.getElementById('view-rpsc').classList.remove('d-none');
-      if (btn) btn.classList.add('active');
+      loadDashboardContentForAdmin('RPSC');
     } else {
       showHome();
     }
@@ -834,7 +833,6 @@
     const lower = (email || '').toLowerCase();
     const isPrepify = (lower === 'prepifycse@gmail.com');
 
-    // Prepify admin: show registration + UPSC; hide RPSC
     document.querySelectorAll('.admin-only-prepify').forEach(el => {
       el.classList.toggle('d-none', !isPrepify);
     });
@@ -972,142 +970,126 @@
   }
 
   function updateStats() {
-    const total = registrationsData.length || 0;
-    const pending = registrationsData.filter(r => {
-      const ps = (r.paymentStatus || '').toLowerCase();
-      const vs = (r.verificationStatus || '').toLowerCase();
-      return (
-        (ps !== 'verified' || vs !== 'verified') &&
-        (ps !== 'rejected' && vs !== 'rejected')
-      );
-    }).length;
-    const verified = registrationsData.filter(r => {
-      const ps = (r.paymentStatus || '').toLowerCase();
-      const vs = (r.verificationStatus || '').toLowerCase();
-      return ps === 'verified' && vs === 'verified';
-    }).length;
-
     const totalEl = document.getElementById('totalRegistrations');
     const pendingEl = document.getElementById('pendingPayments');
     const verifiedEl = document.getElementById('verifiedPayments');
+
+    let total = registrationsData.length;
+    let pending = 0;
+    let verified = 0;
+
+    registrationsData.forEach(row => {
+      const ps = (row.paymentStatus || '').toLowerCase();
+      const vs = (row.verificationStatus || '').toLowerCase();
+      if (ps === 'verified' && vs === 'verified') {
+        verified++;
+      } else if (ps !== 'rejected' && vs !== 'rejected') {
+        pending++;
+      }
+    });
 
     if (totalEl) totalEl.textContent = total;
     if (pendingEl) pendingEl.textContent = pending;
     if (verifiedEl) verifiedEl.textContent = verified;
   }
 
-  function markPaymentVerified(rowNumber) {
-    if (!confirm('Mark payment as verified?')) return;
-    const url = SCRIPTURL + '?action=updateUser&row=' + encodeURIComponent(rowNumber);
+  function markPaymentVerified(row) {
+    const url = SCRIPTURL + '?action=updateUser&row=' + encodeURIComponent(row) +
+      '&paymentStatus=Verified';
     safeFetchJson(url)
       .then(res => {
         if (!res.success) throw new Error(res.message || 'Failed to update');
         loadRegistrations();
       })
-      .catch(err => {
-        console.error('markPaymentVerified error', err);
-      });
+      .catch(err => console.error('markPaymentVerified error', err));
   }
 
   function markRegistrationVerified(contact) {
-    if (!confirm('Mark registration as verified?')) return;
     const url = SCRIPTURL + '?action=updateUserRegistration&contact=' + encodeURIComponent(contact);
     safeFetchJson(url)
       .then(res => {
         if (!res.success) throw new Error(res.message || 'Failed to update registration');
         loadRegistrations();
       })
-      .catch(err => {
-        console.error('markRegistrationVerified error', err);
-      });
+      .catch(err => console.error('markRegistrationVerified error', err));
   }
 
   function markRejected(contact) {
-    if (!confirm('Mark this registration as rejected?')) return;
+    if (!confirm('Mark this candidate as Rejected?')) return;
     const url = SCRIPTURL + '?action=rejectUser&contact=' + encodeURIComponent(contact);
     safeFetchJson(url)
       .then(res => {
         if (!res.success) throw new Error(res.message || 'Failed to reject user');
         loadRegistrations();
       })
-      .catch(err => {
-        console.error('markRejected error', err);
-      });
+      .catch(err => console.error('markRejected error', err));
   }
 
   function sendLoginMail(email) {
-    if (!email) {
-      alert('No email found for this user.');
-      return;
-    }
-    if (!confirm('Send login mail to ' + email + '?')) return;
-
     const url = SCRIPTURL + '?action=sendLoginMail&email=' + encodeURIComponent(email);
     safeFetchJson(url)
       .then(res => {
-        if (!res.success) throw new Error(res.message || 'Failed to send mail');
-        alert('Login mail sent successfully.');
+        if (!res.success) throw new Error(res.message || 'Failed to send login mail');
+        alert('Login mail sent (if user exists)');
       })
-      .catch(err => {
-        console.error('sendLoginMail error', err);
-        alert('Error sending login mail. Please check console.');
-      });
+      .catch(err => console.error('sendLoginMail error', err));
   }
 
   /* ========== DASHBOARD CONTENT (UPSC / RPSC) ========== */
 
-function saveSection(exam, sectionKey) {
-  const prefix = exam.toLowerCase();
-  const key = sectionKey;
+  function saveSection(exam, sectionKey) {
+    const prefix = exam.toLowerCase();
+    const key = sectionKey;
 
-  const titleId = prefix + key + 'title';
-  const itemsId = prefix + key + 'items';
-  const lastId  = prefix + key + 'last';
-  const msgId   = prefix + key + 'msg';
+    const titleId = prefix + key + 'title';
+    const itemsId = prefix + key + 'items';
+    const lastId  = prefix + key + 'last';
+    const msgId   = prefix + key + 'msg';
 
-  const titleEl = document.getElementById(titleId);
-  const itemsEl = document.getElementById(itemsId);
-  const lastEl  = document.getElementById(lastId);
-  const msgEl   = document.getElementById(msgId);
+    const titleEl = document.getElementById(titleId);
+    const itemsEl = document.getElementById(itemsId);
+    const lastEl  = document.getElementById(lastId);
+    const msgEl   = document.getElementById(msgId);
 
-  if (!titleEl || !itemsEl || !lastEl || !msgEl) {
-    console.warn('Missing elements for section', exam, sectionKey);
-    return;
+    if (!titleEl || !itemsEl || !lastEl || !msgEl) {
+      console.warn('Missing elements for section', exam, sectionKey);
+      return;
+    }
+
+    const payload = {
+      action: 'saveSection',
+      exam: exam,
+      sectionKey: sectionKey,
+      title: titleEl.value || '',
+      items: itemsEl.value || ''
+    };
+
+    msgEl.textContent = 'Saving...';
+
+    fetch(SCRIPTURL, {
+      method: 'POST',
+      body: JSON.stringify(payload)
+      // no headers -> Apps Script side JSON parse by contents
+    })
+      .then(r => r.text())
+      .then(txt => {
+        console.log('saveSection raw response:', txt);
+        let data;
+        try { data = JSON.parse(txt); } catch (e) {
+          throw new Error('Invalid JSON: ' + e.message);
+        }
+        if (!data.success) throw new Error(data.message || 'Failed to save section');
+        lastEl.value = data.lastSaved || '';
+        msgEl.textContent = 'Saved at ' + (data.savedAt || '');
+        setTimeout(() => { msgEl.textContent = ''; }, 4000);
+      })
+      .catch(err => {
+        console.error('saveSection error', err);
+        msgEl.textContent = 'Error saving section';
+        setTimeout(() => { msgEl.textContent = ''; }, 4000);
+      });
   }
 
-  const payload = {
-    action: 'saveSection',
-    exam: exam,
-    sectionKey: sectionKey,
-    title: titleEl.value || '',
-    items: itemsEl.value || ''
-  };
-
-  msgEl.textContent = 'Saving...';
-
-fetch(SCRIPTURL, {
-  method: 'POST',
-  body: JSON.stringify(payload),
-  // headers hata do CORS ko simple rakhne ke liye:
-  // headers: { 'Content-Type': 'application/json' }
-})
-  .then(r => r.text())              // <- yahan abhi .text()
-  .then(txt => {
-    console.log('saveSection raw response:', txt);
-    let data;
-    try { data = JSON.parse(txt); } catch (e) {
-      throw new Error('Invalid JSON: ' + e.message);
-    }
-    if (!data.success) throw new Error(data.message || 'Failed to save section');
-    lastEl.value = data.lastSaved || '';
-    msgEl.textContent = 'Saved at ' + (data.savedAt || '');
-    setTimeout(() => { msgEl.textContent = ''; }, 4000);
-  })
-  .catch(err => {
-    console.error('saveSection error', err);
-    msgEl.textContent = 'Error saving section';
-    setTimeout(() => { msgEl.textContent = ''; }, 4000);
-  });
   function openFolder(exam, folderKey) {
     const url = SCRIPTURL + '?action=openFolder&exam=' + encodeURIComponent(exam) +
       '&folderKey=' + encodeURIComponent(folderKey);
@@ -1126,10 +1108,10 @@ fetch(SCRIPTURL, {
           const prefix = exam.toLowerCase();
           const titleEl = document.getElementById(prefix + key + 'title');
           const itemsEl = document.getElementById(prefix + key + 'items');
-          const lastEl = document.getElementById(prefix + key + 'last');
+          const lastEl  = document.getElementById(prefix + key + 'last');
           if (titleEl) titleEl.value = section.title || '';
           if (itemsEl) itemsEl.value = section.items || '';
-          if (lastEl) lastEl.value = section.lastSaved || '';
+          if (lastEl) lastEl.value   = section.lastSaved || '';
         });
       })
       .catch(err => {
@@ -1142,7 +1124,6 @@ fetch(SCRIPTURL, {
     if (!confirm('Are you sure you want to logout?')) return;
     try {
       localStorage.removeItem('adminEmail');
-      // yahan apna admin login page ka URL dal dena
       window.location.href = 'admin-login.html';
     } catch (e) {
       console.error('logoutAdmin error', e);
@@ -1153,13 +1134,11 @@ fetch(SCRIPTURL, {
   function init() {
     const email = localStorage.getItem('adminEmail') || '';
 
-    // topbar me email show karega
     const emailSpan = document.getElementById('adminEmailDisplay');
     if (emailSpan && email) {
       emailSpan.textContent = email;
     }
 
-    // agar email hi nahi hai to direct login page pe bhej do
     if (!email) {
       window.location.href = 'admin-login.html';
       return;
@@ -1177,19 +1156,9 @@ fetch(SCRIPTURL, {
     }
 
     loadRegistrations();
-
-    if ((email || '').toLowerCase() === 'prepifycse@gmail.com') {
-      if (typeof loadDashboardContentForAdmin === 'function') {
-        loadDashboardContentForAdmin('UPSC');
-      }
-    } else {
-      if (typeof loadDashboardContentForAdmin === 'function') {
-        loadDashboardContentForAdmin('RPSC');
-      }
-    }
   }
 
-  init();
+  document.addEventListener('DOMContentLoaded', init);
 </script>
 </body>
 </html>
