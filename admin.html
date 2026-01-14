@@ -168,7 +168,7 @@
 <div class="container-fluid">
   <div class="row">
 
-    <!-- MAIN CONTENT -->
+    <!-- MAIN CONTENT (full width) -->
     <main class="col-12 px-4 py-4">
 
       <!-- Big folder home view -->
@@ -786,6 +786,7 @@
     document.getElementById('view-registrations').classList.add('d-none');
     document.getElementById('view-upsc').classList.add('d-none');
     document.getElementById('view-rpsc').classList.add('d-none');
+    // sidebar hat chuka hai, ye line harmless hai (koi element nahi milega)
     document.querySelectorAll('.sidebar .nav-link').forEach(l => l.classList.remove('active'));
   }
 
@@ -806,9 +807,24 @@
       document.getElementById('view-rpsc').classList.remove('d-none');
       if (btn) btn.classList.add('active');
     } else {
-      // default back to home
       showHome();
     }
+  }
+
+  // Role-based visibility for cards/sections
+  function applyEmailRole(email) {
+    const lower = email.toLowerCase();
+    const isPrepify = (lower === 'prepifycse@gmail.com');
+
+    // Prepify admin: show registration + UPSC; hide RPSC
+    document.querySelectorAll('.admin-only-prepify').forEach(el => {
+      el.classList.toggle('d-none', !isPrepify);
+    });
+    document.querySelectorAll('.admin-only-rpsc').forEach(el => {
+      el.classList.toggle('d-none', isPrepify);
+    });
+
+    showHome();
   }
 
   function safeFetchJson(url, options) {
@@ -938,181 +954,179 @@
   }
 
   function updateStats() {
-    const total = registrationsData.length;
-
+    const total = registrationsData.length || 0;
     const pending = registrationsData.filter(r => {
       const ps = (r.paymentStatus || '').toLowerCase();
       const vs = (r.verificationStatus || '').toLowerCase();
-      return (ps !== 'verified' || vs !== 'verified') &&
-             (ps !== 'rejected' && vs !== 'rejected');
+      return (
+        (ps !== 'verified' || vs !== 'verified') &&
+        (ps !== 'rejected' && vs !== 'rejected')
+      );
     }).length;
-
-    const approved = registrationsData.filter(r => {
+    const verified = registrationsData.filter(r => {
       const ps = (r.paymentStatus || '').toLowerCase();
       const vs = (r.verificationStatus || '').toLowerCase();
       return ps === 'verified' && vs === 'verified';
     }).length;
 
-    document.getElementById('totalRegistrations').textContent = total;
-    document.getElementById('pendingPayments').textContent = pending;
-    document.getElementById('verifiedPayments').textContent = approved;
+    const totalEl = document.getElementById('totalRegistrations');
+    const pendingEl = document.getElementById('pendingPayments');
+    const verifiedEl = document.getElementById('verifiedPayments');
+
+    if (totalEl) totalEl.textContent = total;
+    if (pendingEl) pendingEl.textContent = pending;
+    if (verifiedEl) verifiedEl.textContent = verified;
   }
 
-  function markPaymentVerified(row) {
-    if (!confirm('Mark payment as Verified for this user?')) return;
-    const url = SCRIPTURL
-      + '?action=updateUser'
-      + '&row=' + encodeURIComponent(row)
-      + '&paymentStatus=' + encodeURIComponent('Verified');
-
+  function markPaymentVerified(rowNumber) {
+    if (!confirm('Mark payment as verified?')) return;
+    const url = SCRIPTURL + '?action=updateUser&row=' + encodeURIComponent(rowNumber);
     safeFetchJson(url)
       .then(res => {
-        if (!res.success) throw new Error(res.message || 'Failed');
+        if (!res.success) throw new Error(res.message || 'Failed to update');
         loadRegistrations();
       })
       .catch(err => {
         console.error('markPaymentVerified error', err);
-        alert('Error updating payment');
       });
   }
 
   function markRegistrationVerified(contact) {
-    if (!confirm('Mark registration as Verified for this contact?')) return;
-    const url = SCRIPTURL
-      + '?action=updateUserRegistration&contact=' + encodeURIComponent(contact);
-
+    if (!confirm('Mark registration as verified?')) return;
+    const url = SCRIPTURL + '?action=updateUserRegistration&contact=' + encodeURIComponent(contact);
     safeFetchJson(url)
       .then(res => {
-        if (!res.success) throw new Error(res.message || 'Failed');
+        if (!res.success) throw new Error(res.message || 'Failed to update registration');
         loadRegistrations();
       })
       .catch(err => {
         console.error('markRegistrationVerified error', err);
-        alert('Error updating registration');
       });
   }
 
   function markRejected(contact) {
-    if (!confirm('Mark payment and registration as Rejected for this contact?')) return;
-    alert('Reject API abhi backend me define nahi hai.');
-  }
-
-  function sendLoginMail(email) {
-    if (!confirm('Send login mail to this user?')) return;
-    const url = SCRIPTURL
-      + '?action=sendLoginMail&email=' + encodeURIComponent(email);
-
+    if (!confirm('Mark this registration as rejected?')) return;
+    const url = SCRIPTURL + '?action=rejectUser&contact=' + encodeURIComponent(contact);
     safeFetchJson(url)
       .then(res => {
-        if (!res.success) throw new Error(res.message || 'Failed');
-        alert('Login mail sent (if user found)');
+        if (!res.success) throw new Error(res.message || 'Failed to reject user');
+        loadRegistrations();
       })
       .catch(err => {
-        console.error('sendLoginMail error', err);
-        alert('Error sending login mail');
+        console.error('markRejected error', err);
       });
   }
 
-  /* ========== DASHBOARD CONTENT HELPERS ========== */
+  function sendLoginMail(email) {
+    if (!email) {
+      alert('No email found for this user.');
+      return;
+    }
+    if (!confirm('Send login mail to ' + email + '?')) return;
 
- function saveSection(examType, sectionKey) {
-  const msgId = examType.toLowerCase() + sectionKey + 'msg';
-  const msgEl = document.getElementById(msgId);
-  if (msgEl) msgEl.textContent = 'Saving...';
-
-  const titleId = examType.toLowerCase() + sectionKey + 'title';
-  const itemsId = examType.toLowerCase() + sectionKey + 'items';
-  const lastId  = examType.toLowerCase() + sectionKey + 'last';
-
-  const titleEl = document.getElementById(titleId);
-  const itemsEl = document.getElementById(itemsId);
-  const lastEl  = document.getElementById(lastId);
-
-  if (!itemsEl || !itemsEl.value.trim()) {
-    if (msgEl) msgEl.textContent = 'Please add at least one line';
-    return;
+    const url = SCRIPTURL + '?action=sendLoginMail&email=' + encodeURIComponent(email);
+    safeFetchJson(url)
+      .then(res => {
+        if (!res.success) throw new Error(res.message || 'Failed to send mail');
+        alert('Login mail sent successfully.');
+      })
+      .catch(err => {
+        console.error('sendLoginMail error', err);
+        alert('Error sending login mail. Please check console.');
+      });
   }
 
-  const payloadObj = {
-    examType: examType,
-    sectionKey: sectionKey,
-    title: titleEl ? titleEl.value : '',
-    items: itemsEl.value
-      .split('\n')
-      .map(x => x.trim())
-      .filter(x => x)
-  };
+  /* ========== DASHBOARD CONTENT (UPSC / RPSC) ========== */
 
-  const body = new URLSearchParams();
-  body.append('action', 'saveDashboardSection');
-  body.append('payload', JSON.stringify(payloadObj));
+  function saveSection(exam, sectionKey) {
+    const prefix = exam.toLowerCase();
+    const key = sectionKey;
 
-  fetch(SCRIPTURL, {
-    method: 'POST',
-    body: body
-  })
-    .then(r => r.json())
-    .then(res => {
-      if (!res.success) throw new Error(res.message || 'Failed');
-      if (lastEl && itemsEl) {
-        lastEl.value = itemsEl.value;
-      }
-      if (msgEl) msgEl.textContent = 'Saved';
-      setTimeout(() => { if (msgEl) msgEl.textContent = ''; }, 2000);
-    })
-    .catch(err => {
-      console.error('saveSection error', err);
-      if (msgEl) msgEl.textContent = err.message || 'Error';
-    });
-}
+    const titleId = prefix + key + 'title';
+    const itemsId = prefix + key + 'items';
+    const lastId = prefix + key + 'last';
+    const msgId = prefix + key + 'msg';
 
-  function openFolder(examType, folderKey) {
-    const map = {
-      // ================= UPSC =================
-      'UPSC_testSeries':     'https://drive.google.com/drive/folders/1bc2B2m6PzdUjbsJlZiRgq1gifccooCsx?usp=sharing',
-      'UPSC_pyqPapers':      'https://drive.google.com/drive/folders/1ZZtz226dMcQyT2cSa7x5K37NbVVeGHud?usp=sharing',
-      'UPSC_books':          'https://drive.google.com/drive/folders/1ieWI_ejkVy8RdkKSVgP6svARf9NUJW5W?usp=sharing',
-      'UPSC_currentAffairs': 'https://drive.google.com/drive/folders/1rLH3T-CU4fkI5FxAHACcXjjA6nPLY1hW?usp=sharing',
-      'UPSC_notesPdfs':      'https://drive.google.com/drive/folders/1Jy8L1JIX0c0Svda5BEoY01R1TBSn7cu_?usp=sharing',
+    const titleEl = document.getElementById(titleId);
+    const itemsEl = document.getElementById(itemsId);
+    const lastEl = document.getElementById(lastId);
+    const msgEl = document.getElementById(msgId);
 
-      // ================= RPSC =================
-      'RPSC_testSeries':     'https://drive.google.com/drive/folders/11X-00tsQAVPbfLkYB2E00idYPRE85dyq?usp=sharing',
-      'RPSC_pyqPapers':      'https://drive.google.com/drive/folders/1DXZRKwh0cbAt5qq4hCX-pp7YCWBw3InN?usp=sharing',
-      'RPSC_notesPdfs':      'https://drive.google.com/drive/folders/1tw30jBEB9vKKoRrITrNfXa_kzj-wIdyk?usp=sharing',
-      'RPSC_chartsMaps':     'https://drive.google.com/drive/folders/1LJHQrMVnKIINewJC-EK2rPWDgFiQzkwQ?usp=sharing',
-      'RPSC_books':          'https://drive.google.com/drive/folders/1WIyjXfe5_FFH6a-4B4ttaVuiR5I2V2vN?usp=sharing',
-      'RPSC_otherState':     'https://drive.google.com/drive/folders/1OcmyTEx74vik5fNQJqGgEIm_ClRZB3QD?usp=sharing'
+    if (!titleEl || !itemsEl || !lastEl || !msgEl) {
+      console.warn('Missing elements for section', exam, sectionKey);
+      return;
+    }
+
+    const payload = {
+      action: 'saveSection',
+      exam: exam,
+      sectionKey: sectionKey,
+      title: titleEl.value || '',
+      items: itemsEl.value || ''
     };
 
-    const key = examType + '_' + folderKey;
-    const url = map[key];
+    msgEl.textContent = 'Saving...';
 
-    if (url) {
-      window.open(url, '_blank');
-    } else {
-      alert('Folder link not configured for: ' + key);
-    }
+    fetch(SCRIPTURL, {
+      method: 'POST',
+      body: JSON.stringify(payload),
+      headers: { 'Content-Type': 'application/json' }
+    })
+      .then(r => {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      })
+      .then(data => {
+        if (!data.success) throw new Error(data.message || 'Failed to save section');
+        lastEl.value = data.lastSaved || '';
+        msgEl.textContent = 'Saved at ' + (data.savedAt || '');
+        setTimeout(() => { msgEl.textContent = ''; }, 4000);
+      })
+      .catch(err => {
+        console.error('saveSection error', err);
+        msgEl.textContent = 'Error saving section';
+        setTimeout(() => { msgEl.textContent = ''; }, 4000);
+      });
   }
 
-  function applyEmailRole(email) {
-    const isPrepify = email.toLowerCase() === 'prepifycse@gmail.com';
+  function openFolder(exam, folderKey) {
+    const url = SCRIPTURL + '?action=openFolder&exam=' + encodeURIComponent(exam) +
+      '&folderKey=' + encodeURIComponent(folderKey);
+    window.open(url, '_blank');
+  }
 
-    document.querySelectorAll('.admin-only-prepify').forEach(el => {
-      el.classList.toggle('d-none', !isPrepify);
-    });
-    document.querySelectorAll('.admin-only-rpsc').forEach(el => {
-      el.classList.toggle('d-none', isPrepify);
-    });
+  function loadDashboardContentForAdmin(exam) {
+    const url = SCRIPTURL + '?action=getAllSections&exam=' + encodeURIComponent(exam);
+    safeFetchJson(url)
+      .then(data => {
+        if (!data.success) throw new Error(data.message || 'Failed to load dashboard content');
 
-    // Default visible view after role applied
-    showHome();
+        const sections = data.sections || {};
+        Object.keys(sections).forEach(key => {
+          const section = sections[key] || {};
+          const prefix = exam.toLowerCase();
+          const titleEl = document.getElementById(prefix + key + 'title');
+          const itemsEl = document.getElementById(prefix + key + 'items');
+          const lastEl = document.getElementById(prefix + key + 'last');
+          if (titleEl) titleEl.value = section.title || '';
+          if (itemsEl) itemsEl.value = section.items || '';
+          if (lastEl) lastEl.value = section.lastSaved || '';
+        });
+      })
+      .catch(err => {
+        console.error('loadDashboardContentForAdmin error', err);
+      });
   }
 
   function init() {
     const email = localStorage.getItem('adminEmail') || '';
-    if (email) document.getElementById('adminEmail').textContent = email;
 
-    // Apply role-based UI
+    // adminEmail span ab HTML me nahi hai, isliye direct access nahi kar rahe
+    // const emailSpan = document.getElementById('adminEmail');
+    // if (email && emailSpan) {
+    //   emailSpan.textContent = email;
+    // }
+
     applyEmailRole(email || '');
 
     const examFilterEl = document.getElementById('filterExam');
@@ -1126,20 +1140,17 @@
 
     loadRegistrations();
 
-    // Prepify admin: load UPSC content
     if ((email || '').toLowerCase() === 'prepifycse@gmail.com') {
       if (typeof loadDashboardContentForAdmin === 'function') {
         loadDashboardContentForAdmin('UPSC');
       }
     } else {
-      // Other admins: load RPSC content if helper exists
       if (typeof loadDashboardContentForAdmin === 'function') {
         loadDashboardContentForAdmin('RPSC');
       }
     }
   }
 
-  // init call
   init();
 </script>
 </body>
