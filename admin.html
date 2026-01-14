@@ -1085,31 +1085,29 @@ function saveSection(exam, sectionKey) {
 
   msgEl.textContent = 'Saving...';
 
-  fetch(SCRIPTURL, {
-    method: 'POST',
-    // headers hata bhi sakte ho, to preflight chance aur kam ho jayega:
-    // headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
+fetch(SCRIPTURL, {
+  method: 'POST',
+  body: JSON.stringify(payload),
+  // headers hata do CORS ko simple rakhne ke liye:
+  // headers: { 'Content-Type': 'application/json' }
+})
+  .then(r => r.text())              // <- yahan abhi .text()
+  .then(txt => {
+    console.log('saveSection raw response:', txt);
+    let data;
+    try { data = JSON.parse(txt); } catch (e) {
+      throw new Error('Invalid JSON: ' + e.message);
+    }
+    if (!data.success) throw new Error(data.message || 'Failed to save section');
+    lastEl.value = data.lastSaved || '';
+    msgEl.textContent = 'Saved at ' + (data.savedAt || '');
+    setTimeout(() => { msgEl.textContent = ''; }, 4000);
   })
-    .then(r => {
-      if (!r.ok) throw new Error('HTTP ' + r.status);
-      return r.json();
-    })
-    .then(data => {
-      if (!data.success) throw new Error(data.message || 'Failed to save section');
-      lastEl.value = data.lastSaved || '';
-      msgEl.textContent = 'Saved at ' + (data.savedAt || '');
-      setTimeout(() => { msgEl.textContent = ''; }, 4000);
-    })
-    .catch(err => {
-      console.error('saveSection error', err);
-      msgEl.textContent = 'Error saving section';
-      setTimeout(() => { msgEl.textContent = ''; }, 4000);
-    });
-}
-
-
-
+  .catch(err => {
+    console.error('saveSection error', err);
+    msgEl.textContent = 'Error saving section';
+    setTimeout(() => { msgEl.textContent = ''; }, 4000);
+  });
   function openFolder(exam, folderKey) {
     const url = SCRIPTURL + '?action=openFolder&exam=' + encodeURIComponent(exam) +
       '&folderKey=' + encodeURIComponent(folderKey);
