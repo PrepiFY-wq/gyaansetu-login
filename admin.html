@@ -1039,20 +1039,23 @@
     document.getElementById('home-folders').classList.remove('d-none');
   }
 
-  function openFolderSection(section, btn) {
-    hideAllViews();
-    if (section === 'registration') {
-      document.getElementById('view-registrations').classList.remove('d-none');
-    } else if (section === 'upsc') {
-      document.getElementById('view-upsc').classList.remove('d-none');
-      loadDashboardContentForAdmin('UPSC');
-    } else if (section === 'rpsc') {
-      document.getElementById('view-rpsc').classList.remove('d-none');
-      loadDashboardContentForAdmin('RPSC');
-    } else {
-      showHome();
-    }
-  }
+function openFolder(exam, folderKey) {
+  const url = SCRIPTURL + "?action=openFolder&exam=" + encodeURIComponent(exam) + "&folderKey=" + encodeURIComponent(folderKey);
+
+  fetch(url)
+    .then(r => r.json())
+    .then(res => {
+      if (res.success && res.url) {
+        window.open(res.url, "_blank");  // Ye direct Drive folder kholega
+      } else {
+        alert("Folder URL nahi mila.");
+      }
+    })
+    .catch(err => {
+      console.error("openFolder error", err);
+      alert("Folder open karne me error aa gaya.");
+    });
+}
 
   function applyEmailRole(email) {
     const lower = (email || '').toLowerCase();
