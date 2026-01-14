@@ -24,12 +24,12 @@ body {
   background-attachment: fixed;
 }
 
-/* Optional hero background panel for officer image (you can set background-image with your own officer wallpaper here) */
+/* Optional hero background panel for officer image */
 body::before {
   content: '';
   position: fixed;
   inset: 0;
-  background-image: url('OFFICER-WALLPAPER.jpg'); /* yahan apna IAS/IPS officer wallpaper ka path daal do */
+  background-image: url('OFFICER-WALLPAPER.jpg');
   background-size: cover;
   background-position: center;
   opacity: 0.18;
@@ -68,13 +68,23 @@ body::after {
   width: 100%;
   display: flex;
   gap: 40px;
-  align-items: stretch;
+  align-items: center; /* dono columns vertically center */
   margin-top: 80px; /* upar heading ke liye space */
 }
 
+/* LEFT & RIGHT COLUMNS */
 .hero-left,
 .hero-right {
   flex: 1;
+}
+
+/* Left content ko vertical center ke aas-paas lane ke liye */
+.hero-left {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  /* is padding/margin ko adjust karke password ke barabar fine-tune kar sakte ho */
+  padding-top: 40px;
 }
 
 .hero-right .card {
@@ -281,8 +291,16 @@ input:focus, select:focus, textarea:focus {
 }
 
 @media (max-width: 768px) {
-  .hero { flex-direction: column; margin-top: 100px; }
-  .card { margin: 0 auto; }
+  .hero {
+    flex-direction: column;
+    margin-top: 100px;
+  }
+  .card {
+    margin: 0 auto;
+  }
+  .hero-left {
+    padding-top: 0;
+  }
 }
 </style>
 </head>
