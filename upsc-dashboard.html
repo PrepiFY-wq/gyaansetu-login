@@ -1015,44 +1015,122 @@ function renderAnnouncements(items) {
   container.appendChild(list);
 }
 
-// Daily Targets
+// Daily Targets - Structured Display
 function renderDailyTargets(items) {
   const container = document.getElementById('dailyTargets');
   container.innerHTML = '';
+  
   if (!items || !items.length) {
     container.innerHTML = '<div class="empty-state">Admin will upload today\'s targets soon.</div>';
     return;
   }
 
-  const list = document.createElement('div');
-  list.className = 'list';
+  // Create structured display
+  const wrapper = document.createElement('div');
+  wrapper.style.display = 'flex';
+  wrapper.style.flexDirection = 'column';
+  wrapper.style.gap = '12px';
 
+  // Check if we have structured data (Subject 1, Subject 2 format)
+  let subject1 = '', topic1 = '', subject2 = '', topic2 = '';
+  let otherItems = [];
+  
   items.forEach((raw, index) => {
-    const row = document.createElement('div');
-    row.className = 'list-item';
-
-    const titleSpan = document.createElement('span');
-    titleSpan.textContent = typeof raw === 'string' ? raw : (raw.text || raw.title || '');
-    row.appendChild(titleSpan);
-
-    if (index === 0) {
-      row.style.fontWeight = '600';
-      row.style.background = '#dcfce7';
-      row.style.borderRadius = '6px';
-      row.style.padding = '6px 8px';
-
-      const tag = document.createElement('span');
-      tag.className = 'tag';
-      tag.textContent = 'Today';
-      row.appendChild(tag);
+    const text = typeof raw === 'string' ? raw : (raw.text || raw.title || '');
+    
+    // Parse structured format: "Subject 1: History - Topic: Ancient India"
+    if (index === 0 && text.includes('Subject 1:')) {
+      const parts = text.split(' - Topic: ');
+      subject1 = parts[0].replace('Subject 1:', '').trim();
+      topic1 = parts[1] ? parts[1].trim() : '';
+    } else if (index === 1 && text.includes('Subject 2:')) {
+      const parts = text.split(' - Topic: ');
+      subject2 = parts[0].replace('Subject 2:', '').trim();
+      topic2 = parts[1] ? parts[1].trim() : '';
+    } else {
+      otherItems.push(text);
     }
-
-    list.appendChild(row);
   });
 
-  container.appendChild(list);
-}
+  // Display Subject 1 and Topic 1
+  if (subject1 || topic1) {
+    const target1Box = document.createElement('div');
+    target1Box.style.background = '#eef2ff';
+    target1Box.style.padding = '12px 14px';
+    target1Box.style.borderRadius = '10px';
+    target1Box.style.borderLeft = '4px solid #6366f1';
+    
+    target1Box.innerHTML = `
+      <div style="font-weight: 600; color: #4f46e5; margin-bottom: 4px; font-size: 13px;">
+        📚 Subject 1
+      </div>
+      <div style="font-size: 14px; color: #111827; margin-bottom: 6px;">
+        <strong>${subject1}</strong>
+      </div>
+      <div style="font-size: 13px; color: #4b5563;">
+        Topic: ${topic1}
+      </div>
+    `;
+    wrapper.appendChild(target1Box);
+  }
 
+  // Display Subject 2 and Topic 2
+  if (subject2 || topic2) {
+    const target2Box = document.createElement('div');
+    target2Box.style.background = '#dcfce7';
+    target2Box.style.padding = '12px 14px';
+    target2Box.style.borderRadius = '10px';
+    target2Box.style.borderLeft = '4px solid #22c55e';
+    
+    target2Box.innerHTML = `
+      <div style="font-weight: 600; color: #16a34a; margin-bottom: 4px; font-size: 13px;">
+        📖 Subject 2
+      </div>
+      <div style="font-size: 14px; color: #111827; margin-bottom: 6px;">
+        <strong>${subject2}</strong>
+      </div>
+      <div style="font-size: 13px; color: #4b5563;">
+        Topic: ${topic2}
+      </div>
+    `;
+    wrapper.appendChild(target2Box);
+  }
+
+  // Display other items
+  if (otherItems.length > 0) {
+    const otherBox = document.createElement('div');
+    otherBox.style.background = '#fff7ed';
+    otherBox.style.padding = '12px 14px';
+    otherBox.style.borderRadius = '10px';
+    otherBox.style.borderLeft = '4px solid #f97316';
+    
+    const header = document.createElement('div');
+    header.style.fontWeight = '600';
+    header.style.color = '#ea580c';
+    header.style.marginBottom = '8px';
+    header.style.fontSize = '13px';
+    header.textContent = '🎯 Other Targets';
+    otherBox.appendChild(header);
+    
+    const list = document.createElement('ul');
+    list.style.margin = '0';
+    list.style.paddingLeft = '20px';
+    list.style.fontSize = '13px';
+    list.style.color = '#4b5563';
+    
+    otherItems.forEach(item => {
+      const li = document.createElement('li');
+      li.textContent = item;
+      li.style.marginBottom = '4px';
+      list.appendChild(li);
+    });
+    
+    otherBox.appendChild(list);
+    wrapper.appendChild(otherBox);
+  }
+
+  container.appendChild(wrapper);
+}
 // Folder View button renderer
 function renderFolderButton(containerId, folderUrl, emptyMessage) {
   const container = document.getElementById(containerId);
