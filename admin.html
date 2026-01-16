@@ -1314,31 +1314,74 @@
   }
 
   // UPSC Daily Targets custom save
-  function saveUpscDailyTargets() {
-    const subj1   = document.getElementById('upscdailyTargetsSubject1')?.value || '';
-    const topics1 = document.getElementById('upscdailyTargetsTopics1')?.value || '';
-    const subj2   = document.getElementById('upscdailyTargetsSubject2')?.value || '';
-    const topics2 = document.getElementById('upscdailyTargetsTopics2')?.value || '';
+ // UPSC Daily Targets: Subject 1 + Subject 2 + Others (same format as UPSC dashboard)
+function saveUpscDailyTargets() {
+  const title = document.getElementById('upscdailyTargetstitle').value.trim();
 
-    const lines = [];
+  // Subject 1
+  const s1 = document.getElementById('upscdailyTargetsSubject1').value.trim();
+  const t1 = document.getElementById('upscdailyTargetsTopics1').value.trim();
 
-    if (subj1 || topics1) {
-      lines.push('Subject 1: ' + subj1);
-      if (topics1) lines.push('Topics 1: ' + topics1);
-    }
-    if (subj2 || topics2) {
-      if (lines.length) lines.push('');
-      lines.push('Subject 2: ' + subj2);
-      if (topics2) lines.push('Topics 2: ' + topics2);
-    }
+  // Subject 2
+  const s2 = document.getElementById('upscdailyTargetsSubject2').value.trim();
+  const t2 = document.getElementById('upscdailyTargetsTopics2').value.trim();
 
-    const itemsEl = document.getElementById('upscdailyTargetsitems');
-    if (itemsEl) {
-      itemsEl.value = lines.join('\n');
-    }
-    saveSection('UPSC', 'dailyTargets');
-  }
+  // Others (each line one target)
+  const othersRaw = document.getElementById('upscdailyTargetsitems').value
+    .split('\n')
+    .map(l => l.trim())
+    .filter(Boolean);
 
+  // Block 1 = Subject 1 section
+  const lines1 = [];
+  if (s1) lines1.push('Subject 1: ' + s1);
+  if (t1) lines1.push('Topics 1: ' + t1);
+  const block1 = lines1.join('\n');
+
+  // Block 2 = Subject 2 section
+  const lines2 = [];
+  if (s2) lines2.push('Subject 2: ' + s2);
+  if (t2) lines2.push('Topics 2: ' + t2);
+  const block2 = lines2.join('\n');
+
+  // Block 3+ = Others section
+  const blockOthers = othersRaw.join('\n');
+
+  // Final text – UPSC student dashboard ka renderDailyTargets() isi format ko 3 sections me tod raha hai
+  const finalTxt = [block1, block2, blockOthers]
+    .filter(b => b && b.trim().length > 0)
+    .join('\n\n');
+
+  const payload = {
+    examType: 'UPSC',
+    sectionKey: 'dailyTargets',
+    title: title,
+    items: [finalTxt]   // ek hi long string; student dashboard me split hoga
+  };
+
+  const msgEl = document.getElementById('upscdailyTargetsmsg');
+  msgEl.textContent = 'Saving...';
+
+  fetch(SCRIPT_URL + '?action=saveDashboardSection', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (!data || !data.success) {
+        throw new Error(data && data.message ? data.message : 'Failed to save');
+      }
+      msgEl.textContent = 'Saved ✔';
+      document.getElementById('upscdailyTargetslast').value = finalTxt;
+      setTimeout(() => { msgEl.textContent = ''; }, 2000);
+    })
+    .catch(err => {
+      console.error('saveUpscDailyTargets error:', err);
+      msgEl.textContent = 'Error ❌';
+      setTimeout(() => { msgEl.textContent = ''; }, 3000);
+    });
+}
   // ------------ FOLDER OPEN (DRIVE) ------------
   function openFolder(exam, folderKey) {
     const url = SCRIPTURL + '?action=openFolder&exam=' + encodeURIComponent(exam) +
