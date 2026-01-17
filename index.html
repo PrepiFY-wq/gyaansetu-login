@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GyaanSetu - Login Portal</title>
+<title>PrepiFY - Login Portal</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -307,7 +307,7 @@ input:focus, select:focus, textarea:focus {
 <body>
 
 <h1 class="top-heading">
-  <span class="gyaan">Gyaan</span><span class="setu">Setu</span>
+  <span class="gyaan">Prepi</span><span class="setu">FY</span>
 </h1>
 
 <div class="hero">
@@ -318,7 +318,7 @@ input:focus, select:focus, textarea:focus {
       Our Aim
     </h2>
     <p style="color:#e5e7ff; line-height:1.6; margin-bottom:25px;">
-      To guide serious aspirants of UPSC and RPSC with structured plans,
+      To guide serious aspirants of UPSC with structured plans,
       disciplined tracking and the right mentorship bridge between effort and success.
     </p>
 
@@ -397,7 +397,6 @@ input:focus, select:focus, textarea:focus {
             <select id="regExam" required>
               <option value="">Select exam</option>
               <option value="UPSC CSE">UPSC CSE</option>
-              <option value="RPSC">RPSC</option>
             </select>
           </div>
         </div>
@@ -560,9 +559,6 @@ function handleLogin(event) {
           switch (user.preparingFor) {
             case 'UPSC CSE':
               window.location.href = 'upsc-dashboard.html';
-              break;
-            case 'RPSC':
-              window.location.href = 'rpsc-dashboard.html';
               break;
             default:
               showMessage('Unknown exam type in your profile.', 'error');
