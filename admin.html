@@ -1347,26 +1347,23 @@ function saveUpscDailyTargets() {
   // Block 3+ = Others section
   const blockOthers = othersRaw.join('\n');
 
-  // Final text – UPSC student dashboard ka renderDailyTargets() isi format ko 3 sections me tod raha hai
+  // Final text – student dashboard yahi format 3 sections me tod raha hai
   const finalTxt = [block1, block2, blockOthers]
     .filter(b => b && b.trim().length > 0)
     .join('\n\n');
 
-  const payload = {
-    examType: 'UPSC',
-    sectionKey: 'dailyTargets',
-    title: title,
-    items: [finalTxt]   // ek hi long string; student dashboard me split hoga
-  };
-
   const msgEl = document.getElementById('upscdailyTargetsmsg');
   msgEl.textContent = 'Saving...';
 
-  fetch(SCRIPTURL + '?action=saveDashboardSection', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
-  })
+  // JSON POST ki jagah simple GET with query string
+  const url = SCRIPTURL
+    + '?action=saveDashboardSection'
+    + '&examType='   + encodeURIComponent('UPSC')
+    + '&sectionKey=' + encodeURIComponent('dailyTargets')
+    + '&title='      + encodeURIComponent(title)
+    + '&items='      + encodeURIComponent(finalTxt);
+
+  fetch(url)
     .then(res => res.json())
     .then(data => {
       if (!data || !data.success) {
