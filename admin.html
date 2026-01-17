@@ -104,9 +104,6 @@
     .folder-card.upsc-card {
       background: radial-gradient(circle at top left,#f97316,#ec4899 45%,#6366f1 120%);
     }
-    .folder-card.rpsc-card {
-      background: radial-gradient(circle at top left,#22c55e,#16a34a 45%,#0ea5e9 120%);
-    }
 
     .folder-badge {
       font-size: 13px;
@@ -196,10 +193,6 @@
       border-left: 4px solid transparent;
       box-shadow: none;
     }
-    .feature-card.rpsc {
-      border-left: 4px solid transparent;
-      box-shadow: none;
-    }
 
     .feature-pill {
       display: inline-flex;
@@ -278,7 +271,7 @@
       color: #f9fafb;
     }
 
-    /* Gradient wrapper boxes for UPSC/RPSC inner sections */
+    /* Gradient wrapper boxes for UPSC inner sections */
     .section-gradient-box {
       border-radius: 20px;
       padding: 2px;
@@ -297,12 +290,6 @@
     .section-upsc-2 { background: linear-gradient(135deg,#6366f1,#0ea5e9); }
     .section-upsc-3 { background: linear-gradient(135deg,#22c55e,#14b8a6); }
     .section-upsc-4 { background: linear-gradient(135deg,#eab308,#f97316); }
-
-    /* RPSC variants */
-    .section-rpsc-1 { background: linear-gradient(135deg,#22c55e,#16a34a); }
-    .section-rpsc-2 { background: linear-gradient(135deg,#0ea5e9,#0369a1); }
-    .section-rpsc-3 { background: linear-gradient(135deg,#a855f7,#6366f1); }
-    .section-rpsc-4 { background: linear-gradient(135deg,#f97316,#fb7185); }
 
     .section-gradient-inner .card-header {
       background: transparent;
@@ -339,7 +326,7 @@
         <div class="folder-grid">
 
           <!-- Registration -->
-          <div class="folder-card registration-card admin-only-prepify"
+          <div class="folder-card registration-card"
                onclick="openFolderSection('registration', this)">
             <div>
               <div class="folder-badge">
@@ -356,7 +343,7 @@
           </div>
 
           <!-- UPSC -->
-          <div class="folder-card upsc-card admin-only-prepify"
+          <div class="folder-card upsc-card"
                onclick="openFolderSection('upsc', this)">
             <div>
               <div class="folder-badge">
@@ -366,23 +353,6 @@
               <div class="folder-title">UPSC</div>
               <div class="folder-subtitle">
                 Announcements, daily targets, tests, PYQs, notes and more.
-              </div>
-            </div>
-            <div class="folder-accent"></div>
-            <div class="folder-accent-2"></div>
-          </div>
-
-          <!-- RPSC -->
-          <div class="folder-card rpsc-card admin-only-rpsc"
-               onclick="openFolderSection('rpsc', this)">
-            <div>
-              <div class="folder-badge">
-                <span class="folder-icon">🏛️</span>
-                <span>RPSC Dashboard</span>
-              </div>
-              <div class="folder-title">RPSC</div>
-              <div class="folder-subtitle">
-                Registrations, test series, PYQs, notes, quotes and more.
               </div>
             </div>
             <div class="folder-accent"></div>
@@ -430,7 +400,6 @@
               <select id="filterExam" class="form-select form-select-sm" style="width:auto;">
                 <option value="">All Exams</option>
                 <option value="UPSC CSE">UPSC CSE</option>
-                <option value="RPSC">RPSC</option>
               </select>
               <select id="filterStatus" class="form-select form-select-sm" style="width:auto;">
                 <option value="">All Status</option>
@@ -515,7 +484,7 @@
                     </div>
                   </div>
 
-                  <!-- UPSC Daily Targets (colorful) -->
+                  <!-- UPSC Daily Targets (latest only) -->
                   <div class="col-md-6">
                     <div class="section-gradient-box section-upsc-2">
                       <div class="card h-100 section-gradient-inner feature-card upsc">
@@ -774,248 +743,6 @@
         </div><!-- card -->
       </section>
 
-      <!-- RPSC CONTENT VIEW -->
-      <section id="view-rpsc" class="d-none">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-          <h4 class="mb-0">RPSC Dashboard Content</h4>
-          <button class="btn btn-link btn-sm text-info" onclick="showHome()">← Back to Sections</button>
-        </div>
-
-        <div class="card mb-4 feature-card rpsc">
-          <div class="card-header">
-            <h5 class="mb-0">RPSC Dashboard Content</h5>
-            <small class="text-muted">
-              RPSC dashboard ke saare sections yahan se update honge.
-            </small>
-          </div>
-          <div class="card-body">
-            <div class="tab-content pt-3">
-              <div class="tab-pane fade show active" id="rpsc-pane" role="tabpanel">
-                <div class="row g-3">
-
-                  <!-- RPSC Announcements -->
-                  <div class="col-md-6">
-                    <div class="section-gradient-box section-rpsc-1">
-                      <div class="card h-100 section-gradient-inner feature-card rpsc">
-                        <div class="card-header d-flex justify-content-between align-items-center">
-                          <span>RPSC Announcements</span>
-                          <small id="rpscannouncementsmsg" class="text-muted small"></small>
-                        </div>
-                        <div class="card-body">
-                          <div class="mb-2">
-                            <label class="form-label small">Section Title</label>
-                            <input id="rpscannouncementstitle"
-                                   class="form-control form-control-sm section-title-input"
-                                   placeholder="e.g. Important Updates (RPSC)">
-                          </div>
-                          <div class="mb-2">
-                            <label class="form-label small">Items (each line one announcement)</label>
-                            <textarea id="rpscannouncementsitems"
-                                      class="form-control form-control-sm section-items"
-                                      placeholder="New batch for RAS&#10;Important circulars"></textarea>
-                          </div>
-                          <div>
-                            <label class="form-label small">Last saved (shown to students)</label>
-                            <textarea id="rpscannouncementslast"
-                                      class="form-control form-control-sm section-last"
-                                      readonly></textarea>
-                          </div>
-                        </div>
-                        <div class="card-footer text-end">
-                          <button class="btn btn-sm btn-primary"
-                                  onclick="saveSection('RPSC','announcements')">Save</button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- RPSC Daily Targets -->
-                  <div class="col-md-6">
-                    <div class="section-gradient-box section-rpsc-2">
-                      <div class="card h-100 section-gradient-inner feature-card rpsc">
-                        <div class="card-header d-flex justify-content-between align-items-center">
-                          <span>RPSC Daily Targets</span>
-                          <small id="rpscdailyTargetsmsg" class="text-muted small"></small>
-                        </div>
-                        <div class="card-body">
-                          <div class="mb-2">
-                            <label class="form-label small">Section Title (Date + note)</label>
-                            <input id="rpscdailyTargetstitle"
-                                   class="form-control form-control-sm section-title-input"
-                                   placeholder="e.g. 05 Jan 2026 - Today's Targets (RPSC)">
-                          </div>
-                          <div class="mb-2">
-                            <label class="form-label small">Items (each line one target)</label>
-                            <textarea id="rpscdailyTargetsitems"
-                                      class="form-control form-control-sm section-items"
-                                      placeholder="Rajasthan polity&#10;Current affairs notes"></textarea>
-                          </div>
-                          <div>
-                            <label class="form-label small">Last saved (shown to students)</label>
-                            <textarea id="rpscdailyTargetslast"
-                                      class="form-control form-control-sm section-last"
-                                      readonly></textarea>
-                          </div>
-                        </div>
-                        <div class="card-footer text-end">
-                          <button class="btn btn-sm btn-primary"
-                                  onclick="saveSection('RPSC','dailyTargets')">Save</button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- RPSC Mock Tests -->
-                  <div class="col-md-6">
-                    <div class="section-gradient-box section-rpsc-3">
-                      <div class="card h-100 section-gradient-inner feature-card rpsc">
-                        <div class="card-header d-flex justify-content-between align-items-center">
-                          <span>RPSC Mock Tests</span>
-                          <small id="rpscmockTestsmsg" class="text-muted small"></small>
-                        </div>
-                        <div class="card-body">
-                          <div class="mb-2">
-                            <label class="form-label small">Section Title</label>
-                            <input id="rpscmockTeststitle"
-                                   class="form-control form-control-sm section-title-input"
-                                   placeholder="e.g. Full-length Tests (RPSC)">
-                          </div>
-                          <div class="mb-2">
-                            <label class="form-label small">Items (each line test link)</label>
-                            <textarea id="rpscmockTestsitems"
-                                      class="form-control form-control-sm section-items"
-                                      placeholder="RPSC FLT-1 - Drive link"></textarea>
-                          </div>
-                          <div>
-                            <label class="form-label small">Last saved (shown to students)</label>
-                            <textarea id="rpscmockTestslast"
-                                      class="form-control form-control-sm section-last"
-                                      readonly></textarea>
-                          </div>
-                        </div>
-                        <div class="card-footer text-end">
-                          <button class="btn btn-sm btn-primary"
-                                  onclick="saveSection('RPSC','mockTests')">Save</button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- RPSC Test Series -->
-                  <div class="col-md-6">
-                    <div class="section-gradient-box section-rpsc-4">
-                      <div class="card h-100 d-flex flex-column section-gradient-inner feature-card rpsc">
-                        <div class="card-header">
-                          <span>RPSC Test Series</span>
-                        </div>
-                        <div class="card-body d-flex justify-content-center align-items-center">
-                          <button type="button"
-                                  class="btn btn-outline-secondary upload-folder-btn"
-                                  onclick="openFolder('RPSC','testSeries')">
-                            Open folder to upload Test Series
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- RPSC PYQs -->
-                  <div class="col-md-6">
-                    <div class="section-gradient-box section-rpsc-1">
-                      <div class="card h-100 d-flex flex-column section-gradient-inner feature-card rpsc">
-                        <div class="card-header">
-                          <span>RPSC PYQs</span>
-                        </div>
-                        <div class="card-body d-flex justify-content-center align-items-center">
-                          <button type="button"
-                                  class="btn btn-outline-secondary upload-folder-btn"
-                                  onclick="openFolder('RPSC','pyqPapers')">
-                            Open folder to upload PYQs
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- RPSC Books & Materials -->
-                  <div class="col-md-6">
-                    <div class="section-gradient-box section-rpsc-2">
-                      <div class="card h-100 d-flex flex-column section-gradient-inner feature-card rpsc">
-                        <div class="card-header">
-                          <span>RPSC Books & Materials</span>
-                        </div>
-                        <div class="card-body d-flex justify-content-center align-items-center">
-                          <button type="button"
-                                  class="btn btn-outline-secondary upload-folder-btn"
-                                  onclick="openFolder('RPSC','books')">
-                            Open folder to upload Books / Materials
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- RPSC Notes & PDFs -->
-                  <div class="col-md-6">
-                    <div class="section-gradient-box section-rpsc-3">
-                      <div class="card h-100 d-flex flex-column section-gradient-inner feature-card rpsc">
-                        <div class="card-header">
-                          <span>RPSC Notes & PDFs</span>
-                        </div>
-                        <div class="card-body d-flex justify-content-center align-items-center">
-                          <button type="button"
-                                  class="btn btn-outline-secondary upload-folder-btn"
-                                  onclick="openFolder('RPSC','notesPdfs')">
-                            Open folder to upload Notes / PDFs
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- RPSC Quotes -->
-                  <div class="col-md-6">
-                    <div class="section-gradient-box section-rpsc-4">
-                      <div class="card h-100 section-gradient-inner feature-card rpsc">
-                        <div class="card-header d-flex justify-content-between align-items-center">
-                          <span>RPSC Path Pradarshak Quotes</span>
-                          <small id="rpscquotesmsg" class="text-muted small"></small>
-                        </div>
-                        <div class="card-body">
-                          <div class="mb-2">
-                            <label class="form-label small">Section Title</label>
-                            <input id="rpscquotestitle"
-                                   class="form-control form-control-sm section-title-input"
-                                   placeholder="e.g. Path Pradarshak (RPSC)">
-                          </div>
-                          <div class="mb-2">
-                            <label class="form-label small">Items (each line one quote)</label>
-                            <textarea id="rpscquotesitems"
-                                      class="form-control form-control-sm section-items"
-                                      placeholder="Hard work in silence; result in RPSC hall."></textarea>
-                          </div>
-                          <div>
-                            <label class="form-label small">Last saved (shown to students)</label>
-                            <textarea id="rpscquoteslast"
-                                      class="form-control form-control-sm section-last"
-                                      readonly></textarea>
-                          </div>
-                        </div>
-                        <div class="card-footer text-end">
-                          <button class="btn btn-sm btn-primary"
-                                  onclick="saveSection('RPSC','quotes')">Save</button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                </div><!-- row -->
-              </div><!-- rpsc-pane -->
-            </div><!-- tab-content -->
-          </div><!-- card-body -->
-        </div><!-- card -->
-      </section>
-
     </main>
   </div>
 </div>
@@ -1023,7 +750,6 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-  // FIXED: URL ko string banaya
   const SCRIPTURL = "https://script.google.com/macros/s/AKfycbzyvzuU8GqKfyeJ4hmP0EAKYzm4gNndftUj7eVOJXze-Z_9rFDYPeUyJfvGWG3Tg87SGg/exec";
 
   let registrationsData = [];
@@ -1033,7 +759,6 @@
     document.getElementById('home-folders').classList.add('d-none');
     document.getElementById('view-registrations').classList.add('d-none');
     document.getElementById('view-upsc').classList.add('d-none');
-    document.getElementById('view-rpsc').classList.add('d-none');
   }
 
   function showHome() {
@@ -1048,26 +773,9 @@
     } else if (section === 'upsc') {
       document.getElementById('view-upsc').classList.remove('d-none');
       loadDashboardContentForAdmin('UPSC');
-    } else if (section === 'rpsc') {
-      document.getElementById('view-rpsc').classList.remove('d-none');
-      loadDashboardContentForAdmin('RPSC');
     } else {
       showHome();
     }
-  }
-
-  function applyEmailRole(email) {
-    const lower = (email || '').toLowerCase();
-    const isPrepify = (lower === 'prepifycse@gmail.com');
-
-    document.querySelectorAll('.admin-only-prepify').forEach(el => {
-      el.classList.toggle('d-none', !isPrepify);
-    });
-    document.querySelectorAll('.admin-only-rpsc').forEach(el => {
-      el.classList.toggle('d-none', isPrepify);
-    });
-
-    showHome();
   }
 
   function safeFetchJson(url, options) {
@@ -1261,7 +969,7 @@
       .catch(err => console.error('sendLoginMail error', err));
   }
 
-  // ------------ DASHBOARD CONTENT (UPSC / RPSC) ------------
+  // ------------ DASHBOARD CONTENT (UPSC) ------------
   function saveSection(exam, sectionKey) {
     const prefix = exam.toLowerCase();
     const key = sectionKey;
@@ -1313,81 +1021,78 @@
       });
   }
 
-  // UPSC Daily Targets custom save
- // UPSC Daily Targets: Subject 1 + Subject 2 + Others (same format as UPSC dashboard)
-function saveUpscDailyTargets() {
-  const title = document.getElementById('upscdailyTargetstitle').value.trim();
+  // UPSC Daily Targets: Subject 1 + Subject 2 + Others (latest only – overwrite)
+  function saveUpscDailyTargets() {
+    const title = document.getElementById('upscdailyTargetstitle').value.trim();
 
-  // Subject 1
-  const s1 = document.getElementById('upscdailyTargetsSubject1').value.trim();
-  const t1 = document.getElementById('upscdailyTargetsTopics1').value.trim();
+    // Subject 1
+    const s1 = document.getElementById('upscdailyTargetsSubject1').value.trim();
+    const t1 = document.getElementById('upscdailyTargetsTopics1').value.trim();
 
-  // Subject 2
-  const s2 = document.getElementById('upscdailyTargetsSubject2').value.trim();
-  const t2 = document.getElementById('upscdailyTargetsTopics2').value.trim();
+    // Subject 2
+    const s2 = document.getElementById('upscdailyTargetsSubject2').value.trim();
+    const t2 = document.getElementById('upscdailyTargetsTopics2').value.trim();
 
-  // Others (each line one target)
-  const othersRaw = document.getElementById('upscdailyTargetsitems').value
-    .split('\n')
-    .map(l => l.trim())
-    .filter(Boolean);
+    // Others (each line one target)
+    const othersRaw = document.getElementById('upscdailyTargetsitems').value
+      .split('\n')
+      .map(l => l.trim())
+      .filter(Boolean);
 
-  // Block 1 = Subject 1 section
-  const lines1 = [];
-  if (s1) lines1.push('Subject 1: ' + s1);
-  if (t1) lines1.push('Topics 1: ' + t1);
-  const block1 = lines1.join('\n');
+    // Block 1 = Subject 1 section
+    const lines1 = [];
+    if (s1) lines1.push('Subject 1: ' + s1);
+    if (t1) lines1.push('Topics 1: ' + t1);
+    const block1 = lines1.join('\n');
 
-  // Block 2 = Subject 2 section
-  const lines2 = [];
-  if (s2) lines2.push('Subject 2: ' + s2);
-  if (t2) lines2.push('Topics 2: ' + t2);
-  const block2 = lines2.join('\n');
+    // Block 2 = Subject 2 section
+    const lines2 = [];
+    if (s2) lines2.push('Subject 2: ' + s2);
+    if (t2) lines2.push('Topics 2: ' + t2);
+    const block2 = lines2.join('\n');
 
-  // Block 3+ = Others section
-  const blockOthers = othersRaw.join('\n');
+    // Block 3+ = Others section
+    const blockOthers = othersRaw.join('\n');
 
-  // Final text – renderDailyTargets() isi format ko 3 sections me tod raha hai
-  const finalTxt = [block1, block2, blockOthers]
-    .filter(b => b && b.trim().length > 0)
-    .join('\n\n');
+    // Final text – ye hi latest daily target hoga, purana replace ho jayega
+    const finalTxt = [block1, block2, blockOthers]
+      .filter(b => b && b.trim().length > 0)
+      .join('\n\n');
 
-  // Backend ke liye payload: examType, sectionKey, title, items (ek long string)
-  const payload = {
-    examType: 'UPSC',
-    sectionKey: 'dailyTargets',
-    title: title,
-    items: finalTxt
-  };
+    const payload = {
+      examType: 'UPSC',
+      sectionKey: 'dailyTargets',
+      title: title,
+      items: finalTxt
+    };
 
-  const msgEl = document.getElementById('upscdailyTargetsmsg');
-  msgEl.textContent = 'Saving...';
+    const msgEl = document.getElementById('upscdailyTargetsmsg');
+    msgEl.textContent = 'Saving...';
 
-  // URL-encoded form POST
-  const formData = new URLSearchParams();
-  formData.append('action', 'saveDashboardSection');
-  formData.append('payload', JSON.stringify(payload));
+    const formData = new URLSearchParams();
+    formData.append('action', 'saveDashboardSection');
+    formData.append('payload', JSON.stringify(payload));
 
-  fetch(SCRIPTURL, {
-    method: 'POST',
-    body: formData
-  })
-    .then(res => res.json())
-    .then(data => {
-      if (!data || !data.success) {
-        throw new Error(data && data.message ? data.message : 'Failed to save');
-      }
-      msgEl.textContent = 'Saved ✔';
-      document.getElementById('upscdailyTargetslast').value = finalTxt;
-      setTimeout(() => { msgEl.textContent = ''; }, 2000);
+    fetch(SCRIPTURL, {
+      method: 'POST',
+      body: formData
     })
-    .catch(err => {
-      console.error('saveUpscDailyTargets error:', err);
-      msgEl.textContent = 'Error ❌';
-      setTimeout(() => { msgEl.textContent = ''; }, 3000);
-    });
-}
-  
+      .then(res => res.json())
+      .then(data => {
+        if (!data || !data.success) {
+          throw new Error(data && data.message ? data.message : 'Failed to save');
+        }
+        msgEl.textContent = 'Saved ✔';
+        document.getElementById('upscdailyTargetslast').value = finalTxt;
+        setTimeout(() => { msgEl.textContent = ''; }, 2000);
+      })
+      .catch(err => {
+        console.error('saveUpscDailyTargets error:', err);
+        msgEl.textContent = 'Error ❌';
+        setTimeout(() => { msgEl.textContent = ''; }, 3000);
+      });
+  }
+
   // ------------ FOLDER OPEN (DRIVE) ------------
   function openFolder(exam, folderKey) {
     const url = SCRIPTURL + '?action=openFolder&exam=' + encodeURIComponent(exam) +
@@ -1439,9 +1144,9 @@ function saveUpscDailyTargets() {
               const t2 = (blocks[1] || '').split('\n');
 
               const s1 = (t1.find(l => l.startsWith('Subject 1:')) || '').replace('Subject 1:','').trim();
-              const p1 = (t1.find(l => l.startsWith('Topics 1:')) || '').replace('Topics 1:','').trim();
+              const p1 = (t1.find(l => l.startsWith('Topics 1:'))  || '').replace('Topics 1:','').trim();
               const s2 = (t2.find(l => l.startsWith('Subject 2:')) || '').replace('Subject 2:','').trim();
-              const p2 = (t2.find(l => l.startsWith('Topics 2:')) || '').replace('Topics 2:','').trim();
+              const p2 = (t2.find(l => l.startsWith('Topics 2:'))  || '').replace('Topics 2:','').trim();
 
               subj1El.value   = s1;
               topics1El.value = p1;
@@ -1480,7 +1185,8 @@ function saveUpscDailyTargets() {
       return;
     }
 
-    applyEmailRole(email || '');
+    // Ab role-based RPSC/UPSC toggle ki zaroorat nahi, sirf UPSC admin panel hai
+    showHome();
 
     const examFilterEl = document.getElementById('filterExam');
     const statusFilterEl = document.getElementById('filterStatus');
