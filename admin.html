@@ -1356,23 +1356,31 @@ function saveUpscDailyTargets() {
     examType: 'UPSC',
     sectionKey: 'dailyTargets',
     title: title,
-    items: finalTxt      // yahan string dena better hai; backend lines split karega
+    items: finalTxt
   };
 
   const msgEl = document.getElementById('upscdailyTargetsmsg');
   msgEl.textContent = 'Saving...';
 
-  // Form-style POST: action=saveDashboardSection + payload JSON string
+  // YAHAN formData define karo
   const formData = new URLSearchParams();
   formData.append('action', 'saveDashboardSection');
   formData.append('payload', JSON.stringify(payload));
 
   fetch(SCRIPTURL, {
     method: 'POST',
-    body: formData      // Content-Type = application/x-www-form-urlencoded (auto)
+    body: formData
   })
-    .then(res => res.json())
-    .then(data => {
+    .then(async res => {
+      const text = await res.text();
+      console.log('RAW response:', text);
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch (e) {
+        throw new Error('Bad JSON from server: ' + text);
+      }
+
       if (!data || !data.success) {
         throw new Error(data && data.message ? data.message : 'Failed to save');
       }
