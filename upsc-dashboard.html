@@ -1,1446 +1,1230 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>UPSC CSE Dashboard - GyaanSetu</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-
-body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: radial-gradient(circle at top, #eef2ff 0, #f5f7fa 45%, #e0f2fe 100%);
-  min-height: 100vh;
-}
-
-/* HEADER */
-.header {
-  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 40%, #ec4899 100%);
-  color: white;
-  padding: 18px 32px;
-  box-shadow: 0 12px 32px rgba(15,23,42,0.35);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.header h1 {
-  font-size: 24px;
-  letter-spacing: 0.03em;
-}
-
-.header-right {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 14px;
-}
-
-.header-right span {
-  padding: 6px 12px;
-  border-radius: 999px;
-  background: rgba(15,23,42,0.25);
-  border: 1px solid rgba(255,255,255,0.4);
-}
-
-.logout-btn {
-  background: linear-gradient(135deg, rgba(255,255,255,0.4), rgba(255,255,255,0.15));
-  color: white;
-  padding: 8px 16px;
-  border-radius: 999px;
-  border: 1px solid rgba(255,255,255,0.8);
-  cursor: pointer;
-  font-size: 13px;
-  font-weight: 600;
-}
-
-.logout-btn:hover {
-  background: rgba(255,255,255,0.6);
-  color: #1f2937;
-}
-
-/* MAIN CONTAINER + GRID */
-.container {
-  max-width: 1400px;
-  margin: 25px auto 40px;
-  padding: 0 20px 40px;
-  position: relative;
-}
-
-.section-row {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: 22px;
-  margin-bottom: 26px;
-  position: relative;
-}
-
-/* vertical subtle divider between two cards */
-.section-row.two-col::after {
-  content: "";
-  position: absolute;
-  inset: 0 50%;
-  transform: translateX(-50%);
-  width: 2px;
-  max-width: 2px;
-  background: linear-gradient(to bottom, transparent, rgba(148,163,184,0.35), transparent);
-  pointer-events: none;
-}
-
-/* SECTION CARD */
-.section-card {
-  background: white;
-  padding: 22px 22px 20px;
-  border-radius: 18px;
-  box-shadow: 0 12px 30px rgba(15,23,42,0.10);
-  position: relative;
-  overflow: hidden;
-}
-
-.section-card::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at top right, rgba(99,102,241,0.16), transparent 55%);
-  opacity: 0.9;
-  pointer-events: none;
-}
-
-.section-card-inner {
-  position: relative;
-  z-index: 1;
-}
-
-.section-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 14px;
-}
-
-.section-header h2 {
-  font-size: 16px;
-  color: #111827;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.section-header h2 span.icon {
-  font-size: 18px;
-}
-
-.section-header span {
-  font-size: 12px;
-  color: #6b7280;
-}
-
-/* COUNTDOWN */
-.exam-countdown {
-  background: linear-gradient(135deg, #f97316 0%, #ec4899 40%, #6366f1 100%);
-  color: white;
-  padding: 24px 24px 22px;
-  border-radius: 18px;
-  box-shadow: 0 20px 40px rgba(15,23,42,0.40);
-  margin-bottom: 26px;
-  position: relative;
-  overflow: hidden;
-}
-
-.exam-countdown::after {
-  content: "";
-  position: absolute;
-  right: -40px;
-  bottom: -40px;
-  width: 180px;
-  height: 180px;
-  border-radius: 999px;
-  background: rgba(255,255,255,0.2);
-  filter: blur(2px);
-}
-
-.exam-countdown h2 {
-  font-size: 20px;
-  margin-bottom: 4px;
-}
-
-.exam-subtitle {
-  font-size: 13px;
-  opacity: 0.92;
-  margin-bottom: 15px;
-}
-
-.countdown-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(140px, 1fr));
-  gap: 15px;
-  margin: 15px 0 8px;
-}
-
-.countdown-item {
-  background: rgba(15,23,42,0.2);
-  padding: 12px;
-  border-radius: 12px;
-  text-align: center;
-  border: 1px solid rgba(255,255,255,0.25);
-}
-
-.countdown-item .number {
-  font-size: 28px;
-  font-weight: 700;
-}
-
-.countdown-item .label {
-  font-size: 13px;
-  opacity: 0.9;
-}
-
-.quote {
-  font-style: italic;
-  margin-top: 10px;
-  font-size: 14px;
-  opacity: 0.96;
-}
-
-/* UPDATE PROGRESS BOXES */
-.update-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-  gap: 16px;
-}
-
-.update-box {
-  background: #f9fafb;
-  border-radius: 12px;
-  padding: 14px 16px;
-  border: 1px solid #e5e7eb;
-}
-
-.update-box label {
-  display: block;
-  margin-bottom: 6px;
-  color: #4b5563;
-  font-size: 13px;
-  font-weight: 600;
-}
-
-.update-box input {
-  width: 100%;
-  padding: 9px 11px;
-  border-radius: 8px;
-  border: 2px solid #e5e7eb;
-  font-size: 14px;
-  background: white;
-}
-
-.update-box input:focus {
-  outline: none;
-  border-color: #6366f1;
-  box-shadow: 0 0 0 3px rgba(99,102,241,0.25);
-}
-
-.update-actions {
-  display: flex;
-  align-items: flex-end;
-  justify-content: flex-start;
-}
-
-/* BUTTONS */
-.btn {
-  padding: 10px 16px;
-  border-radius: 999px;
-  border: none;
-  cursor: pointer;
-  font-size: 13px;
-  font-weight: 600;
-  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 40%, #22c55e 100%);
-  color: white;
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-}
-
-.btn:hover {
-  box-shadow: 0 10px 20px rgba(37,99,235,0.35);
-  transform: translateY(-1px);
-}
-
-/* Telegram button */
-.btn-telegram {
-  background: linear-gradient(135deg, #0ea5e9 0%, #0369a1 100%);
-  padding: 12px 20px;
-  font-size: 15px;
-  text-align: center;
-  width: 100%;
-}
-
-.btn-telegram:hover {
-  box-shadow: 0 10px 20px rgba(14,165,233,0.45);
-}
-
-/* STATS CARDS */
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-  gap: 14px;
-}
-
-.stat-card {
-  background: #f9fafb;
-  padding: 14px 16px;
-  border-radius: 14px;
-  box-shadow: 0 2px 10px rgba(148,163,184,0.25);
-  border-left: 4px solid #6366f1;
-}
-
-.stat-card h3 {
-  color: #4b5563;
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-bottom: 6px;
-}
-
-.stat-card .number {
-  font-size: 22px;
-  font-weight: 700;
-  color: #111827;
-  margin-bottom: 4px;
-}
-
-.stat-card .meta {
-  font-size: 11px;
-  color: #6b7280;
-}
-
-/* LIST/EMPTY */
-.empty-state {
-  text-align: center;
-  padding: 24px 10px;
-  color: #9ca3af;
-  font-size: 13px;
-}
-
-.list {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  max-height: 260px;
-  overflow-y: auto;
-  padding-right: 4px;
-}
-
-.tag {
-  display: inline-block;
-  padding: 2px 8px;
-  border-radius: 999px;
-  font-size: 11px;
-  background: #eef2ff;
-  color: #4f46e5;
-  margin-left: 6px;
-}
-
-/* SYLLABUS */
-.syllabus-item {
-  display: flex;
-  justify-content: space-between;
-  font-size: 13px;
-  padding: 7px 0 4px;
-}
-
-.progress-bar {
-  width: 100%;
-  height: 6px;
-  border-radius: 999px;
-  background: #e5e7eb;
-  overflow: hidden;
-  margin-bottom: 10px;
-}
-
-.progress-fill {
-  height: 100%;
-  background: linear-gradient(90deg, #6366f1 0%, #22c55e 100%);
-  width: 0%;
-}
-
-/* COMMUNITY & HELP */
-.community-help-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 18px;
-}
-
-.community-box {
-  background: linear-gradient(135deg, #0ea5e9 0%, #0369a1 100%);
-  color: white;
-  padding: 22px;
-  border-radius: 16px;
-  text-align: center;
-  box-shadow: 0 12px 28px rgba(8,47,73,0.35);
-}
-
-.community-box h3 {
-  font-size: 16px;
-  margin-bottom: 10px;
-  font-weight: 600;
-}
-
-.community-box p {
-  font-size: 13px;
-  opacity: 0.9;
-  margin-bottom: 12px;
-  line-height: 1.5;
-}
-
-.help-box {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-  color: white;
-  padding: 22px;
-  border-radius: 16px;
-  text-align: center;
-  box-shadow: 0 12px 28px rgba(6,95,70,0.35);
-}
-
-.help-box h3 {
-  font-size: 16px;
-  margin-bottom: 10px;
-  font-weight: 600;
-}
-
-.help-box p {
-  font-size: 13px;
-  opacity: 0.9;
-  margin-bottom: 8px;
-  line-height: 1.5;
-}
-
-.help-box .email {
-  font-size: 14px;
-  font-weight: 600;
-  margin-top: 10px;
-  padding: 10px 12px;
-  background: rgba(255,255,255,0.15);
-  border-radius: 10px;
-  word-break: break-all;
-}
-
-.help-box .email a {
-  color: white;
-  text-decoration: none;
-}
-
-.help-box .email a:hover {
-  text-decoration: underline;
-}
-
-@media (max-width: 900px) {
-  .section-row {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .section-row.two-col::after {
-    display: none;
-  }
-}
-
-@media (max-width: 640px) {
-  .header {
-    padding: 14px 16px;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
-  }
-  .container {
-    padding: 0 14px 30px;
-  }
-}
-</style>
-
-<script>
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzyvzuU8GqKfyeJ4hmP0EAKYzm4gNndftUj7eVOJXze-Z_9rFDYPeUyJfvGWG3Tg87SGg/exec';
-const ANSWER_FORM_URL = 'https://forms.gle/EKGVgMSMFEErC5C19';
-
-// Drive folders (account B) – UPSC
-const UPSC_FOLDER_LINKS = {
-  testSeries:     'https://drive.google.com/drive/folders/... 1bc2B2m6PzdUjbsJlZiRgq1gifccooCsx',
-  pyqPapers:      'https://drive.google.com/drive/folders/1ZZtz226dMcQyT2cSa7x5K37NbVVeGHud',
-  books:          'https://drive.google.com/drive/folders/1ieWI_ejkVy8RdkKSVgP6svARf9NUJW5W',
-  currentAffairs: 'https://drive.google.com/drive/folders/1rLH3T-CU4fkI5FxAHACcXjjA6nPLY1hW'
-};
-
-// 24 May 2026, 9:00 AM IST
-const examDate = new Date('2026-05-24T09:00:00+05:30');
-// Countdown visible start: 3 Jan 2026, 8:00 AM IST
-const countdownStart = new Date('2026-01-03T08:00:00+05:30');
-
-(function guardAccess() {
-  const exam = localStorage.getItem('exam');
-  const userId = localStorage.getItem('userId');
-
-  if (!exam || !userId) {
-    window.location.href = 'index.html';
-    return;
-  }
-  if (exam !== 'UPSC CSE') {
-    window.location.href = 'index.html';
-    return;
-  }
-})();
-</script>
-</head>
-<body>
-<!-- HEADER -->
-<div class="header">
-  <h1>UPSC CSE Dashboard</h1>
-  <div class="header-right">
-    <span id="userName">Welcome</span>
-    <button class="logout-btn" onclick="logout()">Logout</button>
-  </div>
-</div>
-
-<div class="container">
-  <!-- COUNTDOWN -->
-  <section class="exam-countdown">
-    <h2>UPSC CSE Prelims 2026</h2>
-    <div class="exam-subtitle">
-      Stay consistent. Daily discipline decides your rank.
-    </div>
-    <div class="countdown-grid">
-      <div class="countdown-item">
-        <div class="number" id="daysLeft">0</div>
-        <div class="label">Days Left</div>
-      </div>
-      <div class="countdown-item">
-        <div class="number" id="hoursLeft">0</div>
-        <div class="label">Hours Left</div>
-      </div>
-    </div>
-    <div class="quote" id="dailyQuote">
-      The future belongs to those who believe in the beauty of their dreams.
-    </div>
-  </section>
-
-  <!-- ROW 1: Update Your Daily Progress (full width) -->
-  <section class="section-card">
-    <div class="section-card-inner">
-      <div class="section-header">
-        <h2><span class="icon">📈</span>Update Your Daily Progress</h2>
-        <span>Only for your UPSC CSE preparation</span>
-      </div>
-      <form id="progressForm" onsubmit="updateProgress(event)">
-        <div class="update-grid">
-          <div class="update-box">
-            <label for="studyHours">Study Hours Today</label>
-            <input type="number" id="studyHours" min="0" step="0.5" placeholder="e.g. 6" required>
-          </div>
-          <div class="update-box">
-            <label for="topicsCovered">Topics Covered Today</label>
-            <input type="number" id="topicsCovered" min="0" step="1" placeholder="e.g. 5" required>
-          </div>
-          <div class="update-box">
-            <label for="mockTests">Mock Tests Completed</label>
-            <input type="number" id="mockTests" min="0" step="1" placeholder="e.g. 1" required>
-          </div>
-          <div class="update-box update-actions">
-            <button type="submit" class="btn">💾 Save & Add to Totals</button>
-          </div>
-        </div>
-      </form>
-    </div>
-  </section>
-
-  <!-- ROW 2: Overall Totals (left) + Analytics (right) -->
-  <div class="section-row two-col">
-    <!-- OVERALL TOTALS -->
-    <section class="section-card">
-      <div class="section-card-inner">
-        <div class="section-header">
-          <h2><span class="icon">📊</span>Overall Progress Totals</h2>
-          <span>Calculated from your daily entries</span>
-        </div>
-        <div class="stats-grid">
-          <div class="stat-card">
-            <h3>Total Study Hours</h3>
-            <div class="number" id="totalHours">0</div>
-            <div class="meta">Prelims + Mains combined</div>
-          </div>
-          <div class="stat-card">
-            <h3>Topics Covered</h3>
-            <div class="number" id="totalTopics">0</div>
-            <div class="meta">NCERT + Standard books</div>
-          </div>
-          <div class="stat-card">
-            <h3>Mock Tests</h3>
-            <div class="number" id="totalTests">0</div>
-            <div class="meta">Prelims + GS Mains tests</div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- PERFORMANCE ANALYTICS -->
-    <section class="section-card">
-      <div class="section-card-inner">
-        <div class="section-header">
-          <h2><span class="icon">📉</span>Performance Analytics</h2>
-          <span>Average effort & consistency streak</span>
-        </div>
-        <div class="stats-grid">
-          <div class="stat-card">
-            <h3>Average Study Hours</h3>
-            <div class="number" id="avgHours">0</div>
-            <div class="meta">Per active study day</div>
-          </div>
-          <div class="stat-card">
-            <h3>Current Streak</h3>
-            <div class="number" id="streakDays">0</div>
-            <div class="meta">Consecutive days with study log</div>
-          </div>
-        </div>
-      </div>
-    </section>
-  </div>
-
-  <!-- ROW 3: Announcements (left) + Daily Targets (right) -->
-  <div class="section-row two-col">
-    <!-- ANNOUNCEMENTS -->
-    <section class="section-card">
-      <div class="section-card-inner">
-        <div class="section-header">
-          <h2><span class="icon">📣</span>Announcements</h2>
-          <span>UPSC CSE related updates from admin</span>
-        </div>
-        <div id="announcements">
-          <div class="empty-state">No announcements yet.... Admin will update here.</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- DAILY TARGETS (3 sections) -->
-    <section class="section-card">
-      <div class="section-card-inner">
-        <div class="section-header">
-          <h2><span class="icon">🎯</span>Daily Targets</h2>
-          <span>Subject wise targets for today</span>
-        </div>
-
-        <!-- Subject 1 -->
-        <h3 style="font-size: 14px; color:#4b5563; margin-bottom:6px;">Subject - 1</h3>
-        <div id="subject1Targets">
-          <div class="empty-state">Admin will update Subject 1 targets here.</div>
-        </div>
-
-        <!-- Subject 2 -->
-        <h3 style="font-size: 14px; color:#4b5563; margin:14px 0 6px;">Subject - 2</h3>
-        <div id="subject2Targets">
-          <div class="empty-state">Admin will update Subject 2 targets here.</div>
-        </div>
-
-        <!-- Other Targets -->
-        <h3 style="font-size: 14px; color:#4b5563; margin:14px 0 6px;">Other Targets</h3>
-        <div id="otherTargets">
-          <div class="empty-state">Admin will add other targets here.</div>
-        </div>
-      </div>
-    </section>
-  </div>
-
-  <!-- ROW 4: Test Portal (left) + Study Materials (right) -->
-  <div class="section-row two-col">
-    <!-- TEST PORTAL -->
-    <section class="section-card">
-      <div class="section-card-inner">
-        <div class="section-header">
-          <h2><span class="icon">📝</span>Test Portal</h2>
-          <span>Mock tests · Test series · PYQs</span>
-        </div>
-
-        <h3 style="font-size: 14px; color:#4b5563; margin-bottom:8px;">Mock Tests</h3>
-        <div id="mockTestsList">
-          <div class="empty-state">Admin will create mock tests soon.</div>
-        </div>
-
-        <h3 style="font-size: 14px; color:#4b5563; margin:16px 0 8px;">Test Series</h3>
-        <div id="testSeriesList">
-          <div class="empty-state">Admin will upload test series soon.</div>
-        </div>
-
-        <h3 style="font-size: 14px; color:#4b5563; margin:16px 0 8px;">Previous Year Papers</h3>
-        <div id="pypList">
-          <div class="empty-state">Admin will upload PYQ PDFs soon.</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- STUDY MATERIALS -->
-    <section class="section-card">
-      <div class="section-card-inner">
-        <div class="section-header">
-          <h2><span class="icon">📚</span>Study Materials</h2>
-          <span>Books · Current Affairs</span>
-        </div>
-
-        <h3 style="font-size: 14px; color:#4b5563; margin-bottom:8px;">Books</h3>
-        <div id="booksList">
-          <div class="empty-state">Admin will upload books list soon.</div>
-        </div>
-
-        <h3 style="font-size: 14px; color:#4b5563; margin:16px 0 8px;">Current Affairs</h3>
-        <div id="currentAffairsList">
-          <div class="empty-state">Admin will upload current affairs soon.</div>
-        </div>
-      </div>
-    </section>
-  </div>
-
-  <!-- ROW 5: Syllabus Tracker (full width) -->
-  <section class="section-card">
-    <div class="section-card-inner">
-      <div class="section-header">
-        <h2><span class="icon">📌</span>Syllabus Tracker</h2>
-        <span>Prelims & Mains completion overview</span>
-      </div>
-
-      <div class="syllabus-item">
-        <span><strong>Prelims</strong></span>
-        <span id="prelimsPercent">0% Complete</span>
-      </div>
-      <div class="progress-bar">
-        <div class="progress-fill" id="prelimsBar" style="width: 0%"></div>
-      </div>
-
-      <div class="syllabus-item">
-        <span><strong>Mains</strong></span>
-        <span id="mainsPercent">0% Complete</span>
-      </div>
-      <div class="progress-bar">
-        <div class="progress-fill" id="mainsBar" style="width: 0%"></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ROW 6: Answer Writing (left) + placeholder (right) -->
-  <div class="section-row two-col">
-    <!-- ANSWER WRITING -->
-    <section class="section-card">
-      <div class="section-card-inner">
-        <div class="section-header">
-          <h2><span class="icon">✍️</span>Answer Writing</h2>
-          <span>Upload copies for evaluation</span>
-        </div>
-
-        <div class="update-grid">
-          <div class="update-box">
-            <label>Submit your answer copy</label>
-            <button type="button" class="btn" onclick="openAnswerForm()">
-              📤 Open Answer Writing Form
-            </button>
-            <p style="font-size:12px; color:#6b7280; margin-top:6px;">
-              Form me details bharke answer copy upload karein.... Status by default Under Evaluation hoga.
-            </p>
-          </div>
-        </div>
-
-        <h3 style="font-size: 14px; color:#4b5563; margin:18px 0 8px;">Your Submissions</h3>
-        <div id="answerSubmissions">
-          <div class="empty-state">You have not uploaded any answer copies yet.</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Placeholder / Future use -->
-    <section class="section-card">
-      <div class="section-card-inner">
-        <div class="section-header">
-          <h2><span class="icon">🧩</span>Coming Soon</h2>
-          <span>Future UPSC features</span>
-        </div>
-        <div class="empty-state">
-          New features / analytics yahan add kiye ja sakte hain in future.
-        </div>
-      </div>
-    </section>
-  </div>
-
-  <!-- ROW 7: Path Pradarshak (full width) -->
-  <section class="section-card">
-    <div class="section-card-inner">
-      <div class="section-header">
-        <h2><span class="icon">🌟</span>पथ प्रदर्शक</h2>
-        <span>Daily motivation for UPSC CSE</span>
-      </div>
-      <div id="motivationalQuotes">
-        <div class="empty-state">Admin will share motivational quotes soon.</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- COMMUNITY & HELP (full width) -->
-  <section class="section-card">
-    <div class="section-card-inner">
-      <div class="section-header">
-        <h2><span class="icon">🤝</span>Community & Help</h2>
-        <span>Discussions · Interaction · Support</span>
-      </div>
-      <div class="community-help-grid">
-        <div class="community-box">
-          <h3>Join for discussions and interaction</h3>
-          <p>
-            UPSC CSE aspirants ke liye dedicated group jahan par doubts, strategy aur answer writing par baat ho sakti hai.
-          </p>
-          <a
-            href="https://t.me/+MRQjtR76vh4zZDVl"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="btn btn-telegram"
-          >
-            Join UPSC Telegram Group
-          </a>
-        </div>
-        <div class="help-box">
-          <h3>Contact for queries</h3>
-          <p>
-            Agar aapko dashboard, content ya kisi aur cheez se related query ho, to mail par contact karein.
-          </p>
-          <div class="email">
-            Mail us at
-            <a href="mailto:Gyaansetu2026@gmail.com">Gyaansetu2026@gmail.com</a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-</div>
-
-<script>
-// ---------- Generic safe fetch helper ----------
-async function safeFetchJson(url, options = {}, retries = 1) {
-  try {
-    const res = await fetch(url, options);
-    if (!res.ok) {
-      throw new Error('HTTP ' + res.status);
-    }
-    return await res.json();
-  } catch (err) {
-    if (retries > 0) {
-      return safeFetchJson(url, options, retries - 1);
-    }
-    console.error('API error:', err);
-    throw err;
-  }
-}
-
-// Local fallback quotes
-const fallbackQuotes = [
-  'UPSC CSE ek marathon hai, sprint nahi. Har din ki mehnat tumhe LBSNAA ke kareeb le jaati hai.',
-  'LBSNAA tak ka safar ek-ek chapter, ek-ek mock test aur ek-ek disciplined din se banta hai.',
-  'Jab tak tum khud par vishwas rakhoge, Dholpur House ki list me tumhara naam likha ja sakta hai.',
-  'Apni preparation ko bojh nahi, zimmedari samjho. Officers isi soch se bante hain.',
-  'Aaj ka ek focused hour kal ki ek strong posting bana sakta hai.'
-];
-
-function getRandomFallbackQuote() {
-  return fallbackQuotes[Math.floor(Math.random() * fallbackQuotes.length)];
-}
-
-function setDailyQuote() {
-  const today = new Date().toISOString().slice(0, 10);
-  const storedDate = localStorage.getItem('upsc_daily_quote_date');
-  const storedQuote = localStorage.getItem('upsc_daily_quote_text');
-
-  if (storedDate === today && storedQuote) {
-    document.getElementById('dailyQuote').textContent = storedQuote;
-    return;
-  }
-
-  const finalText = getRandomFallbackQuote();
-  document.getElementById('dailyQuote').textContent = finalText;
-
-  localStorage.setItem('upsc_daily_quote_date', today);
-  localStorage.setItem('upsc_daily_quote_text', finalText);
-}
-
-// COUNTDOWN
-function updateCountdown() {
-  const now = new Date();
-
-  if (now < countdownStart) {
-    document.getElementById('daysLeft').textContent = 0;
-    document.getElementById('hoursLeft').textContent = 0;
-    return;
-  }
-
-  const diffMs = examDate.getTime() - now.getTime();
-
-  if (diffMs <= 0) {
-    document.getElementById('daysLeft').textContent = 0;
-    document.getElementById('hoursLeft').textContent = 0;
-    return;
-  }
-
-  const totalHours = Math.floor(diffMs / (1000 * 60 * 60));
-  const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-
-  document.getElementById('daysLeft').textContent = days;
-  document.getElementById('hoursLeft').textContent = totalHours;
-}
-
-function logout() {
-  if (confirm('Logout from GyaanSetu?')) {
-    localStorage.removeItem('userId');
-    localStorage.removeItem('name');
-    localStorage.removeItem('exam');
-    window.location.href = 'index.html';
-  }
-}
-
-// Answer Writing
-function openAnswerForm() {
-  window.open(ANSWER_FORM_URL, '_blank');
-}
-
-// STUDY PROGRESS
-function updateProgress(e) {
-  e.preventDefault();
-
-  const userId = localStorage.getItem('userId');
-  const exam   = localStorage.getItem('exam');
-
-  if (!userId || !exam) {
-    alert('Session expired. Please login again.');
-    window.location.href = 'index.html';
-    return;
-  }
-
-  const hours  = parseFloat(document.getElementById('studyHours').value) || 0;
-  const topics = parseInt(document.getElementById('topicsCovered').value || '0', 10);
-  const mocks  = parseInt(document.getElementById('mockTests').value || '0', 10);
-
-  const url = `${SCRIPT_URL}?action=logStudy`
-            + `&userId=${encodeURIComponent(userId)}`
-            + `&exam=${encodeURIComponent(exam)}`
-            + `&hours=${encodeURIComponent(hours)}`
-            + `&topics=${encodeURIComponent(topics)}`
-            + `&mocks=${encodeURIComponent(mocks)}`;
-
-  safeFetchJson(url)
-    .then(data => {
-      if (!data || !data.success) {
-        throw new Error(data && data.message ? data.message : 'Failed to save study log');
-      }
-      const totalsUrl = `${SCRIPT_URL}?action=getStudyTotals`
-                      + `&userId=${encodeURIComponent(userId)}`
-                      + `&exam=${encodeURIComponent(exam)}`;
-      return safeFetchJson(totalsUrl);
-    })
-    .then(totals => {
-      if (totals && totals.success) {
-        document.getElementById('totalHours').textContent  = totals.totalHours || 0;
-        document.getElementById('totalTopics').textContent = totals.totalTopics || 0;
-        document.getElementById('totalTests').textContent  = totals.totalMocks || 0;
-      } else {
-        throw new Error(totals && totals.message ? totals.message : 'Failed to load totals');
-      }
-      alert('Progress updated successfully!');
-      document.getElementById('progressForm').reset();
-      loadAnalytics();
-    })
-    .catch(err => {
-      console.error('Update progress error:', err);
-      alert('Error updating progress. Please try again later.');
-    });
-}
-
-function loadTotals() {
-  const userId = localStorage.getItem('userId');
-  const exam   = localStorage.getItem('exam');
-  if (!userId || !exam) return;
-
-  const totalsUrl = `${SCRIPT_URL}?action=getStudyTotals`
-                  + `&userId=${encodeURIComponent(userId)}`
-                  + `&exam=${encodeURIComponent(exam)}`;
-
-  safeFetchJson(totalsUrl)
-    .then(totals => {
-      if (totals && totals.success) {
-        document.getElementById('totalHours').textContent  = totals.totalHours || 0;
-        document.getElementById('totalTopics').textContent = totals.totalTopics || 0;
-        document.getElementById('totalTests').textContent  = totals.totalMocks || 0;
-      }
-    })
-    .catch(err => {
-      console.error('Load totals error:', err);
-    });
-}
-
-function loadAnalytics() {
-  const userId = localStorage.getItem('userId');
-  const exam   = localStorage.getItem('exam');
-  if (!userId || !exam) return;
-
-  const url = `${SCRIPT_URL}?action=getStudyAnalytics`
-            + `&userId=${encodeURIComponent(userId)}`
-            + `&exam=${encodeURIComponent(exam)}`;
-
-  safeFetchJson(url)
-    .then(data => {
-      if (!data || !data.success) return;
-      document.getElementById('avgHours').textContent =
-        (data.avgHours || 0).toFixed(1);
-      document.getElementById('streakDays').textContent =
-        data.streakDays || 0;
-    })
-    .catch(err => console.error('loadAnalytics error:', err));
-}
-
-// Announcements
-function renderAnnouncements(items) {
-  const container = document.getElementById('announcements');
-  container.innerHTML = '';
-  if (!items || !items.length) {
-    container.innerHTML = '<div class="empty-state">No announcements yet. Admin will update here.</div>';
-    return;
-  }
-
-  const list = document.createElement('div');
-  list.className = 'list';
-
-  items.forEach((it, index) => {
-    const row = document.createElement('div');
-    row.className = 'list-item';
-
-    const titleSpan = document.createElement('span');
-    titleSpan.textContent = typeof it === 'string' ? it : (it.text || it.title || '');
-
-    row.appendChild(titleSpan);
-
-    if (index === 0) {
-      row.style.fontWeight = '600';
-      row.style.background = '#eef2ff';
-      row.style.borderRadius = '6px';
-      row.style.padding = '6px 8px';
-    }
-
-    list.appendChild(row);
-  });
-
-  container.appendChild(list);
-}
-
-// Daily Targets – now split into 3 sections
-function renderDailyTargets(items) {
-  const s1Container = document.getElementById('subject1Targets');
-  const s2Container = document.getElementById('subject2Targets');
-  const otherContainer = document.getElementById('otherTargets');
-
-  s1Container.innerHTML = '';
-  s2Container.innerHTML = '';
-  otherContainer.innerHTML = '';
-
-  if (!items || !items.length) {
-    s1Container.innerHTML = '<div class="empty-state">Admin will update Subject 1 targets here.</div>';
-    s2Container.innerHTML = '<div class="empty-state">Admin will update Geography targets here.</div>';
-    otherContainer.innerHTML = '<div class="empty-state">Admin will add other targets here.</div>';
-    return;
-  }
-
-  // Admin side dailyTargets.items ek hi long string ya multiple strings ka array ho sakta hai
-  let txt = '';
-  if (items.length === 1 && typeof items[0] === 'string') {
-    txt = items[0];
-  } else {
-    txt = items
-      .map(raw => (typeof raw === 'string' ? raw : (raw.text || raw.title || '')))
-      .join('\n');
-  }
-
-  // 3 blocks: [Subject1] [Subject2] [others]
-  const blocks = txt.split(/\n\s*\n/);
-
-  const block1 = (blocks[0] || '').split('\n').map(l => l.trim()).filter(Boolean);
-  const block2 = (blocks[1] || '').split('\n').map(l => l.trim()).filter(Boolean);
-  const othersBlock = blocks.slice(2).join('\n');
-
-  let subject1 = '';
-  let topics1 = '';
-  let subject2 = '';
-  let topics2 = '';
-  const subject1Extra = [];
-  const subject2Extra = [];
-  const otherItems = [];
-
-  // Block 1: Subject 1 / Topics 1 / extra lines
-  block1.forEach(line => {
-    if (line.startsWith('Subject 1:')) {
-      subject1 = line.replace('Subject 1:', '').trim();
-    } else if (line.startsWith('Topics 1:')) {
-      topics1 = line.replace('Topics 1:', '').trim();
-    } else if (line) {
-      subject1Extra.push(line);
-    }
-  });
-
-  // Block 2: Subject 2 / Topics 2 / extra lines (Geography section)
-  block2.forEach(line => {
-    if (line.startsWith('Subject 2:')) {
-      subject2 = line.replace('Subject 2:', '').trim();
-    } else if (line.startsWith('Topics 2:')) {
-      topics2 = line.replace('Topics 2:', '').trim();
-    } else if (line) {
-      subject2Extra.push(line);
-    }
-  });
-
-  // Remaining blocks: other targets (each line ek target)
-  if (othersBlock) {
-    othersBlock
-      .split('\n')
-      .map(l => l.trim())
-      .filter(Boolean)
-      .forEach(l => otherItems.push(l));
-  }
-
-  // Subject 1 UI
-  if (subject1 || topics1 || subject1Extra.length) {
-    const box = document.createElement('div');
-    box.style.background = '#eef2ff';
-    box.style.padding = '10px 12px';
-    box.style.borderRadius = '10px';
-    box.style.borderLeft = '4px solid #6366f1';
-
-    const title = document.createElement('div');
-    title.style.fontWeight = '600';
-    title.style.color = '#4f46e5';
-    title.style.fontSize = '13px';
-    title.style.marginBottom = '4px';
-    title.textContent = '📚 Subject 1';
-    box.appendChild(title);
-
-    const subj = document.createElement('div');
-    subj.style.fontSize = '14px';
-    subj.style.color = '#111827';
-    subj.style.marginBottom = '4px';
-    subj.innerHTML = '<strong>' + (subject1 || '—') + '</strong>';
-    box.appendChild(subj);
-
-    const topic = document.createElement('div');
-    topic.style.fontSize = '13px';
-    topic.style.color = '#4b5563';
-    topic.textContent = 'Topics: ' + (topics1 || '—');
-    box.appendChild(topic);
-
-    if (subject1Extra.length) {
-      const list = document.createElement('ul');
-      list.style.margin = '6px 0 0';
-      list.style.paddingLeft = '18px';
-      list.style.fontSize = '13px';
-      list.style.color = '#374151';
-      subject1Extra.forEach(t => {
-        const li = document.createElement('li');
-        li.textContent = t;
-        li.style.marginBottom = '3px';
-        list.appendChild(li);
-      });
-      box.appendChild(list);
-    }
-
-    s1Container.appendChild(box);
-  } else {
-    s1Container.innerHTML = '<div class="empty-state">Admin will update Subject 1 targets here.</div>';
-  }
-
-  // Subject 2 UI (Geography)
-  if (subject2 || topics2 || subject2Extra.length) {
-    const box = document.createElement('div');
-    box.style.background = '#dcfce7';
-    box.style.padding = '10px 12px';
-    box.style.borderRadius = '10px';
-    box.style.borderLeft = '4px solid #22c55e';
-
-    const title = document.createElement('div');
-    title.style.fontWeight = '600';
-    title.style.color = '#16a34a';
-    title.style.fontSize = '13px';
-    title.style.marginBottom = '4px';
-    title.textContent = '📖 Subject 2 - Geography';
-    box.appendChild(title);
-
-    const subj = document.createElement('div');
-    subj.style.fontSize = '14px';
-    subj.style.color = '#111827';
-    subj.style.marginBottom = '4px';
-    subj.innerHTML = '<strong>' + (subject2 || '—') + '</strong>';
-    box.appendChild(subj);
-
-    const topic = document.createElement('div');
-    topic.style.fontSize = '13px';
-    topic.style.color = '#4b5563';
-    topic.textContent = 'Topics: ' + (topics2 || '—');
-    box.appendChild(topic);
-
-    if (subject2Extra.length) {
-      const list = document.createElement('ul');
-      list.style.margin = '6px 0 0';
-      list.style.paddingLeft = '18px';
-      list.style.fontSize = '13px';
-      list.style.color = '#374151';
-      subject2Extra.forEach(t => {
-        const li = document.createElement('li');
-        li.textContent = t;
-        li.style.marginBottom = '3px';
-        list.appendChild(li);
-      });
-      box.appendChild(list);
-    }
-
-    s2Container.appendChild(box);
-  } else {
-    s2Container.innerHTML = '<div class="empty-state">Admin will update Geography targets here.</div>';
-  }
-
-  // Other targets UI
-  if (otherItems.length) {
-    const box = document.createElement('div');
-    box.style.background = '#fff7ed';
-    box.style.padding = '10px 12px';
-    box.style.borderRadius = '10px';
-    box.style.borderLeft = '4px solid #f97316';
-
-    const title = document.createElement('div');
-    title.style.fontWeight = '600';
-    title.style.color = '#ea580c';
-    title.style.fontSize = '13px';
-    title.style.marginBottom = '6px';
-    title.textContent = '🎯 Other Targets';
-    box.appendChild(title);
-
-    const list = document.createElement('ul');
-    list.style.margin = '0';
-    list.style.paddingLeft = '18px';
-    list.style.fontSize = '13px';
-    list.style.color = '#4b5563';
-
-    otherItems.forEach(t => {
-      const li = document.createElement('li');
-      li.textContent = t;
-      li.style.marginBottom = '3px';
-      list.appendChild(li);
-    });
-
-    box.appendChild(list);
-    otherContainer.appendChild(box);
-  } else {
-    otherContainer.innerHTML = '<div class="empty-state">Admin will add other targets here.</div>';
-  }
-}
-
-// Folder View button renderer
-function renderFolderButton(containerId, folderUrl, emptyMessage) {
-  const container = document.getElementById(containerId);
-  container.innerHTML = '';
-  if (!folderUrl) {
-    container.innerHTML = `<div class="empty-state">${emptyMessage || 'No data yet.'}</div>`;
-    return;
-  }
-  const btn = document.createElement('button');
-  btn.className = 'btn';
-  btn.textContent = '🔍 View';
-  btn.onclick = () => window.open(folderUrl, '_blank');
-  container.appendChild(btn);
-}
-
-// Dashboard content (only text + syllabus + quotes)
-function loadDashboardContent() {
-  const url = `${SCRIPT_URL}?action=getDashboardContent&examType=UPSC&_=`
-            + Date.now();
-
-  safeFetchJson(url)
-    .then(data => {
-      if (!data || !data.success || !data.payload) {
-        return;
-      }
-      const p = data.payload;
-
-      // Announcements
-      if (p.announcements && Array.isArray(p.announcements.items) && p.announcements.items.length) {
-        renderAnnouncements(p.announcements.items);
-      }
-
-      // Daily Targets (3-sections renderer)
-      if (p.dailyTargets && Array.isArray(p.dailyTargets.items)) {
-        renderDailyTargets(p.dailyTargets.items);
-      }
-
-      // Syllabus
-      if (p.syllabus) {
-        let pre = 0, main = 0;
-        if (typeof p.syllabus.prelimsPercent === 'number') {
-          pre = p.syllabus.prelimsPercent || 0;
-          main = p.syllabus.mainsPercent || 0;
-        } else if (Array.isArray(p.syllabus.items) && p.syllabus.items.length) {
-          const txt = p.syllabus.items[0].text || '';
-          const nums = txt.match(/\d+/g) || [];
-          pre = nums[0] ? Number(nums[0]) : 0;
-          main = nums[1] ? Number(nums[1]) : 0;
+    <meta charset="UTF-8">
+    <title>UPSC CSE Dashboard - GyaanSetu</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: radial-gradient(circle at top, #eef2ff 0%, #f5f7fa 45%, #e0f2fe 100%);
+            min-height: 100vh;
         }
 
-        document.getElementById('prelimsPercent').textContent = pre + '% Complete';
-        document.getElementById('mainsPercent').textContent   = main + '% Complete';
-        document.getElementById('prelimsBar').style.width = pre + '%';
-        document.getElementById('mainsBar').style.width   = main + '%';
-      }
+        /* HEADER */
+        .header {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 40%, #ec4899 100%);
+            color: white;
+            padding: 18px 32px;
+            box-shadow: 0 12px 32px rgba(15,23,42,0.35);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 { font-size: 24px; letter-spacing: 0.03em; }
+        .header-right { display: flex; align-items: center; gap: 10px; font-size: 14px; }
+        .header-right span {
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: rgba(15,23,42,0.25);
+            border: 1px solid rgba(255,255,255,0.4);
+        }
+        .logout-btn {
+            background: linear-gradient(135deg, rgba(255,255,255,0.4), rgba(255,255,255,0.15));
+            color: white;
+            padding: 8px 16px;
+            border-radius: 999px;
+            border: 1px solid rgba(255,255,255,0.8);
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .logout-btn:hover {
+            background: rgba(255,255,255,0.6);
+            color: #1f2937;
+        }
 
-      // Quotes for पथ प्रदर्शक
-      if (p.quotes && Array.isArray(p.quotes.items) && p.quotes.items.length) {
-        const container = document.getElementById('motivationalQuotes');
-        container.innerHTML = '';
-        const list = document.createElement('div');
-        list.className = 'list';
-        p.quotes.items.forEach(q => {
-          const row = document.createElement('div');
-          row.textContent = typeof q === 'string' ? q : (q.text || q.title || '');
-          list.appendChild(row);
+        /* MAIN CONTAINER GRID */
+        .container {
+            max-width: 1400px;
+            margin: 25px auto 40px;
+            padding: 0 20px 40px;
+            position: relative;
+        }
+        .section-row {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+            gap: 22px;
+            margin-bottom: 26px;
+            position: relative;
+        }
+        /* vertical subtle divider between two cards */
+        .section-row.two-col::after {
+            content: '';
+            position: absolute;
+            inset: 0 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            max-width: 2px;
+            background: linear-gradient(to bottom, transparent, rgba(148,163,184,0.35), transparent);
+            pointer-events: none;
+        }
+
+        /* SECTION CARD */
+        .section-card {
+            background: white;
+            padding: 22px 22px 20px;
+            border-radius: 18px;
+            box-shadow: 0 12px 30px rgba(15,23,42,0.10);
+            position: relative;
+            overflow: hidden;
+        }
+        .section-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at top right, rgba(99,102,241,0.16), transparent 55%);
+            opacity: 0.9;
+            pointer-events: none;
+        }
+        .section-card-inner {
+            position: relative;
+            z-index: 1;
+        }
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+        .section-header h2 {
+            font-size: 16px;
+            color: #111827;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .section-header h2 span.icon { font-size: 18px; }
+        .section-header span {
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        /* COUNTDOWN */
+        .exam-countdown {
+            background: linear-gradient(135deg, #f97316 0%, #ec4899 40%, #6366f1 100%);
+            color: white;
+            padding: 24px 24px 22px;
+            border-radius: 18px;
+            box-shadow: 0 20px 40px rgba(15,23,42,0.40);
+            margin-bottom: 26px;
+            position: relative;
+            overflow: hidden;
+        }
+        .exam-countdown::after {
+            content: '';
+            position: absolute;
+            right: -40px;
+            bottom: -40px;
+            width: 180px;
+            height: 180px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.2);
+            filter: blur(2px);
+        }
+        .exam-countdown h2 {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+        .exam-subtitle {
+            font-size: 13px;
+            opacity: 0.92;
+            margin-bottom: 15px;
+        }
+        .countdown-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(140px, 1fr));
+            gap: 15px;
+            margin: 15px 0 8px;
+        }
+        .countdown-item {
+            background: rgba(15,23,42,0.2);
+            padding: 12px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.25);
+        }
+        .countdown-item .number {
+            font-size: 28px;
+            font-weight: 700;
+        }
+        .countdown-item .label {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+        .quote {
+            font-style: italic;
+            margin-top: 10px;
+            font-size: 14px;
+            opacity: 0.96;
+        }
+
+        /* UPDATE PROGRESS BOXES */
+        .update-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 16px;
+        }
+        .update-box {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 14px 16px;
+            border: 1px solid #e5e7eb;
+        }
+        .update-box label {
+            display: block;
+            margin-bottom: 6px;
+            color: #4b5563;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .update-box input {
+            width: 100%;
+            padding: 9px 11px;
+            border-radius: 8px;
+            border: 2px solid #e5e7eb;
+            font-size: 14px;
+            background: white;
+        }
+        .update-box input:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99,102,241,0.25);
+        }
+        .update-actions {
+            display: flex;
+            align-items: flex-end;
+            justify-content: flex-start;
+        }
+
+        /* BUTTONS */
+        .btn {
+            padding: 10px 16px;
+            border-radius: 999px;
+            border: none;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 40%, #22c55e 100%);
+            color: white;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .btn:hover {
+            box-shadow: 0 10px 20px rgba(37,99,235,0.35);
+            transform: translateY(-1px);
+        }
+        /* Telegram button */
+        .btn-telegram {
+            background: linear-gradient(135deg, #0ea5e9 0%, #0369a1 100%);
+            padding: 12px 20px;
+            font-size: 15px;
+            text-align: center;
+            width: 100%;
+        }
+        .btn-telegram:hover {
+            box-shadow: 0 10px 20px rgba(14,165,233,0.45);
+        }
+
+        /* STATS CARDS */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            gap: 14px;
+        }
+        .stat-card {
+            background: #f9fafb;
+            padding: 14px 16px;
+            border-radius: 14px;
+            box-shadow: 0 2px 10px rgba(148,163,184,0.25);
+            border-left: 4px solid #6366f1;
+        }
+        .stat-card h3 {
+            color: #4b5563;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 6px;
+        }
+        .stat-card .number {
+            font-size: 22px;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 4px;
+        }
+        .stat-card .meta {
+            font-size: 11px;
+            color: #6b7280;
+        }
+
+        /* LIST/EMPTY */
+        .empty-state {
+            text-align: center;
+            padding: 24px 10px;
+            color: #9ca3af;
+            font-size: 13px;
+        }
+        .list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            max-height: 260px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+        .tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-size: 11px;
+            background: #eef2ff;
+            color: #4f46e5;
+            margin-left: 6px;
+        }
+
+        /* SYLLABUS */
+        .syllabus-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            padding: 7px 0 4px;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            border-radius: 999px;
+            background: #e5e7eb;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #6366f1 0%, #22c55e 100%);
+            width: 0%;
+        }
+
+        /* COMMUNITY & HELP */
+        .community-help-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 18px;
+        }
+        .community-box {
+            background: linear-gradient(135deg, #0ea5e9 0%, #0369a1 100%);
+            color: white;
+            padding: 22px;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: 0 12px 28px rgba(8,47,73,0.35);
+        }
+        .community-box h3 {
+            font-size: 16px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        .community-box p {
+            font-size: 13px;
+            opacity: 0.9;
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+        .help-box {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 22px;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: 0 12px 28px rgba(6,95,70,0.35);
+        }
+        .help-box h3 {
+            font-size: 16px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        .help-box p {
+            font-size: 13px;
+            opacity: 0.9;
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+        .help-box .email {
+            font-size: 14px;
+            font-weight: 600;
+            margin-top: 10px;
+            padding: 10px 12px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 10px;
+            word-break: break-all;
+        }
+        .help-box .email a {
+            color: white;
+            text-decoration: none;
+        }
+        .help-box .email a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 900px) {
+            .section-row {
+                grid-template-columns: minmax(0, 1fr);
+            }
+            .section-row.two-col::after {
+                display: none;
+            }
+        }
+        @media (max-width: 640px) {
+            .header {
+                padding: 14px 16px;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+            .container {
+                padding: 0 14px 30px;
+            }
+        }
+    </style>
+
+    <script>
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzyvzuU8GqKfyeJ4hmP0EAKYzm4gNndftUj7eVOJXze-Z9rFDYPeUyJfvGWG3Tg87SGg/exec";
+        const ANSWER_FORM_URL = "https://forms.gle/EKGVgMSMFEErC5C19";
+
+        // Updated Drive folders with new links
+        const UPSC_FOLDER_LINKS = {
+            books: "https://drive.google.com/drive/folders/1
+        // Updated Drive folders with new links
+        const UPSC_FOLDER_LINKS = {
+            books: "https://drive.google.com/drive/folders/1ieWI_ejkVy8RdkKSVgP6svARf9NUJW5W?usp=sharing",
+            notes: "https://drive.google.com/drive/folders/1Jy8L1JIX0c0Svda5BEoY01R1TBSn7cu_?usp=sharing",
+            pyqPapers: "https://drive.google.com/drive/folders/1ZZtz226dMcQyT2cSa7x5K37NbVVeGHud?usp=sharing",
+            testSeries: "https://drive.google.com/drive/folders/1bc2B2m6PzdUjbsJlZiRgq1gifccooCsx?usp=sharing",
+            currentAffairs: "https://drive.google.com/drive/folders/1rLH3T-CU4fkI5FxAHACcXjjA6nPLY1hW?usp=sharing"
+        };
+
+        // 24 May 2026, 9:00 AM IST
+        const examDate = new Date("2026-05-24T09:00:00+05:30");
+        // Countdown visible start: 3 Jan 2026, 8:00 AM IST
+        const countdownStart = new Date("2026-01-03T08:00:00+05:30");
+
+        function guardAccess() {
+            const exam = localStorage.getItem("exam");
+            const userId = localStorage.getItem("userId");
+            if (!exam || !userId) {
+                window.location.href = "index.html";
+                return;
+            }
+            if (exam !== "UPSC CSE") {
+                window.location.href = "index.html";
+                return;
+            }
+        }
+    </script>
+</head>
+<body>
+    <!-- HEADER -->
+    <div class="header">
+        <h1>UPSC CSE Dashboard</h1>
+        <div class="header-right">
+            <span id="userName">Welcome</span>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- COUNTDOWN -->
+        <section class="exam-countdown">
+            <h2>UPSC CSE Prelims 2026</h2>
+            <div class="exam-subtitle">Stay consistent. Daily discipline decides your rank.</div>
+            <div class="countdown-grid">
+                <div class="countdown-item">
+                    <div class="number" id="daysLeft">0</div>
+                    <div class="label">Days Left</div>
+                </div>
+                <div class="countdown-item">
+                    <div class="number" id="hoursLeft">0</div>
+                    <div class="label">Hours Left</div>
+                </div>
+            </div>
+            <div class="quote" id="dailyQuote">"The future belongs to those who believe in the beauty of their dreams."</div>
+        </section>
+
+        <!-- ROW 1: Update Your Daily Progress (full width) -->
+        <section class="section-card">
+            <div class="section-card-inner">
+                <div class="section-header">
+                    <h2><span class="icon">📝</span>Update Your Daily Progress</h2>
+                    <span>Only for your UPSC CSE preparation</span>
+                </div>
+                <form id="progressForm" onsubmit="updateProgress(event)">
+                    <div class="update-grid">
+                        <div class="update-box">
+                            <label for="studyHours">Study Hours Today</label>
+                            <input type="number" id="studyHours" min="0" step="0.5" placeholder="e.g. 6" required>
+                        </div>
+                        <div class="update-box">
+                            <label for="topicsCovered">Topics Covered Today</label>
+                            <input type="number" id="topicsCovered" min="0" step="1" placeholder="e.g. 5" required>
+                        </div>
+                        <div class="update-box">
+                            <label for="mockTests">Mock Tests Completed</label>
+                            <input type="number" id="mockTests" min="0" step="1" placeholder="e.g. 1" required>
+                        </div>
+                        <div class="update-box update-actions">
+                            <button type="submit" class="btn">💾 Save & Add to Totals</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- ROW 2: Overall Totals (left) & Analytics (right) -->
+        <div class="section-row two-col">
+            <!-- OVERALL TOTALS -->
+            <section class="section-card">
+                <div class="section-card-inner">
+                    <div class="section-header">
+                        <h2><span class="icon">📊</span>Overall Progress Totals</h2>
+                        <span>Calculated from your daily entries</span>
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <h3>Total Study Hours</h3>
+                            <div class="number" id="totalHours">0</div>
+                            <div class="meta">Prelims & Mains combined</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Topics Covered</h3>
+                            <div class="number" id="totalTopics">0</div>
+                            <div class="meta">NCERT & Standard books</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Mock Tests</h3>
+                            <div class="number" id="totalTests">0</div>
+                            <div class="meta">Prelims GS & Mains tests</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PERFORMANCE ANALYTICS -->
+            <section class="section-card">
+                <div class="section-card-inner">
+                    <div class="section-header">
+                        <h2><span class="icon">📈</span>Performance Analytics</h2>
+                        <span>Average effort & consistency streak</span>
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <h3>Average Study Hours</h3>
+                            <div class="number" id="avgHours">0</div>
+                            <div class="meta">Per active study day</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Current Streak</h3>
+                            <div class="number" id="streakDays">0</div>
+                            <div class="meta">Consecutive days with study log</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- ROW 3: Announcements (left) & Daily Targets (right) - NOW 2 SECTIONS ONLY -->
+        <div class="section-row two-col">
+            <!-- ANNOUNCEMENTS -->
+            <section class="section-card">
+                <div class="section-card-inner">
+                    <div class="section-header">
+                        <h2><span class="icon">📢</span>Announcements</h2>
+                        <span>UPSC CSE related updates from admin</span>
+                    </div>
+                    <div id="announcements">
+                        <div class="empty-state">No announcements yet. Admin will update here.</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- DAILY TARGETS - 2 sections only -->
+            <section class="section-card">
+                <div class="section-card-inner">
+                    <div class="section-header">
+                        <h2><span class="icon">🎯</span>Daily Targets</h2>
+                        <span>Subject wise targets for today</span>
+                    </div>
+                    <!-- Subject 1 -->
+                    <h3 style="font-size: 14px; color:#4b5563; margin-bottom:6px">Subject - 1</h3>
+                    <div id="subject1Targets">
+                        <div class="empty-state">Admin will update Subject 1 targets here.</div>
+                    </div>
+                    <!-- Subject 2 -->
+                    <h3 style="font-size: 14px; color:#4b5563; margin:14px 0 6px">Subject - 2</h3>
+                    <div id="subject2Targets">
+                        <div class="empty-state">Admin will update Subject 2 targets here.</div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- ROW 4: Test Portal (left) & Study Materials (right) -->
+        <div class="section-row two-col">
+            <!-- TEST PORTAL -->
+            <section class="section-card">
+                <div class="section-card-inner">
+                    <div class="section-header">
+                        <h2><span class="icon">📝</span>Test Portal</h2>
+                        <span>Mock tests, Test series & PYQs</span>
+                    </div>
+                    <h3 style="font-size: 14px; color:#4b5563; margin-bottom:8px">Mock Tests</h3>
+                    <div id="mockTestsList">
+                        <div class="empty-state">Admin will create mock tests soon.</div>
+                    </div>
+                    <h3 style="font-size: 14px; color:#4b5563; margin:16px 0 8px">Test Series</h3>
+                    <div id="testSeriesList"></div>
+                    <h3 style="font-size: 14px; color:#4b5563; margin:16px 0 8px">Previous Year Papers</h3>
+                    <div id="pypList"></div>
+                </div>
+            </section>
+
+            <!-- STUDY MATERIALS -->
+            <section class="section-card">
+                <div class="section-card-inner">
+                    <div class="section-header">
+                        <h2><span class="icon">📚</span>Study Materials</h2>
+                        <span>Books, Notes & Current Affairs</span>
+                    </div>
+                    <h3 style="font-size: 14px; color:#4b5563; margin-bottom:8px">Books & Materials</h3>
+                    <div id="booksList"></div>
+                    <h3 style="font-size: 14px; color:#4b5563; margin:16px 0 8px">Notes & PDFs</h3>
+                    <div id="notesList"></div>
+                    <h3 style="font-size: 14px; color:#4b5563; margin:16px 0 8px">Current Affairs</h3>
+                    <div id="currentAffairsList"></div>
+                </div>
+            </section>
+        </div>
+
+        <!-- ROW 5: Syllabus Tracker (full width) -->
+        <section class="section-card">
+            <div class="section-card-inner">
+                <div class="section-header">
+                    <h2><span class="icon">📋</span>Syllabus Tracker</h2>
+                    <span>Prelims & Mains completion overview</span>
+                </div>
+                <div class="syllabus-item">
+                    <span><strong>Prelims</strong></span>
+                    <span id="prelimsPercent">0% Complete</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="prelimsBar" style="width: 0%"></div>
+                </div>
+                <div class="syllabus-item">
+                    <span><strong>Mains</strong></span>
+                    <span id="mainsPercent">0% Complete</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="mainsBar" style="width: 0%"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ROW 6: Answer Writing (left) & placeholder (right) -->
+        <div class="section-row two-col">
+            <!-- ANSWER WRITING -->
+            <section class="section-card">
+                <div class="section-card-inner">
+                    <div class="section-header">
+                        <h2><span class="icon">✍️</span>Answer Writing</h2>
+                        <span>Upload copies for evaluation</span>
+                    </div>
+                    <div class="update-grid">
+                        <div class="update-box">
+                            <label>Submit your answer copy</label>
+                            <button type="button" class="btn" onclick="openAnswerForm()">📝 Open Answer Writing Form</button>
+                            <p style="font-size:12px; color:#6b7280; margin-top:6px;">
+                                Form me details bharke answer copy upload karein. Status by default "Under Evaluation" hoga.
+                            </p>
+                        </div>
+                    </div>
+                    <h3 style="font-size: 14px; color:#4b5563; margin:18px 0 8px">Your Submissions</h3>
+                    <div id="answerSubmissions">
+                        <div class="empty-state">You have not uploaded any answer copies yet.</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Placeholder: Future use -->
+            <section class="section-card">
+                <div class="section-card-inner">
+                    <div class="section-header">
+                        <h2><span class="icon">🚀</span>Coming Soon</h2>
+                        <span>Future UPSC features</span>
+                    </div>
+                    <div class="empty-state">
+                        New features & analytics yahan add kiye ja sakte hain in future.
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- ROW 7: Path Pradarshak (full width) -->
+        <section class="section-card">
+            <div class="section-card-inner">
+                <div class="section-header">
+                    <h2><span class="icon">💡</span>पथ प्रदर्शक</h2>
+                    <span>Daily motivation for UPSC CSE</span>
+                </div>
+                <div id="motivationalQuotes">
+                    <div class="empty-state">Admin will share motivational quotes soon.</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- COMMUNITY & HELP (full width) -->
+        <section class="section-card">
+            <div class="section-card-inner">
+                <div class="section-header">
+                    <h2><span class="icon">👥</span>Community & Help</h2>
+                    <span>Discussions, Interaction & Support</span>
+                </div>
+                <div class="community-help-grid">
+                    <div class="community-box">
+                        <h3>Join for discussions and interaction</h3>
+                        <p>UPSC CSE aspirants ke liye dedicated group jahan par doubts,
+                        <h3>Join for discussions and interaction</h3>
+                        <p>UPSC CSE aspirants ke liye dedicated group jahan par doubts, strategy aur answer writing par baat ho sakti hai.</p>
+                        <a href="https://t.me/MRQjtR76vh4zZDVl" target="_blank" rel="noopener noreferrer" class="btn btn-telegram">📱 Join UPSC Telegram Group</a>
+                    </div>
+                    <div class="help-box">
+                        <h3>Contact for queries</h3>
+                        <p>Agar aapko dashboard, content ya kisi aur cheez se related query ho, to mail par contact karein.</p>
+                        <div class="email">
+                            Mail us at: <a href="mailto:Gyaansetu2026@gmail.com">Gyaansetu2026@gmail.com</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        /* ---------- Generic safe fetch helper ---------- */
+        async function safeFetchJson(url, options = {}, retries = 1) {
+            try {
+                const res = await fetch(url, options);
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                return await res.json();
+            } catch (err) {
+                if (retries > 0) return safeFetchJson(url, options, retries - 1);
+                console.error("API error", err);
+                throw err;
+            }
+        }
+
+        /* Local fallback quotes */
+        const fallbackQuotes = [
+            "UPSC CSE ek marathon hai, sprint nahi. Har din ki mehnat tumhe LBSNAA ke kareeb le jaati hai.",
+            "LBSNAA tak ka safar ek-ek chapter, ek-ek mock test aur ek-ek disciplined din se banta hai.",
+            "Jab tak tum khud par vishwas rakhoge, Dholpur House ki list me tumhara naam likha ja sakta hai.",
+            "Apni preparation ko bojh nahi, zimmedari samjho. Officers isi soch se bante hain.",
+            "Aaj ka ek focused hour kal ki ek strong posting bana sakta hai."
+        ];
+
+        function getRandomFallbackQuote() {
+            return fallbackQuotes[Math.floor(Math.random() * fallbackQuotes.length)];
+        }
+
+        function setDailyQuote() {
+            const today = new Date().toISOString().slice(0, 10);
+            const storedDate = localStorage.getItem("upscdailyquotedate");
+            const storedQuote = localStorage.getItem("upscdailyquotetext");
+            if (storedDate === today && storedQuote) {
+                document.getElementById("dailyQuote").textContent = storedQuote;
+                return;
+            }
+            const finalText = getRandomFallbackQuote();
+            document.getElementById("dailyQuote").textContent = finalText;
+            localStorage.setItem("upscdailyquotedate", today);
+            localStorage.setItem("upscdailyquotetext", finalText);
+        }
+
+        /* COUNTDOWN */
+        function updateCountdown() {
+            const now = new Date();
+            if (now < countdownStart) {
+                document.getElementById("daysLeft").textContent = 0;
+                document.getElementById("hoursLeft").textContent = 0;
+                return;
+            }
+            const diffMs = examDate.getTime() - now.getTime();
+            if (diffMs <= 0) {
+                document.getElementById("daysLeft").textContent = 0;
+                document.getElementById("hoursLeft").textContent = 0;
+                return;
+            }
+            const totalHours = Math.floor(diffMs / (1000 * 60 * 60));
+            const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+            document.getElementById("daysLeft").textContent = days;
+            document.getElementById("hoursLeft").textContent = totalHours;
+        }
+
+        function logout() {
+            if (confirm("Logout from GyaanSetu?")) {
+                localStorage.removeItem("userId");
+                localStorage.removeItem("name");
+                localStorage.removeItem("exam");
+                window.location.href = "index.html";
+            }
+        }
+
+        /* Answer Writing */
+        function openAnswerForm() {
+            window.open(ANSWER_FORM_URL, "_blank");
+        }
+
+        /* STUDY PROGRESS */
+        function updateProgress(e) {
+            e.preventDefault();
+            const userId = localStorage.getItem("userId");
+            const exam = localStorage.getItem("exam");
+            if (!userId || !exam) {
+                alert("Session expired. Please login again.");
+                window.location.href = "index.html";
+                return;
+            }
+
+            const hours = parseFloat(document.getElementById("studyHours").value) || 0;
+            const topics = parseInt(document.getElementById("topicsCovered").value, 10) || 0;
+            const mocks = parseInt(document.getElementById("mockTests").value, 10) || 0;
+
+            const url = `${SCRIPT_URL}?action=logStudy&userId=${encodeURIComponent(userId)}&exam=${encodeURIComponent(exam)}&hours=${encodeURIComponent(hours)}&topics=${encodeURIComponent(topics)}&mocks=${encodeURIComponent(mocks)}`;
+
+            safeFetchJson(url)
+                .then(data => {
+                    if (!data || !data.success) throw new Error(data && data.message ? data.message : "Failed to save study log");
+                    const totalsUrl = `${SCRIPT_URL}?action=getStudyTotals&userId=${encodeURIComponent(userId)}&exam=${encodeURIComponent(exam)}`;
+                    return safeFetchJson(totalsUrl);
+                })
+                .then(totals => {
+                    if (totals && totals.success) {
+                        document.getElementById("totalHours").textContent = totals.totalHours || 0;
+                        document.getElementById("totalTopics").textContent = totals.totalTopics || 0;
+                        document.getElementById("totalTests").textContent = totals.totalMocks || 0;
+                    } else {
+                        throw new Error(totals && totals.message ? totals.message : "Failed to load totals");
+                    }
+                    alert("Progress updated successfully!");
+                    document.getElementById("progressForm").reset();
+                    loadAnalytics();
+                })
+                .catch(err => {
+                    console.error("Update progress error", err);
+                    alert("Error updating progress. Please try again later.");
+                });
+        }
+
+        function loadTotals() {
+            const userId = localStorage.getItem("userId");
+            const exam = localStorage.getItem("exam");
+            if (!userId || !exam) return;
+
+            const totalsUrl = `${SCRIPT_URL}?action=getStudyTotals&userId=${encodeURIComponent(userId)}&exam=${encodeURIComponent(exam)}`;
+            safeFetchJson(totalsUrl)
+                .then(totals => {
+                    if (totals && totals.success) {
+                        document.getElementById("totalHours").textContent = totals.totalHours || 0;
+                        document.getElementById("totalTopics").textContent = totals.totalTopics || 0;
+                        document.getElementById("totalTests").textContent = totals.totalMocks || 0;
+                    }
+                })
+                .catch(err => {
+                    console.error("Load totals error", err);
+                });
+        }
+
+        function loadAnalytics() {
+            const userId = localStorage.getItem("userId");
+            const exam = localStorage.getItem("exam");
+            if (!userId || !exam) return;
+
+            const url = `${SCRIPT_URL}?action=getStudyAnalytics&userId=${encodeURIComponent(userId)}&exam=${encodeURIComponent(exam)}`;
+            safeFetchJson(url)
+                .then(data => {
+                    if (!data || !data.success) return;
+                    document.getElementById("avgHours").textContent = (data.avgHours || 0).toFixed(1);
+                    document.getElementById("streakDays").textContent = data.streakDays || 0;
+                })
+                .catch(err => {
+                    console.error("loadAnalytics error", err);
+                });
+        }
+
+        /* Announcements */
+        function renderAnnouncements(items) {
+            const container = document.getElementById("announcements");
+            container.innerHTML = "";
+            if (!items || !items.length) {
+                container.innerHTML = '<div class="empty-state">No announcements yet. Admin will update here.</div>';
+                return;
+            }
+            const list = document.createElement("div");
+            list.className = "list";
+            items.forEach((it, index) => {
+                const row = document.createElement("div");
+                row.className = "list-item";
+                const titleSpan = document.createElement("span");
+                titleSpan.textContent = typeof it === "string" ? it : (it.text || it.title);
+                row.appendChild(titleSpan);
+                if (index === 0) {
+                    row.style.fontWeight = "600";
+                    row.style.background = "#eef2ff";
+                    row.style.borderRadius = "6px";
+                    row.style.padding = "6px 8px";
+                }
+                list.appendChild(row);
+            });
+            container.appendChild(list);
+        }
+
+        /* Daily Targets - NOW ONLY 2 SECTIONS */
+        function renderDailyTargets(items) {
+            const s1Container = document.getElementById("subject1Targets");
+            const s2Container = document.getElementById("subject2Targets");
+            s1Container.innerHTML = "";
+            s2Container.innerHTML = "";
+
+            if (!items || !items.length) {
+                s1Container.innerHTML = '<div class="empty-state">Admin will update Subject 1 targets here.</div>';
+                s2Container.innerHTML = '<div class="empty-state">Admin will update Subject 2 targets here.</div>';
+                return;
+            }
+
+            let txt = "";
+            if (items.length === 1 && typeof items[0] === "string") {
+                txt = items[0];
+            } else {
+                txt = items
+                    .map(raw => typeof raw === "string" ? raw : (raw.text || raw.title))
+                    .join("\n\n");
+            }
+
+            // Split by *** to get 2 blocks
+            const blocks = txt.split("***");
+            const block1 = blocks[0].split("\n").map(l => l.trim()).filter(Boolean);
+            const block2 = (blocks[1] || "").split("\n").map(l => l.trim()).filter(Boolean);
+
+            let subject1 = "", topics1 = "";
+            const subject1Extra = [];
+            let subject2 = "", topics2 = "";
+            const subject2Extra = [];
+
+            // Block 1: Subject 1
+            block1.forEach(line => {
+                if (line.startsWith("Subject 1:")) {
+                    subject1 = line.replace("Subject 1:", "").trim();
+                } else if (line.startsWith("Topics 1:")) {
+                    topics1 = line.replace("Topics 1:", "").trim();
+                } else if (line) {
+                    subject1Extra.push(line);
+                }
+            });
+
+            // Block 2: Subject 2
+            block2.forEach(line => {
+                if (line.startsWith("Subject 2:")) {
+                    subject2 = line.replace("Subject 2:", "").trim();
+                } else if (line.startsWith("Topics 2:")) {
+                    topics2 = line.replace("Topics 2:", "").trim();
+                } else if (line) {
+                    subject2Extra.push(line);
+                }
+            });
+
+            // Render Subject 1
+            if (subject1 || topics1 || subject1Extra.length) {
+                const box = document.createElement("div");
+                box.style.background = "#eef2ff";
+                box.style.padding = "10px 12px";
+                box.style.borderRadius = "10px";
+                box.style.borderLeft = "4px solid #6366f1";
+
+                const title = document.createElement("div");
+                title.style.fontWeight = "600";
+                title.style.color = "#4f46e5";
+                title.style.fontSize = "13px";
+                title.style.marginBottom = "4px";
+                title.textContent = "Subject 1";
+                box.appendChild(title);
+
+                const subj = document.createElement("div");
+                subj.style.fontSize = "14px";
+                subj.style.color = "#111827";
+                subj.style.marginBottom = "4px";
+                subj.innerHTML = `<strong>${subject1}</strong>`;
+                box.appendChild(subj);
+
+                const topic = document.createElement("div");
+                topic.style.fontSize = "13px";
+                topic.style.color = "#4b5563";
+                topic.textContent = `Topics: ${topics1}`;
+                box.appendChild(topic);
+
+                if (subject1Extra.length) {
+                    const list = document.createElement("ul");
+                    list.style.margin = "6px 0 0";
+                    list.style.paddingLeft = "18px";
+                    list.style.fontSize = "13px";
+                    list.style.color = "#374151";
+                    subject1Extra.forEach(t => {
+                        const li = document.createElement("li");
+                        li.textContent = t;
+                        li.style.marginBottom = "3px";
+                        list.appendChild(li);
+                    });
+                    box.appendChild(list);
+                }
+                s1Container.appendChild(box);
+            } else {
+                s1Container.innerHTML = '<div class="empty-state">Admin will update Subject 1 targets here.</div>';
+            }
+
+            // Render Subject 2
+            if (subject2 || topics2 || subject2Extra.length) {
+                const box = document.createElement("div");
+                box.style.background = "#dcfce7";
+                box.style.padding = "10px 12px";
+                box.style.borderRadius = "10px";
+                box.style.borderLeft = "4px solid #22c55e";
+
+                const title = document.createElement("div");
+                title.style.fontWeight = "600";
+                title.style.color = "#16a34a";
+                title.style.fontSize = "13px";
+                title.style.marginBottom = "4px";
+                title.textContent = "Subject 2";
+                box.appendChild(title);
+
+                const subj = document.createElement("div");
+                subj.style.fontSize = "14px";
+                subj.style.color = "#111827";
+                subj.style.marginBottom = "4px";
+                subj.innerHTML = `<strong>${subject2}</strong>`;
+                box.appendChild(subj);
+
+                const topic = document.createElement("div");
+                topic.style.fontSize = "13px";
+                topic.style.color = "#4b5563";
+                topic.textContent = `Topics: ${topics2}`;
+                box.appendChild(topic);
+
+                if (subject2Extra.length) {
+                    const list = document.createElement("ul");
+                    list.style.margin = "6px 0 0";
+                    list.style.paddingLeft = "18px";
+                    list.style.fontSize = "13px";
+                    list.style.color = "#374151";
+                    subject2Extra.forEach(t => {
+                        const li = document.createElement("li");
+                        const li = document.createElement("li");
+                        li.textContent = t;
+                        li.style.marginBottom = "3px";
+                        list.appendChild(li);
+                    });
+                    box.appendChild(list);
+                }
+                s2Container.appendChild(box);
+            } else {
+                s2Container.innerHTML = '<div class="empty-state">Admin will update Subject 2 targets here.</div>';
+            }
+        }
+
+        /* Folder View button renderer */
+        function renderFolderButton(containerId, folderUrl, emptyMessage) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = "";
+            if (!folderUrl) {
+                container.innerHTML = `<div class="empty-state">${emptyMessage || "No data yet."}</div>`;
+                return;
+            }
+            const btn = document.createElement("button");
+            btn.className = "btn";
+            btn.textContent = "📂 View";
+            btn.onclick = () => window.open(folderUrl, "_blank");
+            container.appendChild(btn);
+        }
+
+        /* Dashboard content: only text, syllabus, quotes */
+        function loadDashboardContent() {
+            const url = `${SCRIPT_URL}?action=getDashboardContent&examType=UPSC&${Date.now()}`;
+            safeFetchJson(url)
+                .then(data => {
+                    if (!data || !data.success || !data.payload) return;
+                    const p = data.payload;
+
+                    // Announcements
+                    if (p.announcements && Array.isArray(p.announcements.items) && p.announcements.items.length) {
+                        renderAnnouncements(p.announcements.items);
+                    }
+
+                    // Daily Targets - 2 sections only
+                    if (p.dailyTargets && Array.isArray(p.dailyTargets.items)) {
+                        renderDailyTargets(p.dailyTargets.items);
+                    }
+
+                    // Syllabus
+                    if (p.syllabus) {
+                        let pre = 0, main = 0;
+                        if (typeof p.syllabus.prelimsPercent === "number") {
+                            pre = p.syllabus.prelimsPercent || 0;
+                            main = p.syllabus.mainsPercent || 0;
+                        } else if (Array.isArray(p.syllabus.items) && p.syllabus.items.length) {
+                            const txt = p.syllabus.items[0].text;
+                            const nums = txt.match(/\d+/g);
+                            pre = nums[0] ? Number(nums[0]) : 0;
+                            main = nums[1] ? Number(nums[1]) : 0;
+                        }
+                        document.getElementById("prelimsPercent").textContent = `${pre}% Complete`;
+                        document.getElementById("mainsPercent").textContent = `${main}% Complete`;
+                        document.getElementById("prelimsBar").style.width = `${pre}%`;
+                        document.getElementById("mainsBar").style.width = `${main}%`;
+                    }
+
+                    // Quotes for पथ प्रदर्शक
+                    if (p.quotes && Array.isArray(p.quotes.items) && p.quotes.items.length) {
+                        const container = document.getElementById("motivationalQuotes");
+                        container.innerHTML = "";
+                        const list = document.createElement("div");
+                        list.className = "list";
+                        p.quotes.items.forEach(q => {
+                            const row = document.createElement("div");
+                            row.textContent = typeof q === "string" ? q : (q.text || q.title);
+                            list.appendChild(row);
+                        });
+                        container.appendChild(list);
+                    }
+                })
+                .catch(err => {
+                    console.error("loadDashboardContent error", err);
+                });
+        }
+
+        /* Static folder buttons with UPDATED URLs */
+        renderFolderButton("testSeriesList", UPSC_FOLDER_LINKS.testSeries, "Admin will upload test series soon.");
+        renderFolderButton("pypList", UPSC_FOLDER_LINKS.pyqPapers, "Admin will upload PYQ PDFs soon.");
+        renderFolderButton("booksList", UPSC_FOLDER_LINKS.books, "Admin will upload books list soon.");
+        renderFolderButton("notesList", UPSC_FOLDER_LINKS.notes, "Admin will upload notes & PDFs soon.");
+        renderFolderButton("currentAffairsList", UPSC_FOLDER_LINKS.currentAffairs, "Admin will upload current affairs soon.");
+
+        /* Answer submissions */
+        function loadAnswerSubmissions() {
+            const userId = localStorage.getItem("userId");
+            if (!userId) return;
+
+            const url = `${SCRIPT_URL}?action=getAnswerSubmissions&userId=${encodeURIComponent(userId)}`;
+            safeFetchJson(url)
+                .then(data => {
+                    const container = document.getElementById("answerSubmissions");
+                    container.innerHTML = "";
+                    if (!data || !data.success || !data.submissions || !data.submissions.length) {
+                        container.innerHTML = '<div class="empty-state">You have not uploaded any answer copies yet.</div>';
+                        return;
+                    }
+                    const list = document.createElement("div");
+                    list.className = "list";
+                    data.submissions.forEach(sub => {
+                        const row = document.createElement("div");
+                        row.style.display = "flex";
+                        row.style.flexDirection = "column";
+                        row.style.fontSize = "13px";
+                        row.style.border = "1px solid #e5e7eb";
+                        row.style.borderRadius = "8px";
+                        row.style.padding = "8px 10px";
+                        row.style.background = "#f9fafb";
+
+                        const top = document.createElement("div");
+                        top.style.display = "flex";
+                        top.style.justifyContent = "space-between";
+                        top.style.marginBottom = "4px";
+
+                        const title = document.createElement("span");
+                        title.textContent = `${sub.testName} - Answer Copy`;
+
+                        const status = document.createElement("span");
+                        status.textContent = sub.status || "Under Evaluation";
+                        status.style.fontSize = "11px";
+                        status.style.padding = "2px 8px";
+                        status.style.borderRadius = "999px";
+                        status.style.background = "#eef2ff";
+                        status.style.color = "#4f46e5";
+
+                        top.appendChild(title);
+                        top.appendChild(status);
+                        row.appendChild(top);
+
+                        const bottom = document.createElement("div");
+                        bottom.style.display = "flex";
+                        bottom.style.justifyContent = "space-between";
+                        bottom.style.fontSize = "11px";
+                        bottom.style.color = "#6b7280";
+
+                        const dateSpan = document.createElement("span");
+                        dateSpan.textContent = sub.date;
+
+                        const link = document.createElement("a");
+                        link.href = sub.fileUrl;
+                        link.target = "_blank";
+                        link.rel = "noopener noreferrer";
+                        link.textContent = "View Copy";
+                        link.style.color = "#2563eb";
+                        link.style.textDecoration = "none";
+
+                        bottom.appendChild(dateSpan);
+                        bottom.appendChild(link);
+                        row.appendChild(bottom);
+
+                        list.appendChild(row);
+                    });
+                    container.appendChild(list);
+                })
+                .catch(err => {
+                    console.error("loadAnswerSubmissions error", err);
+                    const container = document.getElementById("answerSubmissions");
+                    container.innerHTML = '<div class="empty-state">Error loading submissions. Please try again later.</div>';
+                });
+        }
+
+        /* INITIALIZE */
+        function initUserName() {
+            const name = localStorage.getItem("name") || "Aspirant";
+            const span = document.getElementById("userName");
+            span.textContent = `Welcome, ${name}`;
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            guardAccess();
+            initUserName();
+            setDailyQuote();
+            updateCountdown();
+            loadTotals();
+            loadAnalytics();
+            loadDashboardContent();
+            loadAnswerSubmissions();
+
+            // countdown refresh har 1 ghante me
+            setInterval(updateCountdown, 60 * 60 * 1000);
         });
-        container.appendChild(list);
-      }
-    })
-    .catch(err => {
-      console.error('loadDashboardContent error:', err);
-    });
-
-  // Static folder buttons
-  renderFolderButton(
-    'testSeriesList',
-    UPSC_FOLDER_LINKS.testSeries,
-    'Admin will upload test series soon.'
-  );
-
-  renderFolderButton(
-    'pypList',
-    UPSC_FOLDER_LINKS.pyqPapers,
-    'Admin will upload PYQ PDFs soon.'
-  );
-
-  renderFolderButton(
-    'booksList',
-    UPSC_FOLDER_LINKS.books,
-    'Admin will upload books list soon.'
-  );
-
-  renderFolderButton(
-    'currentAffairsList',
-    UPSC_FOLDER_LINKS.currentAffairs,
-    'Admin will upload current affairs soon.'
-  );
-}
-
-// Answer submissions
-function loadAnswerSubmissions() {
-  const userId = localStorage.getItem('userId');
-  if (!userId) return;
-
-  const url = `${SCRIPT_URL}?action=getAnswerSubmissions`
-            + `&userId=${encodeURIComponent(userId)}`;
-
-  safeFetchJson(url)
-    .then(data => {
-      const container = document.getElementById('answerSubmissions');
-      container.innerHTML = '';
-
-      if (!data || !data.success || !data.submissions || !data.submissions.length) {
-        container.innerHTML =
-          '<div class="empty-state">You have not uploaded any answer copies yet.</div>';
-        return;
-      }
-
-      const list = document.createElement('div');
-      list.className = 'list';
-
-      data.submissions.forEach(sub => {
-        const row = document.createElement('div');
-        row.style.display = 'flex';
-        row.style.flexDirection = 'column';
-        row.style.fontSize = '13px';
-        row.style.border = '1px solid #e5e7eb';
-        row.style.borderRadius = '8px';
-        row.style.padding = '8px 10px';
-        row.style.background = '#f9fafb';
-
-        const top = document.createElement('div');
-        top.style.display = 'flex';
-        top.style.justifyContent = 'space-between';
-        top.style.marginBottom = '4px';
-
-        const title = document.createElement('span');
-        title.textContent = sub.testName || 'Answer Copy';
-
-        const status = document.createElement('span');
-        status.textContent = sub.status || 'Under Evaluation';
-        status.style.fontSize = '11px';
-        status.style.padding = '2px 8px';
-        status.style.borderRadius = '999px';
-        status.style.background = '#eef2ff';
-        status.style.color = '#4f46e5';
-
-        top.appendChild(title);
-        top.appendChild(status);
-        row.appendChild(top);
-
-        const bottom = document.createElement('div');
-        bottom.style.display = 'flex';
-        bottom.style.justifyContent = 'space-between';
-        bottom.style.fontSize = '11px';
-        bottom.style.color = '#6b7280';
-
-        const dateSpan = document.createElement('span');
-        dateSpan.textContent = sub.date || '';
-
-        const link = document.createElement('a');
-        link.href = sub.fileUrl || '#';
-        link.target = '_blank';
-        link.rel = 'noopener noreferrer';
-        link.textContent = 'View Copy';
-        link.style.color = '#2563eb';
-        link.style.textDecoration = 'none';
-
-        bottom.appendChild(dateSpan);
-        bottom.appendChild(link);
-        row.appendChild(bottom);
-
-        list.appendChild(row);
-      });
-
-      container.appendChild(list);
-    })
-    .catch(err => {
-      console.error('loadAnswerSubmissions error:', err);
-      const container = document.getElementById('answerSubmissions');
-      container.innerHTML =
-        '<div class="empty-state">Error loading submissions. Please try again later.</div>';
-    });
-}
-
-// INITIALIZE
-function initUserName() {
-  const name = localStorage.getItem('name') || 'Aspirant';
-  const span = document.getElementById('userName');
-  span.textContent = 'Welcome, ' + name;
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  initUserName();
-  setDailyQuote();
-  updateCountdown();
-  loadTotals();
-  loadAnalytics();
-  loadDashboardContent();
-  loadAnswerSubmissions();
-
-  // countdown refresh har 1 ghante me
-  setInterval(updateCountdown, 60 * 60 * 1000);
-});
-</script>
+    </script>
 </body>
 </html>
