@@ -1023,6 +1023,7 @@ function renderDailyTargets(items) {
   const s2Container = document.getElementById('subject2Targets');
   const otherContainer = document.getElementById('otherTargets');
 
+  // Purane sab clear -> hamesha latest hi show hoga
   s1Container.innerHTML = '';
   s2Container.innerHTML = '';
   otherContainer.innerHTML = '';
@@ -1032,6 +1033,11 @@ function renderDailyTargets(items) {
     s2Container.innerHTML = '<div class="empty-state">Admin will update Subject 2 targets here.</div>';
     otherContainer.innerHTML = '<div class="empty-state">Admin will add other targets here.</div>';
     return;
+  }
+
+  // ✅ Sirf last / latest entry use karo
+  if (Array.isArray(items) && items.length > 1) {
+    items = [items[items.length - 1]];
   }
 
   // Admin side dailyTargets.items ek hi long string ya multiple strings ka array ho sakta hai
@@ -1070,7 +1076,7 @@ function renderDailyTargets(items) {
     }
   });
 
-  // Block 2: Subject 2 / Topics 2 / extra lines (Geography section)
+  // Block 2: Subject 2 / Topics 2 / extra lines
   block2.forEach(line => {
     if (line.startsWith('Subject 2:')) {
       subject2 = line.replace('Subject 2:', '').trim();
@@ -1139,7 +1145,7 @@ function renderDailyTargets(items) {
     s1Container.innerHTML = '<div class="empty-state">Admin will update Subject 1 targets here.</div>';
   }
 
-  // Subject 2 UI (Geography)
+  // Subject 2 UI (generic)
   if (subject2 || topics2 || subject2Extra.length) {
     const box = document.createElement('div');
     box.style.background = '#dcfce7';
@@ -1185,7 +1191,7 @@ function renderDailyTargets(items) {
 
     s2Container.appendChild(box);
   } else {
-    s2Container.innerHTML = '<div class="empty-state">Admin will update Geography targets here.</div>';
+    s2Container.innerHTML = '<div class="empty-state">Admin will update Subject 2 targets here.</div>';
   }
 
   // Other targets UI
