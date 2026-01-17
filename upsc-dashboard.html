@@ -467,7 +467,7 @@ const UPSC_FOLDER_LINKS = {
   testSeries:     'https://drive.google.com/drive/folders/1bc2B2m6PzdUjbsJlZiRgq1gifccooCsx',
   pyqPapers:      'https://drive.google.com/drive/folders/1ZZtz226dMcQyT2cSa7x5K37NbVVeGHud',
   books:          'https://drive.google.com/drive/folders/1ieWI_ejkVy8RdkKSVgP6svARf9NUJW5W',
-  notesPdfs:      'https://drive.google.com/drive/folders/1Jy8L1JIX0c0Svda5BEoY01R1TBSn7cu_',
+  notesPdfs: 'https://drive.google.com/drive/folders/1Jy8L1JIX0c0Svda5BEoY01R1TBSn7cu_',
   currentAffairs: 'https://drive.google.com/drive/folders/1rLH3T-CU4fkI5FxAHACcXjjA6nPLY1hW'
 };
 
@@ -750,19 +750,6 @@ const countdownStart = new Date('2026-01-03T08:00:00+05:30');
         </div>
       </div>
     </section>
-
-    <!-- Placeholder / Future use -->
-    <section class="section-card">
-      <div class="section-card-inner">
-        <div class="section-header">
-          <h2><span class="icon">🧩</span>Coming Soon</h2>
-          <span>Future UPSC features</span>
-        </div>
-        <div class="empty-state">
-          New features / analytics yahan add kiye ja sakte hain in future.
-        </div>
-      </div>
-    </section>
   </div>
 
   <!-- ROW 7: Path Pradarshak (full width) -->
@@ -1042,7 +1029,7 @@ function renderDailyTargets(items) {
 
   if (!items || !items.length) {
     s1Container.innerHTML = '<div class="empty-state">Admin will update Subject 1 targets here.</div>';
-    s2Container.innerHTML = '<div class="empty-state">Admin will update Geography targets here.</div>';
+    s2Container.innerHTML = '<div class="empty-state">Admin will update Subject 2 targets here.</div>';
     otherContainer.innerHTML = '<div class="empty-state">Admin will add other targets here.</div>';
     return;
   }
@@ -1165,7 +1152,7 @@ function renderDailyTargets(items) {
     title.style.color = '#16a34a';
     title.style.fontSize = '13px';
     title.style.marginBottom = '4px';
-    title.textContent = '📖 Subject 2 - Geography';
+    title.textContent = '📖 Subject 2';
     box.appendChild(title);
 
     const subj = document.createElement('div');
@@ -1327,6 +1314,12 @@ function loadDashboardContent() {
     'booksList',
     UPSC_FOLDER_LINKS.books,
     'Admin will upload books list soon.'
+  );
+
+  renderFolderButton(
+    'notesPdfsList',
+    UPSC_FOLDER_LINKS.notesPdfs,
+    'Admin will upload notes soon.'
   );
 
   renderFolderButton(
