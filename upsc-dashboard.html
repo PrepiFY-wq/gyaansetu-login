@@ -525,32 +525,17 @@ const countdownStart = new Date('2026-01-03T08:00:00+05:30');
 
   <!-- ROW 1: Update Your Daily Progress (full width) -->
   <section class="section-card">
-    <div class="section-card-inner">
-      <div class="section-header">
-        <h2><span class="icon">📊</span>Update Your Daily Progress</h2>
-        <span>Only for your UPSC CSE preparation</span>
-      </div>
-      <form id="progressForm" onsubmit="updateProgress(event)">
-        <div class="update-grid">
-          <div class="update-box">
-            <label for="studyHours">Study Hours Today</label>
-            <input type="number" id="studyHours" min="0" step="0.5" placeholder="e.g. 6" required>
-          </div>
-          <div class="update-box">
-            <label for="topicsCovered">Topics Covered Today</label>
-            <input type="number" id="topicsCovered" min="0" step="1" placeholder="e.g. 5" required>
-          </div>
-          <div class="update-box">
-            <label for="mockTests">Mock Tests Completed</label>
-            <input type="number" id="mockTests" min="0" step="1" placeholder="e.g. 1" required>
-          </div>
-          <div class="update-box update-actions">
-            <button type="submit" class="btn">💾 Save & Add to Totals</button>
-          </div>
-        </div>
-      </form>
+  <div class="section-card-inner">
+    <div class="section-header">
+      <h2><span class="icon">🎯</span>Daily Target</h2>
+      <span>Latest target from admin</span>
     </div>
-  </section>
+
+    <div id="dailyTargetBox">
+      <div class="empty-state">Admin will add today's target here.</div>
+    </div>
+  </div>
+</section>
 
   <!-- ROW 2: Overall Totals (left) + Analytics (right) -->
   <div class="section-row two-col">
@@ -1023,215 +1008,117 @@ function renderAnnouncements(items) {
 }
 
 // Daily Targets – only latest entry
+// Daily Target – only latest entry (Date + Subject + Topics) with colorful card
 function renderDailyTargets(items) {
-  const s1Container = document.getElementById('subject1Targets');
-  const s2Container = document.getElementById('subject2Targets');
-  const otherContainer = document.getElementById('otherTargets');
-
-  s1Container.innerHTML = '';
-  s2Container.innerHTML = '';
-  otherContainer.innerHTML = '';
+  const box = document.getElementById('dailyTargetBox');
+  box.innerHTML = '';
 
   if (!items || !items.length) {
-    s1Container.innerHTML = '<div class="empty-state">Admin will update Subject 1 targets here.</div>';
-    s2Container.innerHTML = '<div class="empty-state">Admin will update Subject 2 targets here.</div>';
-    otherContainer.innerHTML = '<div class="empty-state">Admin will add other targets here.</div>';
+    box.innerHTML = '<div class="empty-state">Admin will add today\'s target here.</div>';
     return;
   }
 
-  // Sirf latest row ka text lo
+  // Sirf latest row ka text
   const latestRaw = items[items.length - 1];
   let txt = typeof latestRaw === 'string'
     ? latestRaw
     : (latestRaw.text || latestRaw.title || '');
 
   if (!txt) {
-    s1Container.innerHTML = '<div class="empty-state">Admin will update Subject 1 targets here.</div>';
-    s2Container.innerHTML = '<div class="empty-state">Admin will update Subject 2 targets here.</div>';
-    otherContainer.innerHTML = '<div class="empty-state">Admin will add other targets here.</div>';
+    box.innerHTML = '<div class="empty-state">Admin will add today\'s target here.</div>';
     return;
   }
 
-  // 3 blocks: [Subject1] [Subject2] [others]
-  const blocks = txt.split(/\n\s*\n/);
+  let dateTxt = '', subjTxt = '', topicsTxt = '';
 
-  const block1 = (blocks[0] || '').split('\n').map(l => l.trim()).filter(Boolean);
-  const block2 = (blocks[1] || '').split('\n').map(l => l.trim()).filter(Boolean);
-  const othersBlock = blocks.slice(2).join('\n');
-
-  let subject1 = '';
-  let topics1 = '';
-  let subject2 = '';
-  let topics2 = '';
-  const subject1Extra = [];
-  const subject2Extra = [];
-  const otherItems = [];
-
-  // Block 1: Subject 1 / Topics 1 / extra lines
-  block1.forEach(line => {
-    if (line.startsWith('Subject 1:')) {
-      subject1 = line.replace('Subject 1:', '').trim();
-    } else if (line.startsWith('Topics 1:')) {
-      topics1 = line.replace('Topics 1:', '').trim();
-    } else if (line) {
-      subject1Extra.push(line);
+  txt.split('\n').map(l => l.trim()).forEach(line => {
+    if (line.startsWith('Date:')) {
+      dateTxt = line.replace('Date:', '').trim();
+    } else if (line.startsWith('Subject:')) {
+      subjTxt = line.replace('Subject:', '').trim();
+    } else if (line.startsWith('Topics:')) {
+      topicsTxt = line.replace('Topics:', '').trim();
     }
   });
 
-  // Block 2: Subject 2 / Topics 2 / extra lines
-  block2.forEach(line => {
-    if (line.startsWith('Subject 2:')) {
-      subject2 = line.replace('Subject 2:', '').trim();
-    } else if (line.startsWith('Topics 2:')) {
-      topics2 = line.replace('Topics 2:', '').trim();
-    } else if (line) {
-      subject2Extra.push(line);
-    }
-  });
+  const card = document.createElement('div');
+  card.style.background = 'linear-gradient(135deg,#f97316,#ec4899,#6366f1)';
+  card.style.padding = '14px 16px';
+  card.style.borderRadius = '16px';
+  card.style.position = 'relative';
+  card.style.overflow = 'hidden';
+  card.style.boxShadow = '0 16px 32px rgba(15,23,42,0.35)';
+  card.style.color = '#f9fafb';
 
-  // Remaining blocks: other targets
-  if (othersBlock) {
-    othersBlock
-      .split('\n')
-      .map(l => l.trim())
-      .filter(Boolean)
-      .forEach(l => otherItems.push(l));
-  }
+  // subtle glow circle
+  const glow = document.createElement('div');
+  glow.style.position = 'absolute';
+  glow.style.right = '-40px';
+  glow.style.bottom = '-40px';
+  glow.style.width = '160px';
+  glow.style.height = '160px';
+  glow.style.borderRadius = '999px';
+  glow.style.background = 'rgba(255,255,255,0.18)';
+  glow.style.filter = 'blur(2px)';
+  card.appendChild(glow);
 
-  // Subject 1 UI
-  if (subject1 || topics1 || subject1Extra.length) {
-    const box = document.createElement('div');
-    box.style.background = '#eef2ff';
-    box.style.padding = '10px 12px';
-    box.style.borderRadius = '10px';
-    box.style.borderLeft = '4px solid #6366f1';
+  const inner = document.createElement('div');
+  inner.style.position = 'relative';
+  inner.style.zIndex = '1';
 
-    const title = document.createElement('div');
-    title.style.fontWeight = '600';
-    title.style.color = '#4f46e5';
-    title.style.fontSize = '13px';
-    title.style.marginBottom = '4px';
-    title.textContent = '📚 Subject 1';
-    box.appendChild(title);
+  // top row: date + badge
+  const topRow = document.createElement('div');
+  topRow.style.display = 'flex';
+  topRow.style.justifyContent = 'space-between';
+  topRow.style.alignItems = 'center';
+  topRow.style.marginBottom = '6px';
 
-    const subj = document.createElement('div');
-    subj.style.fontSize = '14px';
-    subj.style.color = '#111827';
-    subj.style.marginBottom = '4px';
-    subj.innerHTML = '<strong>' + (subject1 || '—') + '</strong>';
-    box.appendChild(subj);
+  const dateEl = document.createElement('div');
+  dateEl.style.fontSize = '12px';
+  dateEl.style.opacity = '0.9';
+  dateEl.textContent = dateTxt ? `📅 ${dateTxt}` : '📅 Date not set';
+  topRow.appendChild(dateEl);
 
-    const topic = document.createElement('div');
-    topic.style.fontSize = '13px';
-    topic.style.color = '#4b5563';
-    topic.textContent = 'Topics: ' + (topics1 || '—');
-    box.appendChild(topic);
+  const badge = document.createElement('span');
+  badge.textContent = 'Today\'s Target';
+  badge.style.fontSize = '11px';
+  badge.style.padding = '3px 10px';
+  badge.style.borderRadius = '999px';
+  badge.style.border = '1px solid rgba(248,250,252,0.8)';
+  badge.style.background = 'rgba(15,23,42,0.25)';
+  badge.style.backdropFilter = 'blur(4px)';
+  topRow.appendChild(badge);
 
-    if (subject1Extra.length) {
-      const list = document.createElement('ul');
-      list.style.margin = '6px 0 0';
-      list.style.paddingLeft = '18px';
-      list.style.fontSize = '13px';
-      list.style.color = '#374151';
-      subject1Extra.forEach(t => {
-        const li = document.createElement('li');
-        li.textContent = t;
-        li.style.marginBottom = '3px';
-        list.appendChild(li);
-      });
-      box.appendChild(list);
-    }
+  inner.appendChild(topRow);
 
-    s1Container.appendChild(box);
-  } else {
-    s1Container.innerHTML = '<div class="empty-state">Admin will update Subject 1 targets here.</div>';
-  }
+  // subject
+  const subjEl = document.createElement('div');
+  subjEl.style.fontSize = '16px';
+  subjEl.style.fontWeight = '700';
+  subjEl.style.marginBottom = '4px';
+  subjEl.textContent = subjTxt || 'Subject not set';
+  inner.appendChild(subjEl);
 
-  // Subject 2 UI (generic)
-  if (subject2 || topics2 || subject2Extra.length) {
-    const box = document.createElement('div');
-    box.style.background = '#dcfce7';
-    box.style.padding = '10px 12px';
-    box.style.borderRadius = '10px';
-    box.style.borderLeft = '4px solid #22c55e';
+  // topics
+  const topicsEl = document.createElement('div');
+  topicsEl.style.fontSize = '13px';
+  topicsEl.style.lineHeight = '1.5';
+  topicsEl.style.opacity = '0.95';
+  topicsEl.textContent = topicsTxt ? `Topics: ${topicsTxt}` : 'Topics not set';
+  inner.appendChild(topicsEl);
 
-    const title = document.createElement('div');
-    title.style.fontWeight = '600';
-    title.style.color = '#16a34a';
-    title.style.fontSize = '13px';
-    title.style.marginBottom = '4px';
-    title.textContent = '📖 Subject 2';
-    box.appendChild(title);
+  // small note
+  const note = document.createElement('div');
+  note.style.marginTop = '8px';
+  note.style.fontSize = '11px';
+  note.style.opacity = '0.8';
+  note.textContent = 'Stay consistent. This replaces all previous daily targets.';
+  inner.appendChild(note);
 
-    const subj = document.createElement('div');
-    subj.style.fontSize = '14px';
-    subj.style.color = '#111827';
-    subj.style.marginBottom = '4px';
-    subj.innerHTML = '<strong>' + (subject2 || '—') + '</strong>';
-    box.appendChild(subj);
-
-    const topic = document.createElement('div');
-    topic.style.fontSize = '13px';
-    topic.style.color = '#4b5563';
-    topic.textContent = 'Topics: ' + (topics2 || '—');
-    box.appendChild(topic);
-
-    if (subject2Extra.length) {
-      const list = document.createElement('ul');
-      list.style.margin = '6px 0 0';
-      list.style.paddingLeft = '18px';
-      list.style.fontSize = '13px';
-      list.style.color = '#374151';
-      subject2Extra.forEach(t => {
-        const li = document.createElement('li');
-        li.textContent = t;
-        li.style.marginBottom = '3px';
-        list.appendChild(li);
-      });
-      box.appendChild(list);
-    }
-
-    s2Container.appendChild(box);
-  } else {
-    s2Container.innerHTML = '<div class="empty-state">Admin will update Subject 2 targets here.</div>';
-  }
-
-  // Other targets UI
-  if (otherItems.length) {
-    const box = document.createElement('div');
-    box.style.background = '#fff7ed';
-    box.style.padding = '10px 12px';
-    box.style.borderRadius = '10px';
-    box.style.borderLeft = '4px solid #f97316';
-
-    const title = document.createElement('div');
-    title.style.fontWeight = '600';
-    title.style.color = '#ea580c';
-    title.style.fontSize = '13px';
-    title.style.marginBottom = '6px';
-    title.textContent = '🎯 Other Targets';
-    box.appendChild(title);
-
-    const list = document.createElement('ul');
-    list.style.margin = '0';
-    list.style.paddingLeft = '18px';
-    list.style.fontSize = '13px';
-    list.style.color = '#4b5563';
-
-    otherItems.forEach(t => {
-      const li = document.createElement('li');
-      li.textContent = t;
-      li.style.marginBottom = '3px';
-      list.appendChild(li);
-    });
-
-    box.appendChild(list);
-    otherContainer.appendChild(box);
-  } else {
-    otherContainer.innerHTML = '<div class="empty-state">Admin will add other targets here.</div>';
-  }
+  card.appendChild(inner);
+  box.appendChild(card);
 }
-
+  
 // Folder View button renderer (null safe)
 function renderFolderButton(containerId, folderUrl, emptyMessage) {
   const container = document.getElementById(containerId);
