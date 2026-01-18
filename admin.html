@@ -1079,31 +1079,30 @@ function saveUpscDailyTargetSimple() {
           if (itemsEl) itemsEl.value = section.items || '';
           if (lastEl)  lastEl.value  = section.lastSaved || '';
 
-          if (exam === 'UPSC' && key === 'dailyTargets' && section.items) {
-            const txt = section.items || '';
-            const subj1El   = document.getElementById('upscdailyTargetsSubject1');
-            const topics1El = document.getElementById('upscdailyTargetsTopics1');
-            const subj2El   = document.getElementById('upscdailyTargetsSubject2');
-            const topics2El = document.getElementById('upscdailyTargetsTopics2');
+        if (exam === 'UPSC' && key === 'dailyTargets' && section.items) {
+  const txt = section.items || '';
+  const dateEl    = document.getElementById('upscdailyTargetsDate');
+  const subjectEl = document.getElementById('upscdailyTargetsSubject');
+  const topicsEl  = document.getElementById('upscdailyTargetsTopics');
 
-            if (subj1El && topics1El && subj2El && topics2El) {
-              const blocks = txt.split(/\n\s*\n/);
-              const t1 = (blocks[0] || '').split('\n');
-              const t2 = (blocks[1] || '').split('\n');
+  if (dateEl && subjectEl && topicsEl) {
+    let dateTxt = '', subjTxt = '', topicsTxt = '';
 
-              const s1 = (t1.find(l => l.startsWith('Subject 1:')) || '').replace('Subject 1:','').trim();
-              const p1 = (t1.find(l => l.startsWith('Topics 1:'))  || '').replace('Topics 1:','').trim();
-              const s2 = (t2.find(l => l.startsWith('Subject 2:')) || '').replace('Subject 2:','').trim();
-              const p2 = (t2.find(l => l.startsWith('Topics 2:'))  || '').replace('Topics 2:','').trim();
+    txt.split('\n').map(l => l.trim()).forEach(line => {
+      if (line.startsWith('Date:')) {
+        dateTxt = line.replace('Date:', '').trim();
+      } else if (line.startsWith('Subject:')) {
+        subjTxt = line.replace('Subject:', '').trim();
+      } else if (line.startsWith('Topics:')) {
+        topicsTxt = line.replace('Topics:', '').trim();
+      }
+    });
 
-              subj1El.value   = s1;
-              topics1El.value = p1;
-              subj2El.value   = s2;
-              topics2El.value = p2;
-            }
-          }
-        });
-      })
+    dateEl.value    = dateTxt;
+    subjectEl.value = subjTxt;
+    topicsEl.value  = topicsTxt;
+  }
+}
       .catch(err => {
         console.error('loadDashboardContentForAdmin error', err);
       });
