@@ -484,95 +484,61 @@
                     </div>
                   </div>
 
-                  <!-- UPSC Daily Targets (latest only) -->
-                  <div class="col-md-6">
-                    <div class="section-gradient-box section-upsc-2">
-                      <div class="card h-100 section-gradient-inner feature-card upsc">
-                        <div class="card-header d-flex justify-content-between align-items-center">
-                          <span>UPSC Daily Targets</span>
-                          <small id="upscdailyTargetsmsg" class="text-muted small"></small>
-                        </div>
-                        <div class="card-body">
-                          <div class="mb-2">
-                            <label class="form-label small">Section Title (Date + note)</label>
-                            <input id="upscdailyTargetstitle"
-                                   class="form-control form-control-sm section-title-input"
-                                   placeholder="e.g. 05 Jan 2026 - Today's Targets">
-                          </div>
+               <!-- UPSC Daily Target (latest only) -->
+<div class="col-md-6">
+  <div class="section-gradient-box section-upsc-2">
+    <div class="card h-100 section-gradient-inner feature-card upsc">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <span>UPSC Daily Target</span>
+        <small id="upscdailyTargetsmsg" class="text-muted small"></small>
+      </div>
+      <div class="card-body">
+        <!-- Date -->
+        <div class="mb-2">
+          <label class="form-label small mb-1">Date</label>
+          <input
+            type="text"
+            id="upscdailyTargetsDate"
+            class="form-control form-control-sm section-title-input"
+            placeholder="e.g. 18 Jan 2026">
+        </div>
 
-                          <!-- 2 colourful boxes -->
-                          <div class="row g-2 mb-2">
-                            <div class="col-12">
-                              <div class="p-2 rounded-3"
-                                   style="background: linear-gradient(135deg,#ec4899,#f97316); color:#fff;">
-                                <div class="d-flex justify-content-between align-items-center mb-1">
-                                  <span class="small fw-semibold">Daily Target 1</span>
-                                  <span class="badge bg-light text-dark border">Subject + Topics</span>
-                                </div>
-                                <div class="p-2 rounded-3" style="background:rgba(15,23,42,0.35);">
-                                  <div class="mb-1">
-                                    <label class="form-label small mb-1">Subject</label>
-                                    <input id="upscdailyTargetsSubject1"
-                                           class="form-control form-control-sm"
-                                           placeholder="e.g. Polity">
-                                  </div>
-                                  <div>
-                                    <label class="form-label small mb-1">Topics</label>
-                                    <textarea id="upscdailyTargetsTopics1"
-                                              class="form-control form-control-sm"
-                                              rows="3"
-                                              placeholder="e.g. Laxmikanth - FR, DPSP, Preamble"></textarea>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
+        <!-- Subject -->
+        <div class="mb-2">
+          <label class="form-label small mb-1">Subject</label>
+          <input
+            type="text"
+            id="upscdailyTargetsSubject"
+            class="form-control form-control-sm"
+            placeholder="e.g. Polity">
+        </div>
 
-                            <div class="col-12">
-                              <div class="p-2 rounded-3"
-                                   style="background: linear-gradient(135deg,#22c55e,#14b8a6); color:#fff;">
-                                <div class="d-flex justify-content-between align-items-center mb-1">
-                                  <span class="small fw-semibold">Daily Target 2</span>
-                                  <span class="badge bg-light text-dark border">Subject + Topics</span>
-                                </div>
-                                <div class="p-2 rounded-3" style="background:rgba(15,23,42,0.35);">
-                                  <div class="mb-1">
-                                    <label class="form-label small mb-1">Subject</label>
-                                    <input id="upscdailyTargetsSubject2"
-                                           class="form-control form-control-sm"
-                                           placeholder="e.g. Modern History">
-                                  </div>
-                                  <div>
-                                    <label class="form-label small mb-1">Topics</label>
-                                    <textarea id="upscdailyTargetsTopics2"
-                                              class="form-control form-control-sm"
-                                              rows="3"
-                                              placeholder="e.g. Revolt of 1857, Congress Sessions"></textarea>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
+        <!-- Topics -->
+        <div class="mb-2">
+          <label class="form-label small mb-1">Topics / Details</label>
+          <textarea
+            id="upscdailyTargetsTopics"
+            class="form-control form-control-sm section-items"
+            rows="3"
+            placeholder="e.g. Laxmikanth - FR, DPSP, Preamble"></textarea>
+        </div>
 
-                          <div class="mb-2">
-                            <label class="form-label small">Items (each line one target)</label>
-                            <textarea id="upscdailyTargetsitems"
-                                      class="form-control form-control-sm section-items"
-                                      placeholder="2 GS tests&#10;Polity Laxmikanth revision"></textarea>
-                          </div>
-                          <div>
-                            <label class="form-label small">Last saved (shown to students)</label>
-                            <textarea id="upscdailyTargetslast"
-                                      class="form-control form-control-sm section-last"
-                                      readonly></textarea>
-                          </div>
-                        </div>
-                        <div class="card-footer text-end">
-                          <button class="btn btn-sm btn-primary"
-                                  onclick="saveUpscDailyTargets()">Save</button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+        <!-- Last saved -->
+        <div class="mb-2">
+          <label class="form-label small">Last saved (shown to students)</label>
+          <textarea
+            id="upscdailyTargetslast"
+            class="form-control form-control-sm section-last"
+            readonly></textarea>
+        </div>
+      </div>
+      <div class="card-footer text-end">
+        <button class="btn btn-sm btn-primary"
+                onclick="saveUpscDailyTargetSimple()">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
 
                   <!-- UPSC Mock Tests -->
                   <div class="col-md-6">
@@ -1022,76 +988,58 @@
   }
 
   // UPSC Daily Targets: Subject 1 + Subject 2 + Others (latest only – overwrite)
-  function saveUpscDailyTargets() {
-    const title = document.getElementById('upscdailyTargetstitle').value.trim();
+// UPSC Daily Target: Date + Subject + Topics (latest only – overwrite)
+function saveUpscDailyTargetSimple() {
+  const dateTxt = document.getElementById('upscdailyTargetsDate').value.trim();
+  const subject = document.getElementById('upscdailyTargetsSubject').value.trim();
+  const topics  = document.getElementById('upscdailyTargetsTopics').value.trim();
+  const msgEl   = document.getElementById('upscdailyTargetsmsg');
 
-    // Subject 1
-    const s1 = document.getElementById('upscdailyTargetsSubject1').value.trim();
-    const t1 = document.getElementById('upscdailyTargetsTopics1').value.trim();
-
-    // Subject 2
-    const s2 = document.getElementById('upscdailyTargetsSubject2').value.trim();
-    const t2 = document.getElementById('upscdailyTargetsTopics2').value.trim();
-
-    // Others (each line one target)
-    const othersRaw = document.getElementById('upscdailyTargetsitems').value
-      .split('\n')
-      .map(l => l.trim())
-      .filter(Boolean);
-
-    // Block 1 = Subject 1 section
-    const lines1 = [];
-    if (s1) lines1.push('Subject 1: ' + s1);
-    if (t1) lines1.push('Topics 1: ' + t1);
-    const block1 = lines1.join('\n');
-
-    // Block 2 = Subject 2 section
-    const lines2 = [];
-    if (s2) lines2.push('Subject 2: ' + s2);
-    if (t2) lines2.push('Topics 2: ' + t2);
-    const block2 = lines2.join('\n');
-
-    // Block 3+ = Others section
-    const blockOthers = othersRaw.join('\n');
-
-    // Final text – ye hi latest daily target hoga, purana replace ho jayega
-    const finalTxt = [block1, block2, blockOthers]
-      .filter(b => b && b.trim().length > 0)
-      .join('\n\n');
-
-    const payload = {
-      examType: 'UPSC',
-      sectionKey: 'dailyTargets',
-      title: title,
-      items: finalTxt
-    };
-
-    const msgEl = document.getElementById('upscdailyTargetsmsg');
-    msgEl.textContent = 'Saving...';
-
-    const formData = new URLSearchParams();
-    formData.append('action', 'saveDashboardSection');
-    formData.append('payload', JSON.stringify(payload));
-
-    fetch(SCRIPTURL, {
-      method: 'POST',
-      body: formData
-    })
-      .then(res => res.json())
-      .then(data => {
-        if (!data || !data.success) {
-          throw new Error(data && data.message ? data.message : 'Failed to save');
-        }
-        msgEl.textContent = 'Saved ✔';
-        document.getElementById('upscdailyTargetslast').value = finalTxt;
-        setTimeout(() => { msgEl.textContent = ''; }, 2000);
-      })
-      .catch(err => {
-        console.error('saveUpscDailyTargets error:', err);
-        msgEl.textContent = 'Error ❌';
-        setTimeout(() => { msgEl.textContent = ''; }, 3000);
-      });
+  if (!dateTxt || !subject || !topics) {
+    msgEl.textContent = 'Please fill Date, Subject and Topics.';
+    setTimeout(() => { msgEl.textContent = ''; }, 3000);
+    return;
   }
+
+  // Sheet me jane wala final text
+  const finalTxt = [
+    `Date: ${dateTxt}`,
+    `Subject: ${subject}`,
+    `Topics: ${topics}`
+  ].join('\n');
+
+  const payload = {
+    examType: 'UPSC',
+    sectionKey: 'dailyTargets',
+    title: dateTxt,     // title me date rakh sakte ho
+    items: finalTxt     // Apps Script se itemText column me save hoga
+  };
+
+  msgEl.textContent = 'Saving...';
+
+  const formData = new URLSearchParams();
+  formData.append('action', 'saveDashboardSection');
+  formData.append('payload', JSON.stringify(payload));
+
+  fetch(SCRIPTURL, {
+    method: 'POST',
+    body: formData
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (!data || !data.success) {
+        throw new Error(data && data.message ? data.message : 'Failed to save');
+      }
+      msgEl.textContent = 'Saved ✔';
+      document.getElementById('upscdailyTargetslast').value = finalTxt;
+      setTimeout(() => { msgEl.textContent = ''; }, 2000);
+    })
+    .catch(err => {
+      console.error('saveUpscDailyTargetSimple error:', err);
+      msgEl.textContent = 'Error ❌';
+      setTimeout(() => { msgEl.textContent = ''; }, 3000);
+    });
+}
 
   // ------------ FOLDER OPEN (DRIVE) ------------
   function openFolder(exam, folderKey) {
